@@ -1,5 +1,7 @@
-package github.sql.dsl.query.api;
+package github.sql.dsl.query.api.condition;
 
+import github.sql.dsl.query.api.Entity;
+import github.sql.dsl.query.api.WhereClauses;
 import github.sql.dsl.query.api.column.DateColumn;
 import github.sql.dsl.query.api.column.EntityColumn;
 import github.sql.dsl.query.api.column.NumberColumn;
@@ -18,7 +20,5 @@ public interface EntityConditionBuilder<T, U> {
     StringConditionBuilder<T> to(StringColumn<U> column);
 
     WhereClauses<T> isNull();
-
-    WhereClauses<T> notNull();
 
 }

@@ -1,6 +1,7 @@
 package github.sql.dsl.query.api;
 
 import github.sql.dsl.query.api.column.*;
+import github.sql.dsl.query.api.condition.*;
 
 import java.util.Date;
 import java.util.function.Consumer;
@@ -22,6 +23,14 @@ public interface WhereClauses<T> extends Results<T>, Criteria<T> {
     <U extends Entity> EntityConditionBuilder<T, U> andNot(EntityColumn<T, U> column);
 
     <U extends Entity> EntityConditionBuilder<T, U> orNot(EntityColumn<T, U> column);
+
+    <U> ConditionBuilder<T, U> and(AnyColumn<T, U> column);
+
+    <U> ConditionBuilder<T, U> or(AnyColumn<T, U> column);
+
+    <U> ConditionBuilder<T, U> andNot(AnyColumn<T, U> column);
+
+    <U> ConditionBuilder<T, U> orNot(AnyColumn<T, U> column);
 
     <U extends Number> NumberConditionBuilder<T, U> and(NumberColumn<T, U> column);
 
@@ -46,10 +55,6 @@ public interface WhereClauses<T> extends Results<T>, Criteria<T> {
     StringConditionBuilder<T> andNot(StringColumn<T> column);
 
     StringConditionBuilder<T> orNot(StringColumn<T> column);
-
-    StringConditionBuilder<T> and(BooleanColumn<T> column);
-
-    StringConditionBuilder<T> or(BooleanColumn<T> column);
 
     StringConditionBuilder<T> andNot(BooleanColumn<T> column);
 

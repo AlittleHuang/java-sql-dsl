@@ -1,10 +1,6 @@
 package github.sql.dsl.query.api.column;
 
-import java.util.function.Function;
-
 @FunctionalInterface
-public interface StringColumn<T> extends Function<T, String> {
-
-
+public interface StringColumn<T> extends AnyColumn<T, String> {
 
 }

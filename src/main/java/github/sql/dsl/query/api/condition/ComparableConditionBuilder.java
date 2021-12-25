@@ -1,4 +1,6 @@
-package github.sql.dsl.query.api;
+package github.sql.dsl.query.api.condition;
+
+import github.sql.dsl.query.api.WhereClauses;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,8 +20,6 @@ public interface ComparableConditionBuilder<T, U extends Comparable<?>> {
     WhereClauses<T> lt(U value);
 
     WhereClauses<T> isNull();
-
-    WhereClauses<T> notNull();
 
     @SuppressWarnings("unchecked")
     default WhereClauses<T> in(U... values) {

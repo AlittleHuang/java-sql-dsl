@@ -1,4 +1,6 @@
-package github.sql.dsl.query.api;
+package github.sql.dsl.query.api.condition;
+
+import github.sql.dsl.query.api.WhereClauses;
 
 public interface NumberConditionBuilder<T, U extends Number> {
 
@@ -21,8 +23,6 @@ public interface NumberConditionBuilder<T, U extends Number> {
     WhereClauses<T> lt(U value);
 
     WhereClauses<T> isNull();
-
-    WhereClauses<T> notNull();
 
     // NONE,
     // ABS,
