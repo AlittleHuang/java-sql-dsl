@@ -4,6 +4,7 @@ import github.sql.dsl.query.api.Entity;
 
 import java.util.Date;
 
+@SuppressWarnings("unchecked")
 @FunctionalInterface
 public interface EntityColumn<T, R extends Entity> extends Column<T, R> {
 
@@ -12,28 +13,28 @@ public interface EntityColumn<T, R extends Entity> extends Column<T, R> {
     }
 
     default <V extends Entity> EntityColumn<T, V> to(EntityColumn<R, V> column) {
-        throw new UnsupportedOperationException();
+        return ColumnExpression.exchange(column).to(column);
     }
 
     default <V extends Number> NumberColumn<T, V> to(NumberColumn<R, V> column) {
-        throw new UnsupportedOperationException();
+        return ColumnExpression.exchange(column).to(column);
     }
 
     default <V extends Date> DateColumn<T, V> to(DateColumn<R, V> column) {
-        throw new UnsupportedOperationException();
+        return ColumnExpression.exchange(column).to(column);
     }
 
     default StringColumn<T> to(StringColumn<R> column) {
-        throw new UnsupportedOperationException();
+        return ColumnExpression.exchange(column).to(column);
     }
 
 
     default BooleanColumn<T> to(BooleanColumn<R> column) {
-        throw new UnsupportedOperationException();
+        return ColumnExpression.exchange(column).to(column);
     }
 
     default <V> Column<T, V> to(Column<R, V> column) {
-        throw new UnsupportedOperationException();
+        return ColumnExpression.exchange(column).to(column);
     }
 
 

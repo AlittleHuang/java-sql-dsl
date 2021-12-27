@@ -1,7 +1,5 @@
 package github.sql.dsl.query.api.column;
 
-import github.sql.dsl.query.suport.common.model.ColumnExpression;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.function.Function;
