@@ -1,30 +1,27 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.WhereClauses;
+public interface StringConditionBuilder<T, V> extends ComparableConditionBuilder<T, String, V> {
 
-public interface StringConditionBuilder<T> extends ComparableConditionBuilder<T, String> {
+    V like(String value);
 
-    WhereClauses<T> like(String value);
+    V startWith(String value);
 
-    WhereClauses<T> startWith(String value);
+    V startEndWith(String value);
 
-    WhereClauses<T> startEndWith(String value);
-
-    WhereClauses<T> contains(String value);
+    V contains(String value);
 
     @Override
-    StringConditionBuilder<T> nullIf(String value);
+    StringConditionBuilder<T, V> nullIf(String value);
 
-    StringConditionBuilder<T> lower();
+    StringConditionBuilder<T, V> lower();
 
-    StringConditionBuilder<T> upper();
+    StringConditionBuilder<T, V> upper();
 
-    StringConditionBuilder<T> substring();
+    StringConditionBuilder<T, V> substring();
 
-    StringConditionBuilder<T> trim();
+    StringConditionBuilder<T, V> trim();
 
-    NumberConditionBuilder<T, Integer> length();
-
+    NumberConditionBuilder<T, Integer, V> length();
 
 
 }

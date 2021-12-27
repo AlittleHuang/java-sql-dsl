@@ -1,74 +1,73 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.WhereClauses;
 import github.sql.dsl.query.api.column.NumberColumn;
 import github.sql.dsl.query.suport.common.expression.Expression;
 
-public interface NumberConditionBuilder<T, U extends Number> extends ConditionBuilder<T,U> {
+public interface NumberConditionBuilder<T, U extends Number, V> extends ConditionBuilder<T, U, V> {
 
-    NumberConditionBuilder<T, U> add(U v);
+    NumberConditionBuilder<T, U, V> add(U v);
 
-    NumberConditionBuilder<T, U> subtract(U v);
+    NumberConditionBuilder<T, U, V> subtract(U v);
 
-    NumberConditionBuilder<T, U> multiply(U v);
+    NumberConditionBuilder<T, U, V> multiply(U v);
 
-    NumberConditionBuilder<T, U> divide(U v);
+    NumberConditionBuilder<T, U, V> divide(U v);
 
-    NumberConditionBuilder<T, U> mod(U v);
+    NumberConditionBuilder<T, U, V> mod(U v);
 
     @Override
-    NumberConditionBuilder<T, U> nullIf(U value);
+    NumberConditionBuilder<T, U, V> nullIf(U value);
 
-    WhereClauses<T> ge(U value);
+    V ge(U value);
 
-    WhereClauses<T> gt(U value);
+    V gt(U value);
 
-    WhereClauses<T> le(U value);
+    V le(U value);
 
-    WhereClauses<T> between(U a, U b);
+    V between(U a, U b);
 
-    WhereClauses<T> lt(U value);
+    V lt(U value);
 
 
-    NumberConditionBuilder<T, U> add(NumberColumn<T,U> v);
+    NumberConditionBuilder<T, U, V> add(NumberColumn<T, U> v);
 
-    NumberConditionBuilder<T, U> subtract(NumberColumn<T,U> v);
+    NumberConditionBuilder<T, U, V> subtract(NumberColumn<T, U> v);
 
-    NumberConditionBuilder<T, U> multiply(NumberColumn<T,U> v);
+    NumberConditionBuilder<T, U, V> multiply(NumberColumn<T, U> v);
 
-    NumberConditionBuilder<T, U> divide(NumberColumn<T,U> v);
+    NumberConditionBuilder<T, U, V> divide(NumberColumn<T, U> v);
 
-    NumberConditionBuilder<T, U> mod(NumberColumn<T,U> v);
+    NumberConditionBuilder<T, U, V> mod(NumberColumn<T, U> v);
 
-    WhereClauses<T> ge(NumberColumn<T,U> value);
+    V ge(NumberColumn<T, U> value);
 
-    WhereClauses<T> gt(NumberColumn<T,U> value);
+    V gt(NumberColumn<T, U> value);
 
-    WhereClauses<T> le(NumberColumn<T,U> value);
+    V le(NumberColumn<T, U> value);
 
-    WhereClauses<T> between(NumberColumn<T,U> a, NumberColumn<T,U> b);
+    V between(NumberColumn<T, U> a, NumberColumn<T, U> b);
 
-    WhereClauses<T> lt(NumberColumn<T,U> value);
+    V lt(NumberColumn<T, U> value);
 
-    NumberConditionBuilder<T, U> add(Expression<U> v);
+    NumberConditionBuilder<T, U, V> add(Expression<U> v);
 
-    NumberConditionBuilder<T, U> subtract(Expression<U> v);
+    NumberConditionBuilder<T, U, V> subtract(Expression<U> v);
 
-    NumberConditionBuilder<T, U> multiply(Expression<U> v);
+    NumberConditionBuilder<T, U, V> multiply(Expression<U> v);
 
-    NumberConditionBuilder<T, U> divide(Expression<U> v);
+    NumberConditionBuilder<T, U, V> divide(Expression<U> v);
 
-    NumberConditionBuilder<T, U> mod(Expression<U> v);
+    NumberConditionBuilder<T, U, V> mod(Expression<U> v);
 
-    WhereClauses<T> ge(Expression<U> value);
+    V ge(Expression<U> value);
 
-    WhereClauses<T> gt(Expression<U> value);
+    V gt(Expression<U> value);
 
-    WhereClauses<T> le(Expression<U> value);
+    V le(Expression<U> value);
 
-    WhereClauses<T> between(Expression<U> a, Expression<U> b);
+    V between(Expression<U> a, Expression<U> b);
 
-    WhereClauses<T> lt(Expression<U> value);
+    V lt(Expression<U> value);
 
 
 }

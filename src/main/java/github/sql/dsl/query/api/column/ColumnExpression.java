@@ -18,7 +18,7 @@ public final class ColumnExpression extends AbstractExpression implements Entity
 
     private final List<String> path;
 
-    private ColumnExpression(String[] path) {
+    private ColumnExpression(String... path) {
         this.path = Arrays.asList(path);
     }
 
@@ -26,7 +26,7 @@ public final class ColumnExpression extends AbstractExpression implements Entity
         if (column instanceof ColumnExpression) {
             return (ColumnExpression) column;
         }
-        return new ColumnExpression(new String[]{getAttributeName(column)});
+        return new ColumnExpression(getAttributeName(column));
     }
 
     public static <T> Expression<T> asExpression(Column<?, T> column) {

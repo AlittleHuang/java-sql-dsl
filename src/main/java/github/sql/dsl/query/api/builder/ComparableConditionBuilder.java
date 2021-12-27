@@ -1,20 +1,18 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.WhereClauses;
+public interface ComparableConditionBuilder<T, U extends Comparable<?>, V> extends ConditionBuilder<T, U, V> {
 
-public interface ComparableConditionBuilder<T, U extends Comparable<?>> extends ConditionBuilder<T, U> {
+    V ge(U value);
 
-    WhereClauses<T> ge(U value);
+    V gt(U value);
 
-    WhereClauses<T> gt(U value);
+    V le(U value);
 
-    WhereClauses<T> le(U value);
+    V between(U a, U b);
 
-    WhereClauses<T> between(U a, U b);
-
-    WhereClauses<T> lt(U value);
+    V lt(U value);
 
     @Override
-    ComparableConditionBuilder<T, U> nullIf(U value);
+    ComparableConditionBuilder<T, U, V> nullIf(U value);
 
 }

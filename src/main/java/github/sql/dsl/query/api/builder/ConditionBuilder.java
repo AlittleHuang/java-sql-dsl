@@ -5,20 +5,20 @@ import github.sql.dsl.query.api.WhereClauses;
 import java.util.Arrays;
 import java.util.Collection;
 
-public interface ConditionBuilder<T,U> {
+public interface ConditionBuilder<T, U, V> {
 
-    WhereClauses<T> isNull();
+    V isNull();
 
-    WhereClauses<T> eq(U value);
+    V eq(U value);
 
     @SuppressWarnings("unchecked")
-    default WhereClauses<T> in(U... values) {
+    default V in(U... values) {
         return in(Arrays.asList(values));
     }
 
-    WhereClauses<T> in(Collection<U> values);
+    V in(Collection<U> values);
 
-    ConditionBuilder<T, U> nullIf(U value);
+    ConditionBuilder<T, U, V> nullIf(U value);
 
 
 }

@@ -5,18 +5,17 @@ import github.sql.dsl.query.api.column.*;
 
 import java.util.Date;
 
-public interface EntityConditionBuilder<T, U> {
+public interface EntityConditionBuilder<T, U, V> {
 
+    <R extends Entity> EntityConditionBuilder<T, R, V> to(EntityColumn<U, R> column);
 
-    <V extends Entity> EntityConditionBuilder<T, V> to(EntityColumn<U, V> column);
+    <R extends Number> NumberConditionBuilder<T, R, V> to(NumberColumn<U, R> column);
 
-    <V extends Number> NumberConditionBuilder<T, V> to(NumberColumn<U, V> column);
+    <R extends Date> ComparableConditionBuilder<T, R, V> to(DateColumn<U, R> column);
 
-    <V extends Date> ComparableConditionBuilder<T, V> to(DateColumn<U, V> column);
+    <R extends Date> ConditionBuilder<T, R, V> to(Column<U, R> column);
 
-    <V extends Date> ConditionBuilder<T, V> to(Column<U, V> column);
-
-    StringConditionBuilder<T> to(StringColumn<U> column);
+    StringConditionBuilder<T, V> to(StringColumn<U> column);
 
 
 }

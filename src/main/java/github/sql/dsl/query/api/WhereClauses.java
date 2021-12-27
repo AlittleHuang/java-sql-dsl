@@ -1,50 +1,24 @@
 package github.sql.dsl.query.api;
 
-import github.sql.dsl.query.api.builder.*;
-import github.sql.dsl.query.api.column.*;
+import github.sql.dsl.query.api.builder.WhereClausesBuilder;
+import github.sql.dsl.query.suport.common.expression.OperatorExpression;
 
-import java.util.Date;
+import java.util.function.Function;
 
-public interface WhereClauses<T> extends Results<T>, Criteria<T> {
+public interface WhereClauses<T> extends Results<T>, Criteria<T>, WhereClausesBuilder<T, WhereClauses<T>> {
 
-    <U extends Entity> EntityConditionBuilder<T, U> and(EntityColumn<T, U> column);
+    WhereClauses<T> andCombined(Function<Builder<T>, OperatorExpression<Boolean>> builder);
 
-    <U extends Entity> EntityConditionBuilder<T, U> or(EntityColumn<T, U> column);
+    WhereClauses<T> orCombined(Function<Builder<T>, OperatorExpression<Boolean>> builder);
 
-    <U extends Entity> EntityConditionBuilder<T, U> andNot(EntityColumn<T, U> column);
+    WhereClauses<T> orCombinedNot(Function<Builder<T>, OperatorExpression<Boolean>> builder);
 
-    <U extends Entity> EntityConditionBuilder<T, U> orNot(EntityColumn<T, U> column);
+    WhereClauses<T> andCombinedNot(Function<Builder<T>, OperatorExpression<Boolean>> builder);
 
-    <U> ConditionBuilder<T, U> and(Column<T, U> column);
-
-    <U> ConditionBuilder<T, U> or(Column<T, U> column);
-
-    <U> ConditionBuilder<T, U> andNot(Column<T, U> column);
-
-    <U> ConditionBuilder<T, U> orNot(Column<T, U> column);
-
-    <U extends Number> NumberConditionBuilder<T, U> and(NumberColumn<T, U> column);
-
-    <U extends Number> NumberConditionBuilder<T, U> or(NumberColumn<T, U> column);
-
-    <U extends Number> NumberConditionBuilder<T, U> andNot(NumberColumn<T, U> column);
-
-    <U extends Number> NumberConditionBuilder<T, U> orNot(NumberColumn<T, U> column);
-
-    <U extends Date> ComparableConditionBuilder<T, U> and(DateColumn<T, U> column);
-
-    <U extends Date> ComparableConditionBuilder<T, U> or(DateColumn<T, U> column);
-
-    <U extends Date> ComparableConditionBuilder<T, U> andNot(DateColumn<T, U> column);
-
-    <U extends Date> ComparableConditionBuilder<T, U> orNot(DateColumn<T, U> column);
-
-    StringConditionBuilder<T> and(StringColumn<T> column);
-
-    StringConditionBuilder<T> or(StringColumn<T> column);
-
-    StringConditionBuilder<T> andNot(StringColumn<T> column);
-
-    StringConditionBuilder<T> orNot(StringColumn<T> column);
+    interface Builder<T> extends WhereClausesBuilder<T, Builder<T>> {
+        OperatorExpression<Boolean> build();
+    }
+    
+    
 
 }
