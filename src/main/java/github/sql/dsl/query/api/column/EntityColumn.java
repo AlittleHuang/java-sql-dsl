@@ -5,7 +5,7 @@ import github.sql.dsl.query.api.Entity;
 import java.util.Date;
 
 @FunctionalInterface
-public interface EntityColumn<T, R extends Entity> extends AnyColumn<T, R> {
+public interface EntityColumn<T, R extends Entity> extends Column<T, R> {
 
     static <T, R extends Entity> EntityColumn<T, R> of(EntityColumn<T, R> column) {
         return column;
@@ -32,7 +32,7 @@ public interface EntityColumn<T, R extends Entity> extends AnyColumn<T, R> {
         throw new UnsupportedOperationException();
     }
 
-    default <V> AnyColumn<T, V> to(AnyColumn<R, V> column) {
+    default <V> Column<T, V> to(Column<R, V> column) {
         throw new UnsupportedOperationException();
     }
 

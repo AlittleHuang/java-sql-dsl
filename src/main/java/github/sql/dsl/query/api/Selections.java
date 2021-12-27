@@ -1,13 +1,13 @@
 package github.sql.dsl.query.api;
 
-import github.sql.dsl.query.api.column.EntityColumn;
+import github.sql.dsl.query.api.column.Column;
 
 import java.util.List;
 
-public interface Selections<T> {
+public interface Selections<T> extends ArrayResults {
 
-    SelectionBuilder<T> select(EntityColumn<T, ?> selections);
+    Selections<T> select(Column<T, ?> selection);
 
-    SelectionBuilder<T> select(List<EntityColumn<T, ?>> selections);
+    Selections<T> select(List<Column<T, ?>> selections);
 
 }

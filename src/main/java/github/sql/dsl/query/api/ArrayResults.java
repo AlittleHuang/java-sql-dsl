@@ -4,20 +4,22 @@ import java.util.List;
 
 public interface ArrayResults {
 
-    Object[] single(int offset);
+    int NON_MAX_RESULT = -1;
 
-    default Object[] single() {
-        return single(0);
+    Object[] getSingleResult(int offset);
+
+    default Object[] getSingleResult() {
+        return getSingleResult(0);
     }
 
-    List<Object[]> list(int offset, int maxResultant);
+    List<Object[]> getResultList(int offset, int maxResult);
 
-    default List<Object[]> list(int offset) {
-        return list(offset, -1);
+    default List<Object[]> getResultList(int offset) {
+        return getResultList(offset, NON_MAX_RESULT);
     }
 
-    default List<Object[]> list() {
-        return list(0, -1);
+    default List<Object[]> getResultList() {
+        return getResultList(0, NON_MAX_RESULT);
     }
 
 }
