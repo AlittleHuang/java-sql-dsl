@@ -1,25 +1,22 @@
 package github.sql.dsl.query.api.column;
 
 import github.sql.dsl.query.suport.common.expression.Expression;
-import github.sql.dsl.query.suport.common.model.AbstractExpression;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
 @SuppressWarnings("rawtypes")
-public final class ColumnExpression extends AbstractExpression implements EntityColumn, BooleanColumn,
+public final class ColumnExpression extends PathExpression implements EntityColumn, BooleanColumn,
         StringColumn, DateColumn, NumberColumn {
 
-    private final List<String> path;
-
     private ColumnExpression(String... path) {
-        this.path = Arrays.asList(path);
+        //noinspection unchecked
+        super(Arrays.asList(path));
     }
 
     public static ColumnExpression exchange(Column<?, ?> column) {
@@ -61,7 +58,9 @@ public final class ColumnExpression extends AbstractExpression implements Entity
 
     @Override
     public ColumnExpression to(Column column) {
-        String[] path = this.path.toArray(new String[this.path.size() + 1]);
+        String[] path = new String[this.path.size() + 1];
+        //noinspection unchecked
+        this.path.toArray(path);
         path[this.path.size()] = getAttributeName(column);
         return new ColumnExpression(path);
     }

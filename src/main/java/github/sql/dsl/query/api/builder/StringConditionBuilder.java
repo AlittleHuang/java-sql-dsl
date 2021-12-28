@@ -17,7 +17,9 @@ public interface StringConditionBuilder<T, V> extends ComparableConditionBuilder
 
     StringConditionBuilder<T, V> upper();
 
-    StringConditionBuilder<T, V> substring();
+    StringConditionBuilder<T, V> substring(int a, int b);
+
+    StringConditionBuilder<T, V> substring(int a);
 
     StringConditionBuilder<T, V> trim();
 

@@ -2,12 +2,12 @@ package github.sql.dsl.query.api;
 
 import github.sql.dsl.query.api.builder.*;
 import github.sql.dsl.query.api.column.*;
-import github.sql.dsl.query.suport.common.expression.OperatorExpression;
+import github.sql.dsl.query.suport.common.expression.BooleanExpression;
 
 import java.util.Date;
 import java.util.function.Function;
 
-public interface Query<T> extends Criteria<T> {
+public interface QueryBuilder<T> extends Criteria<T> {
 
     <U extends Entity> EntityConditionBuilder<T, U, WhereClauses<T>> where(EntityColumn<T, U> column);
 
@@ -29,8 +29,6 @@ public interface Query<T> extends Criteria<T> {
 
     StringConditionBuilder<T, WhereClauses<T>> whereNot(StringColumn<T> column);
 
-   WhereClauses<T> wheres(Function<WhereClauses.Builder<T>, OperatorExpression<Boolean>> column);
-
-   WhereClauses<T> wheresNot(Function<WhereClauses.Builder<T>, OperatorExpression<Boolean>> column);
+    WhereClauses<T> wheres(Function<WhereClauses.Builder<T>, BooleanExpression> column);
 
 }

@@ -11,6 +11,8 @@ public interface ConditionBuilder<T, U, V> {
 
     V eq(U value);
 
+    V diff(U value);
+
     @SuppressWarnings("unchecked")
     default V in(U... values) {
         return in(Arrays.asList(values));
