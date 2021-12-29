@@ -1,7 +1,7 @@
 package github.sql.dsl.query.api;
 
 import github.sql.dsl.query.api.builder.WhereClausesBuilder;
-import github.sql.dsl.query.suport.common.expression.BooleanExpression;
+import github.sql.dsl.query.api.expression.BooleanExpression;
 
 import java.util.function.Function;
 

@@ -1,7 +1,7 @@
 package github.sql.dsl.query.api.builder;
 
 import github.sql.dsl.query.api.column.NumberColumn;
-import github.sql.dsl.query.suport.common.expression.Expression;
+import github.sql.dsl.query.api.expression.Expression;
 
 public interface NumberConditionBuilder<T, U extends Number, V> extends ConditionBuilder<T, U, V> {
 

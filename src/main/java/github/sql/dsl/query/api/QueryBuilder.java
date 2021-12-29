@@ -2,7 +2,7 @@ package github.sql.dsl.query.api;
 
 import github.sql.dsl.query.api.builder.*;
 import github.sql.dsl.query.api.column.*;
-import github.sql.dsl.query.suport.common.expression.BooleanExpression;
+import github.sql.dsl.query.api.expression.BooleanExpression;
 
 import java.util.Date;
 import java.util.function.Function;

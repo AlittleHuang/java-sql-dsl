@@ -1,6 +1,7 @@
 package github.sql.dsl.query.api.column;
 
 import github.sql.dsl.query.api.Entity;
+import github.sql.dsl.query.api.expression.ColumnExpression;
 
 import java.util.Date;
 

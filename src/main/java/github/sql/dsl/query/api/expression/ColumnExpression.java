@@ -1,12 +1,13 @@
-package github.sql.dsl.query.api.column;
+package github.sql.dsl.query.api.expression;
 
-import github.sql.dsl.query.suport.common.expression.Expression;
+import github.sql.dsl.query.api.column.*;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.Objects;
 public final class ColumnExpression extends PathExpression implements EntityColumn, BooleanColumn,
         StringColumn, DateColumn, NumberColumn {
 
-    private ColumnExpression(String... path) {
+    public ColumnExpression(String... path) {
         //noinspection unchecked
         super(Arrays.asList(path));
     }
@@ -29,6 +30,12 @@ public final class ColumnExpression extends PathExpression implements EntityColu
     public static <T> Expression<T> asExpression(Column<?, T> column) {
         //noinspection unchecked
         return exchange(column);
+    }
+
+    @Override
+    public List<String> getPath() {
+        //noinspection unchecked
+        return super.getPath();
     }
 
     @Override
