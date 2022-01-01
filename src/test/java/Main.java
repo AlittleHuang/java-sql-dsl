@@ -1,36 +1,43 @@
-import github.sql.dsl.query.api.Entity;
-import github.sql.dsl.query.api.QueryFactory;
-import lombok.Data;
+import com.mysql.cj.jdbc.MysqlDataSource;
+import github.sql.dsl.query.api.DbSet;
+import github.sql.dsl.query.api.EntityAttributeBridge;
+import github.sql.dsl.query.suport.DbSets;
+import lombok.SneakyThrows;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
 
-    private static QueryFactory query;
 
+    @SneakyThrows
     public static void main(String[] args) {
 
-        Object res = query.from(User.class)
-                .where()
-                .and(User::getUserId).eq(100)
-                .and(User::getUsername).eq("alittlehuang")
-                .and(builder -> {
-                    builder.and(User::getParent).to(User::getUserId).eq(10);
-                })
-                .orderBy(User::getUserId).desc()
-                // .groupBy(Column.of(User::getParent).to(User::getUserId))
-                // .select(Column.of(User::getParent).to(User::getUserId))
-                .fetch(User::getParent)
-                .single();
+        MysqlDataSource source = new MysqlDataSource();
+        source.setUrl("jdbc:mysql:///xiaoxi");
+        source.setUser("root");
+        source.setPassword("root");
 
-    }
+        DbSet query = DbSets.mysql(source);
 
-    @Data
-    public static class User implements Entity {
 
-        int userId;
+        List<Object[]> res = query.from(User.class)
+                .where(User::getId).eq(14)
+                .orderBy(User::getPid).desc()
+                .groupBy(User::getPid)
+                .groupBy(User::getId)
+                .select(User::getPid)
+                .select(User::getId)
+                .getObjectsList();
+        for (Object[] re : res) {
+            System.out.println(Arrays.toString(re));
+        }
 
-        String username;
-
-        User parent;
+        List<User> users = query.from(User.class)
+                // .fetch(User::getParentUser)
+                .fetch(EntityAttributeBridge.of(User::getParentUser).get(User::getParentUser))
+                .getResultList();
+        users.forEach(System.out::println);
 
     }
 

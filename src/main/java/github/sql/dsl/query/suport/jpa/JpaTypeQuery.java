@@ -1,0 +1,311 @@
+package github.sql.dsl.query.suport.jpa;
+
+import github.sql.dsl.query.api.*;
+import github.sql.dsl.query.suport.common.model.CriteriaQuery;
+import github.sql.dsl.query.suport.common.model.Order;
+import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
+import lombok.var;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static github.sql.dsl.query.api.Operator.*;
+
+public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
+    private final EntityManager entityManager;
+    private final Class<T> entityType;
+    private final CriteriaQuery criteria;
+
+
+    public JpaTypeQuery(EntityManager entityManager, Class<T> type, CriteriaQuery criteria) {
+        this.entityManager = entityManager;
+        this.entityType = type;
+        this.criteria = criteria;
+    }
+
+    @Override
+    public List<Object[]> getObjectsList(int offset, int maxResult) {
+        return new Builder<>(Object[].class).getObjectsList(offset, maxResult);
+    }
+
+    @Override
+    public int count() {
+        return new CountBuilder().count().intValue();
+    }
+
+    @Override
+    public List<T> getResultList(int offset, int maxResul) {
+        return new Builder<>(entityType).getResultList(offset, maxResul);
+    }
+
+    @Override
+    public boolean exist(int offset) {
+        return new Builder<>(Object.class).exist(offset);
+    }
+
+    @Override
+    public <U> ProjectionResults<T> projection(Class<U> projectionType) {
+        throw new UnsupportedOperationException();
+    }
+
+    class CountBuilder extends Builder<Long> {
+
+        public CountBuilder() {
+            super(Long.class);
+        }
+
+        public Long count() {
+            buildWhere();
+            query.select(cb.count(root));
+            TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+            return typedQuery.getSingleResult();
+        }
+    }
+
+    class Builder<R> {
+        protected final Class<R> resultType;
+        protected final CriteriaBuilder cb;
+        protected final javax.persistence.criteria.CriteriaQuery<R> query;
+        protected final Root<T> root;
+
+        public Builder(Class<R> resultType) {
+            this.resultType = resultType;
+            cb = entityManager.getCriteriaBuilder();
+            this.query = cb.createQuery(resultType);
+            root = query.from(entityType);
+        }
+
+        public List<R> getResultList(int offset, int maxResult) {
+            buildWhere();
+            builderOrderBy();
+
+            List<PathExpression<?>> list = criteria.getFetch();
+            if (list != null) {
+                for (PathExpression<?> expression : list) {
+                    Fetch<?, ?> fetch = null;
+                    PathExpression<?> path = expression.asPathExpression();
+                    for (String stringPath : path) {
+                        if (fetch == null) {
+                            fetch = root.fetch(stringPath);
+                        } else {
+                            fetch = fetch.fetch(stringPath);
+                        }
+                    }
+                }
+            }
+
+            TypedQuery<R> typedQuery = entityManager.createQuery(query);
+            if (offset > 0) {
+                typedQuery = typedQuery.setFirstResult(offset);
+            }
+            if (maxResult > 0) {
+                typedQuery = typedQuery.setMaxResults(maxResult);
+            }
+            return typedQuery.getResultList();
+        }
+
+        public boolean exist(int offset) {
+            buildWhere();
+
+            EntityInformation<?> information = EntityInformation.getInstance(entityType);
+            String fieldName = information.getIdAttribute().getFieldName();
+            query.select(root.get(fieldName));
+            TypedQuery<?> query = entityManager.createQuery(this.query);
+            if (offset > 0) {
+                query = query.setFirstResult(offset);
+            }
+            return !query.setMaxResults(1)
+                    .getResultList()
+                    .isEmpty();
+        }
+
+        public <U> ProjectionResults<T> projection(Class<U> projectionType) {
+            throw new UnsupportedOperationException();
+        }
+
+        public List<Object[]> getObjectsList(int offset, int maxResult) {
+            buildWhere();
+            List<Expression<?>> groupBy = criteria.getGroupList();
+            if (groupBy != null && !groupBy.isEmpty()) {
+                query.groupBy(
+                        groupBy.stream().map(this::toExpression).collect(Collectors.toList())
+                );
+            }
+            builderOrderBy();
+            javax.persistence.criteria.CriteriaQuery<R> select = query.multiselect(
+                    criteria.getSelection().stream().map(this::toExpression).collect(Collectors.toList())
+            );
+
+            TypedQuery<?> typedQuery = entityManager.createQuery(select);
+
+            if (offset > 0) {
+                typedQuery = typedQuery.setFirstResult(offset);
+            }
+            if (maxResult > 0) {
+                typedQuery = typedQuery.setMaxResults(maxResult);
+            }
+            return typedQuery.getResultList()
+                    .stream()
+                    .map(it -> {
+                        if (it instanceof Object[]) {
+                            return (Object[]) it;
+                        }
+                        return new Object[]{it};
+                    })
+                    .collect(Collectors.toList());
+        }
+
+
+        public Predicate toPredicate(Expression<?> expression) {
+            if (expression == null) {
+                return cb.conjunction();
+            }
+            return cb.isTrue(toExpression(expression).as(Boolean.class));
+        }
+
+        public javax.persistence.criteria.Expression<?> toExpression(Expression<?> expression) {
+            if (expression.getType() == Expression.Type.CONSTANT) {
+                return cb.literal(expression.getValue());
+            }
+            if (expression.getType() == Expression.Type.PATH) {
+                return getPath(expression.asPathExpression());
+            }
+            if (expression.getType() == Expression.Type.OPERATOR) {
+                var list = expression.getExpressions()
+                        .stream()
+                        .map(this::toExpression)
+                        .collect(Collectors.toList());
+                javax.persistence.criteria.Expression<?> e0 = list.get(0);
+                Operator<?> operator = expression.getOperator();
+                if (NOT == operator) {
+                    return cb.not(e0.as(Boolean.class));
+                } else if (AND == operator) {
+                    return cb.and(e0.as(Boolean.class), list.get(1).as(Boolean.class));
+                } else if (OR == operator) {
+                    return cb.or(e0.as(Boolean.class), list.get(1).as(Boolean.class));
+                } else if (GT == operator) {
+                    return cb.gt(asNumber(e0), asNumber(list.get(1)));
+                } else if (EQ == operator) {
+                    return cb.equal(e0, list.get(1));
+                } else if (DIFF == operator) {
+                    return cb.notEqual(e0, list.get(1));
+                } else if (GE == operator) {
+                    return cb.ge(asNumber(e0), asNumber(list.get(1)));
+                } else if (LT == operator) {
+                    return cb.lt(asNumber(e0), asNumber(list.get(1)));
+                } else if (LE == operator) {
+                    return cb.le(asNumber(e0), asNumber(list.get(1)));
+                } else if (LIKE == operator) {
+                    return cb.like(e0.as(String.class), list.get(1).as(String.class));
+                } else if (LOWER == operator) {
+                    return cb.lower(e0.as(String.class));
+                } else if (UPPER == operator) {
+                    return cb.upper(e0.as(String.class));
+                } else if (SUBSTRING == operator) {
+                    if (list.size() == 2) {
+                        return cb.substring(e0.as(String.class), list.get(1).as(Integer.class));
+                    } else if (list.size() > 2) {
+                        return cb.substring(e0.as(String.class),
+                                list.get(1).as(Integer.class), list.get(2).as(Integer.class));
+                    } else {
+                        throw new IllegalArgumentException("argument length error");
+                    }
+                } else if (TRIM == operator) {
+                    return cb.trim(e0.as(String.class));
+                } else if (LENGTH == operator) {
+                    return cb.length(e0.as(String.class));
+                } else if (ADD == operator) {
+                    return cb.sum(asNumber(e0), asNumber(list.get(1)));
+                } else if (SUBTRACT == operator) {
+                    return cb.diff(asNumber(e0), asNumber(list.get(1)));
+                } else if (MULTIPLY == operator) {
+                    return cb.prod(asNumber(e0), asNumber(list.get(1)));
+                } else if (DIVIDE == operator) {
+                    return cb.quot(asNumber(e0), asNumber(list.get(1)));
+                } else if (MOD == operator) {
+                    return cb.mod(e0.as(Integer.class), list.get(1).as(Integer.class));
+                } else if (NULLIF == operator) {
+                    return cb.nullif(e0.as(Integer.class), list.get(1).as(Integer.class));
+                } else if (ISNULL == operator) {
+                    return cb.isNull(e0);
+                } else if (IN == operator) {
+                    if (list.size() == 1) {
+                        return cb.literal(false);
+                    }
+                    CriteriaBuilder.In<Object> in = cb.in(e0);
+                    for (int i = 1; i < list.size(); i++) {
+                        in = in.value(list.get(i));
+                    }
+                    return in;
+                } else if (BETWEEN == operator) {
+                    var as = e0.as(Comparable.class);
+                    //noinspection unchecked
+                    return cb.between(as, list.get(1).as(Comparable.class), list.get(2).as(Comparable.class));
+                } else {
+                    throw new UnsupportedOperationException("unknown operator " + operator);
+                }
+            } else {
+                throw new UnsupportedOperationException("unknown expression type " + expression.getClass());
+            }
+        }
+
+        private javax.persistence.criteria.Expression<Number> asNumber(javax.persistence.criteria.Expression<?> e0) {
+            Class<?> javaType = e0.getJavaType();
+            if (javaType.isPrimitive() || Number.class.isAssignableFrom(javaType)) {
+                //noinspection unchecked
+                return (javax.persistence.criteria.Expression<Number>) e0;
+            }
+            return e0.as(Number.class);
+        }
+
+        private javax.persistence.criteria.Path<?> getPath(PathExpression<?> expression) {
+            javax.persistence.criteria.Path<?> r = root;
+            for (String s : expression) {
+                r = r.get(s);
+            }
+            return r;
+        }
+
+        protected void builderOrderBy() {
+            List<Order> orderList = criteria.getOrderList();
+            if (orderList != null && !orderList.isEmpty()) {
+                query.orderBy(
+                        orderList.stream()
+                                .map(o -> {
+                                    if (o.isDesc()) {
+                                        return cb.desc(toExpression(o.getExpression()));
+                                    } else {
+                                        return cb.asc(toExpression(o.getExpression()));
+                                    }
+                                })
+                                .collect(Collectors.toList())
+                );
+            }
+        }
+
+        protected void buildWhere() {
+            Expression<Boolean> where = criteria.getRestriction();
+            if (where != null) {
+                query.where(toPredicate(where));
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(Number.class.isAssignableFrom(Integer.class));
+
+        System.out.println(Integer.class.isAssignableFrom(Number.class));
+
+        for (Operator<?> operator : Operator.list()) {
+            System.out.println("else if(\"" + operator.toString().toUpperCase() + "\".equals(operator.getSign())){\n\n}");
+        }
+    }
+
+}
