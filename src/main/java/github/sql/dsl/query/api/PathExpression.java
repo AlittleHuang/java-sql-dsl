@@ -31,6 +31,12 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
         this.length = path.length;
     }
 
+    public static void main(String[] args) {
+        for (String s : new PathExpression<>("a", "b")) {
+            System.out.println(s);
+        }
+    }
+
     @Override
     @NotNull
     public Iterator<String> iterator() {
@@ -39,7 +45,7 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
 
             @Override
             public boolean hasNext() {
-                return index >= length;
+                return index < length;
             }
 
             @Override
