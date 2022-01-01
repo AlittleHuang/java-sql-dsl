@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.expression;
+package github.sql.dsl.query.api;
 
 public interface BooleanExpression extends Expression<Boolean> {
 

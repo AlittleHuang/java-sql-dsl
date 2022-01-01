@@ -2,8 +2,13 @@ package github.sql.dsl.query.api;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public final class Operator<T> {
+    private static final List<Operator<?>> operators = new ArrayList<>();
+
 
     public static final Operator<Boolean> NOT = new Operator<>("not", 10);
     public static final Operator<Boolean> AND = new Operator<>("and", 11);
@@ -41,6 +46,7 @@ public final class Operator<T> {
     private Operator(String sign, int priority) {
         this.sign = sign;
         this.precedence = priority;
+        operators.add(this);
     }
 
 
@@ -48,4 +54,9 @@ public final class Operator<T> {
     public String toString() {
         return sign;
     }
+
+    public static Operator<?>[] list() {
+        return Operator.operators.toArray(new Operator[0]);
+    }
+
 }

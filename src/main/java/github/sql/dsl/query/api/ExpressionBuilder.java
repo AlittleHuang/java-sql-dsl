@@ -1,11 +1,9 @@
-package github.sql.dsl.query.api.builder;
-
-import github.sql.dsl.query.api.WhereClauses;
+package github.sql.dsl.query.api;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-public interface ConditionBuilder<T, U, V> {
+public interface ExpressionBuilder<T, U, V> {
 
     V isNull();
 
@@ -20,7 +18,7 @@ public interface ConditionBuilder<T, U, V> {
 
     V in(Collection<U> values);
 
-    ConditionBuilder<T, U, V> nullIf(U value);
+    ExpressionBuilder<T, U, V> nullIf(U value);
 
 
 }

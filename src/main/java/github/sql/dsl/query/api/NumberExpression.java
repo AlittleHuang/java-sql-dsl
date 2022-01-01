@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.expression;
+package github.sql.dsl.query.api;
 
 public interface NumberExpression<T> extends Expression<T> {
 
