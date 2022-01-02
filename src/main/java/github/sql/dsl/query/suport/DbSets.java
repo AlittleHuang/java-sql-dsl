@@ -1,8 +1,9 @@
 package github.sql.dsl.query.suport;
 
-import github.sql.dsl.query.api.DbSet;
-import github.sql.dsl.query.suport.common.QueryBuilder;
-import github.sql.dsl.query.suport.common.ResultsFactory;
+import github.sql.dsl.query.DbSet;
+import github.sql.dsl.query.api.Query;
+import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.builder.query.QueryImpl;
 import github.sql.dsl.query.suport.jdbc.JdbcDbSet;
 import github.sql.dsl.query.suport.jdbc.mysql.MysqlSqlBuilder;
 import github.sql.dsl.query.suport.jpa.JpaDbSet;
@@ -19,8 +20,8 @@ public class DbSets implements DbSet {
     }
 
     @Override
-    public <T> github.sql.dsl.query.api.QueryBuilder<T> from(Class<T> type) {
-        return new QueryBuilder<>(type, resultsFactory);
+    public <T> Query<T> from(Class<T> type) {
+        return new QueryImpl<>(resultsFactory, type, null);
     }
 
     public static DbSet mysql(DataSource source) {

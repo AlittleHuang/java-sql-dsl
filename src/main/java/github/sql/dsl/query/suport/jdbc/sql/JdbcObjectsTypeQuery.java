@@ -1,6 +1,6 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import github.sql.dsl.query.api.ObjectsTypeQuery;
+import github.sql.dsl.query.api.query.ObjectsTypeQuery;
 
 import java.util.List;
 

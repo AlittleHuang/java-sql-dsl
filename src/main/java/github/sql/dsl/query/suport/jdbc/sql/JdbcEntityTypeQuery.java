@@ -1,7 +1,7 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import github.sql.dsl.query.api.ProjectionResults;
-import github.sql.dsl.query.api.TypeQuery;
+import github.sql.dsl.query.api.query.ProjectionResults;
+import github.sql.dsl.query.api.query.TypeQuery;
 
 import java.util.List;
 

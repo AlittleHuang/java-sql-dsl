@@ -1,8 +1,10 @@
 package github.sql.dsl.query.suport.jdbc.mysql;
 
-import github.sql.dsl.query.api.*;
-import github.sql.dsl.query.suport.common.model.CriteriaQuery;
-import github.sql.dsl.query.suport.common.model.Order;
+import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.expression.path.Entity;
+import github.sql.dsl.query.suport.CriteriaQuery;
+import github.sql.dsl.util.Array;
+import github.sql.dsl.query.suport.builder.component.Order;
 import github.sql.dsl.query.suport.jdbc.meta.Attribute;
 import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
 import github.sql.dsl.query.suport.jdbc.sql.EntityQueryPreparedSql;
@@ -217,66 +219,99 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                 appendBlank();
                 appendPath(e);
             } else if (e.getType() == Expression.Type.OPERATOR) {
-                Operator<?> operator = e.getOperator();
+                Operator operator = e.getOperator();
                 List<? extends Expression<?>> list = e.getExpressions();
                 Expression<?> e0 = list.get(0);
-                Operator<?> operator0 = getOperator(e0);
-                if (operator == Operator.NOT) {
-                    sql.append(operator);
-                    sql.append(' ');
-                    if (operator0 != null && operator0.getPrecedence() > operator.getPrecedence()) {
-                        sql.append('(');
-                        appendExpressions(args, e0);
-                        sql.append(')');
-                    } else {
-                        appendExpressions(args, e0);
-                    }
-                } else if (aXb(operator)) {
-                    appendBlank();
-                    if (operator0 != null && operator0.getPrecedence() > operator.getPrecedence()) {
-                        sql.append('(');
-                        appendExpressions(args, e0);
-                        sql.append(')');
-                    } else {
-                        appendExpressions(args, e0);
-                    }
+                Operator operator0 = getOperator(e0);
+                switch (operator) {
+                    case NOT:
+                        appendBlank().append(operator);
+                        sql.append(' ');
+                        if (operator0 != null && operator0.getPrecedence() > operator.getPrecedence()) {
+                            sql.append('(');
+                            appendExpressions(args, e0);
+                            sql.append(')');
+                        } else {
+                            appendExpressions(args, e0);
+                        }
+                        break;
+                    case AND:
+                    case OR:
+                    case LIKE:
+                    case MOD:
 
-                    appendBlank();
-                    sql.append(operator);
-                    Expression<?> e1 = list.get(1);
-                    Operator<?> operator1 = getOperator(e1);
-                    if (operator1 != null && operator1.getPrecedence() >= operator.getPrecedence()) {
-                        sql.append('(');
-                        appendExpressions(args, e1);
-                        sql.append(')');
-                    } else {
-                        appendExpressions(args, e1);
-                    }
+                    case GT:
+                    case EQ:
+                    case DIFF:
+                    case GE:
+                    case LT:
+                    case LE:
+                    case ADD:
+                    case SUBTRACT:
+                    case MULTIPLY:
+                    case DIVIDE:
+                        appendBlank();
+                        if (operator0 != null && operator0.getPrecedence() > operator.getPrecedence()) {
+                            sql.append('(');
+                            appendExpressions(args, e0);
+                            sql.append(')');
+                        } else {
+                            appendExpressions(args, e0);
+                        }
 
-                } else if (operator == Operator.LOWER
-                        || operator == Operator.UPPER
-                        || operator == Operator.SUBSTRING
-                        || operator == Operator.TRIM
-                        || operator == Operator.LENGTH
-                        || operator == Operator.IN
-                        || operator == Operator.NULLIF
-                        || operator == Operator.ISNULL) {
-                    appendBlank().append(operator);
-                    String join = "(";
-                    for (Expression<?> expression : list) {
-                        sql.append(join);
-                        appendExpressions(args, expression);
-                        join = ",";
+                        appendBlank();
+                        sql.append(operator);
+                        Expression<?> e1 = list.get(1);
+                        Operator operator1 = getOperator(e1);
+                        if (operator1 != null && operator1.getPrecedence() >= operator.getPrecedence()) {
+                            sql.append('(');
+                            appendExpressions(args, e1);
+                            sql.append(')');
+                        } else {
+                            appendExpressions(args, e1);
+                        }
+
+                        break;
+                    case LOWER:
+                    case UPPER:
+                    case SUBSTRING:
+                    case TRIM:
+                    case LENGTH:
+                    case NULLIF:
+                    case ISNULL: {
+                        appendBlank().append(operator);
+                        String join = "(";
+                        for (Expression<?> expression : list) {
+                            sql.append(join);
+                            appendExpressions(args, expression);
+                            join = ",";
+                        }
+                        sql.append(")");
+                        break;
                     }
-                    sql.append(")");
-                } else if (operator == Operator.BETWEEN) {
-                    appendBlank();
-                    appendExpressions(args, list.get(0));
-                    appendBlank().append(operator).append(" (");
-                    appendExpressions(args, list.get(1).then(Operator.AND, list.get(2)));
-                    sql.append(")");
-                } else {
-                    throw new UnsupportedOperationException("unknown operator " + operator);
+                    case IN: {
+                        appendBlank();
+                        appendExpression(e0);
+
+                        appendBlank().append(operator);
+                        char join = '(';
+                        for (int i = 1; i < list.size(); i++) {
+                            Expression<?> expression = list.get(i);
+                            sql.append(join);
+                            appendExpressions(args, expression);
+                            join = ',';
+                        }
+                        sql.append(")");
+                        break;
+                    }
+                    case BETWEEN:
+                        appendBlank();
+                        appendExpressions(args, list.get(0));
+                        appendBlank().append(operator).append(" ");
+                        appendExpressions(args, list.get(1).then(Operator.AND, list.get(2)));
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("unknown operator " + operator);
                 }
             } else {
                 throw new UnsupportedOperationException("unknown expression type " + e.getClass());
@@ -319,25 +354,6 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
             }
         }
 
-        protected boolean aXb(Operator<?> operator) {
-            return operator == Operator.AND
-                    || operator == Operator.OR
-                    || operator == Operator.LIKE
-                    || operator == Operator.MOD
-                    || operator == Operator.GT
-                    || operator == Operator.EQ
-                    || operator == Operator.DIFF
-                    || operator == Operator.GE
-                    || operator == Operator.LT
-                    || operator == Operator.LE
-                    || operator == Operator.ADD
-                    || operator == Operator.SUBTRACT
-                    || operator == Operator.MULTIPLY
-                    || operator == Operator.DIVIDE
-                    ;
-        }
-
-
         protected void insertJoin(int sqlIndex) {
             StringBuilder sql = new StringBuilder();
 
@@ -368,18 +384,14 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
         }
 
-        Operator<?> getOperator(Expression<?> e) {
+        Operator getOperator(Expression<?> e) {
             if (e instanceof OperatorExpression) {
-                return ((OperatorExpression<?>) e).getOperator();
+                return e.getOperator();
             }
             return null;
         }
 
         protected StringBuilder appendTableAlice(StringBuilder sb, Attribute attribute, Integer index) {
-            if (index == null) {
-                System.out.println("???");
-
-            }
             EntityInformation<?> information = getEntityInformation(attribute.getJavaType());
             return sb.append(information.getTableName().charAt(0)).append("_j").append(index).append("_");
         }
@@ -408,8 +420,8 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
         protected void appendSelectedPath() {
-            List<Expression<?>> select = criteria.getSelection();
-            if (select == null || select.isEmpty()) {
+            Iterable<Expression<?>> select = criteria.getSelection();
+            if (select == null || !select.iterator().hasNext()) {
                 select = rootEntityInfo.getBasicAttributes()
                         .stream()
                         .map(i -> {
@@ -428,7 +440,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
 
         private void appendGroupBy() {
-            List<Expression<?>> groupBy = criteria.getGroupList();
+            Array<Expression<?>> groupBy = criteria.getGroupList();
             if (groupBy != null && !groupBy.isEmpty()) {
                 sql.append(" group by ");
                 boolean first = true;
@@ -445,7 +457,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
         protected void appendOrderBy() {
-            List<Order> orders = criteria.getOrderList();
+            Array<Order> orders = criteria.getOrderList();
             if (orders != null && !orders.isEmpty()) {
                 sql.append(" order by ");
                 boolean first = true;
@@ -494,7 +506,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
         Builder builder = new MysqlSqlBuilder(null, User.class).new Builder();
         Expression<?> test = new PathExpression<>("username");
-        for (Operator<?> operator : Operator.list()) {
+        for (Operator operator : Operator.values()) {
             test = test.then(operator, new PathExpression<>("username"), new PathExpression<>("username"));
         }
         builder.appendExpression(test);

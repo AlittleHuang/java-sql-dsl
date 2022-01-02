@@ -1,7 +1,7 @@
 package github.sql.dsl.query.suport.jdbc;
 
 import github.sql.dsl.query.suport.DbSets;
-import github.sql.dsl.query.suport.common.ResultsFactory;
+import github.sql.dsl.query.suport.ResultsFactory;
 import github.sql.dsl.query.suport.jdbc.sql.*;
 
 import javax.sql.DataSource;

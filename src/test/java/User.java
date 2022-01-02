@@ -1,4 +1,4 @@
-import github.sql.dsl.query.api.Entity;
+import github.sql.dsl.query.api.expression.path.Entity;
 import lombok.Data;
 
 import javax.persistence.JoinColumn;

@@ -1,6 +1,6 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import github.sql.dsl.query.api.PathExpression;
+import github.sql.dsl.query.api.expression.PathExpression;
 
 import java.util.List;
 

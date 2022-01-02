@@ -1,8 +1,12 @@
 package github.sql.dsl.query.suport.jpa;
 
-import github.sql.dsl.query.api.*;
-import github.sql.dsl.query.suport.common.model.CriteriaQuery;
-import github.sql.dsl.query.suport.common.model.Order;
+import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.query.ObjectsTypeQuery;
+import github.sql.dsl.query.api.query.ProjectionResults;
+import github.sql.dsl.query.api.query.TypeQuery;
+import github.sql.dsl.query.suport.CriteriaQuery;
+import github.sql.dsl.util.Array;
+import github.sql.dsl.query.suport.builder.component.Order;
 import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
 import lombok.var;
 
@@ -14,8 +18,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static github.sql.dsl.query.api.Operator.*;
 
 public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
     private final EntityManager entityManager;
@@ -85,7 +87,7 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
             buildWhere();
             builderOrderBy();
 
-            List<PathExpression<?>> list = criteria.getFetch();
+            Array<PathExpression<?>> list = criteria.getFetch();
             if (list != null) {
                 for (PathExpression<?> expression : list) {
                     Fetch<?, ?> fetch = null;
@@ -131,7 +133,7 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
 
         public List<Object[]> getObjectsList(int offset, int maxResult) {
             buildWhere();
-            List<Expression<?>> groupBy = criteria.getGroupList();
+            Array<Expression<?>> groupBy = criteria.getGroupList();
             if (groupBy != null && !groupBy.isEmpty()) {
                 query.groupBy(
                         groupBy.stream().map(this::toExpression).collect(Collectors.toList())
@@ -182,73 +184,77 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
                         .map(this::toExpression)
                         .collect(Collectors.toList());
                 javax.persistence.criteria.Expression<?> e0 = list.get(0);
-                Operator<?> operator = expression.getOperator();
-                if (NOT == operator) {
-                    return cb.not(e0.as(Boolean.class));
-                } else if (AND == operator) {
-                    return cb.and(e0.as(Boolean.class), list.get(1).as(Boolean.class));
-                } else if (OR == operator) {
-                    return cb.or(e0.as(Boolean.class), list.get(1).as(Boolean.class));
-                } else if (GT == operator) {
-                    return cb.gt(asNumber(e0), asNumber(list.get(1)));
-                } else if (EQ == operator) {
-                    return cb.equal(e0, list.get(1));
-                } else if (DIFF == operator) {
-                    return cb.notEqual(e0, list.get(1));
-                } else if (GE == operator) {
-                    return cb.ge(asNumber(e0), asNumber(list.get(1)));
-                } else if (LT == operator) {
-                    return cb.lt(asNumber(e0), asNumber(list.get(1)));
-                } else if (LE == operator) {
-                    return cb.le(asNumber(e0), asNumber(list.get(1)));
-                } else if (LIKE == operator) {
-                    return cb.like(e0.as(String.class), list.get(1).as(String.class));
-                } else if (LOWER == operator) {
-                    return cb.lower(e0.as(String.class));
-                } else if (UPPER == operator) {
-                    return cb.upper(e0.as(String.class));
-                } else if (SUBSTRING == operator) {
-                    if (list.size() == 2) {
-                        return cb.substring(e0.as(String.class), list.get(1).as(Integer.class));
-                    } else if (list.size() > 2) {
-                        return cb.substring(e0.as(String.class),
-                                list.get(1).as(Integer.class), list.get(2).as(Integer.class));
-                    } else {
-                        throw new IllegalArgumentException("argument length error");
-                    }
-                } else if (TRIM == operator) {
-                    return cb.trim(e0.as(String.class));
-                } else if (LENGTH == operator) {
-                    return cb.length(e0.as(String.class));
-                } else if (ADD == operator) {
-                    return cb.sum(asNumber(e0), asNumber(list.get(1)));
-                } else if (SUBTRACT == operator) {
-                    return cb.diff(asNumber(e0), asNumber(list.get(1)));
-                } else if (MULTIPLY == operator) {
-                    return cb.prod(asNumber(e0), asNumber(list.get(1)));
-                } else if (DIVIDE == operator) {
-                    return cb.quot(asNumber(e0), asNumber(list.get(1)));
-                } else if (MOD == operator) {
-                    return cb.mod(e0.as(Integer.class), list.get(1).as(Integer.class));
-                } else if (NULLIF == operator) {
-                    return cb.nullif(e0.as(Integer.class), list.get(1).as(Integer.class));
-                } else if (ISNULL == operator) {
-                    return cb.isNull(e0);
-                } else if (IN == operator) {
-                    if (list.size() == 1) {
-                        return cb.literal(false);
-                    }
-                    CriteriaBuilder.In<Object> in = cb.in(e0);
-                    for (int i = 1; i < list.size(); i++) {
-                        in = in.value(list.get(i));
-                    }
-                    return in;
-                } else if (BETWEEN == operator) {
-                    var as = e0.as(Comparable.class);
-                    //noinspection unchecked
-                    return cb.between(as, list.get(1).as(Comparable.class), list.get(2).as(Comparable.class));
-                } else {
-                    throw new UnsupportedOperationException("unknown operator " + operator);
+                Operator operator = expression.getOperator();
+                switch (operator) {
+                    case NOT:
+                        return cb.not(e0.as(Boolean.class));
+                    case AND:
+                        return cb.and(e0.as(Boolean.class), list.get(1).as(Boolean.class));
+                    case OR:
+                        return cb.or(e0.as(Boolean.class), list.get(1).as(Boolean.class));
+                    case GT:
+                        return cb.gt(asNumber(e0), asNumber(list.get(1)));
+                    case EQ:
+                        return cb.equal(e0, list.get(1));
+                    case DIFF:
+                        return cb.notEqual(e0, list.get(1));
+                    case GE:
+                        return cb.ge(asNumber(e0), asNumber(list.get(1)));
+                    case LT:
+                        return cb.lt(asNumber(e0), asNumber(list.get(1)));
+                    case LE:
+                        return cb.le(asNumber(e0), asNumber(list.get(1)));
+                    case LIKE:
+                        return cb.like(e0.as(String.class), list.get(1).as(String.class));
+                    case LOWER:
+                        return cb.lower(e0.as(String.class));
+                    case UPPER:
+                        return cb.upper(e0.as(String.class));
+                    case SUBSTRING:
+                        if (list.size() == 2) {
+                            return cb.substring(e0.as(String.class), list.get(1).as(Integer.class));
+                        } else if (list.size() > 2) {
+                            return cb.substring(e0.as(String.class),
+                                    list.get(1).as(Integer.class), list.get(2).as(Integer.class));
+                        } else {
+                            throw new IllegalArgumentException("argument length error");
+                        }
+                    case TRIM:
+                        return cb.trim(e0.as(String.class));
+                    case LENGTH:
+                        return cb.length(e0.as(String.class));
+                    case ADD:
+                        return cb.sum(asNumber(e0), asNumber(list.get(1)));
+                    case SUBTRACT:
+                        return cb.diff(asNumber(e0), asNumber(list.get(1)));
+                    case MULTIPLY:
+                        return cb.prod(asNumber(e0), asNumber(list.get(1)));
+                    case DIVIDE:
+                        return cb.quot(asNumber(e0), asNumber(list.get(1)));
+                    case MOD:
+                        return cb.mod(e0.as(Integer.class), list.get(1).as(Integer.class));
+                    case NULLIF:
+                        return cb.nullif(e0, list.get(1));
+                    case ISNULL:
+                        return cb.isNull(e0);
+                    case IN:
+                        if (list.size() == 1) {
+                            return cb.literal(false);
+                        }
+                        CriteriaBuilder.In<Object> in = cb.in(e0);
+                        for (int i = 1; i < list.size(); i++) {
+                            in = in.value(list.get(i));
+                        }
+                        return in;
+                    case BETWEEN:
+                        //noinspection unchecked
+                        return cb.between(
+                                (javax.persistence.criteria.Expression<? extends Comparable<Object>>) e0,
+                                (javax.persistence.criteria.Expression<? extends Comparable<Object>>) list.get(1),
+                                (javax.persistence.criteria.Expression<? extends Comparable<Object>>) list.get(2)
+                        );
+                    default:
+                        throw new UnsupportedOperationException("unknown operator " + operator);
                 }
             } else {
                 throw new UnsupportedOperationException("unknown expression type " + expression.getClass());
@@ -273,7 +279,7 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
         }
 
         protected void builderOrderBy() {
-            List<Order> orderList = criteria.getOrderList();
+            Array<Order> orderList = criteria.getOrderList();
             if (orderList != null && !orderList.isEmpty()) {
                 query.orderBy(
                         orderList.stream()
@@ -303,7 +309,7 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
 
         System.out.println(Integer.class.isAssignableFrom(Number.class));
 
-        for (Operator<?> operator : Operator.list()) {
+        for (Operator operator : Operator.values()) {
             System.out.println("else if(\"" + operator.toString().toUpperCase() + "\".equals(operator.getSign())){\n\n}");
         }
     }

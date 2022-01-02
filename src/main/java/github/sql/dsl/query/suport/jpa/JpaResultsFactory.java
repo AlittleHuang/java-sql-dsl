@@ -1,9 +1,9 @@
 package github.sql.dsl.query.suport.jpa;
 
-import github.sql.dsl.query.api.ObjectsTypeQuery;
-import github.sql.dsl.query.api.TypeQuery;
-import github.sql.dsl.query.suport.common.ResultsFactory;
-import github.sql.dsl.query.suport.common.model.CriteriaQuery;
+import github.sql.dsl.query.api.query.ObjectsTypeQuery;
+import github.sql.dsl.query.api.query.TypeQuery;
+import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.CriteriaQuery;
 
 import javax.persistence.EntityManager;
 
