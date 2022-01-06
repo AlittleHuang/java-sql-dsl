@@ -2,8 +2,10 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import github.sql.dsl.query.DbSet;
 import github.sql.dsl.query.api.Query;
 import github.sql.dsl.query.suport.DbSets;
+import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -49,6 +51,16 @@ public class Main {
                         .not()
                 )
                 .getResultList();
+
+        List<Object[]> objects = from
+                .select(User::getId, AggregateFunction.SUM)
+                .select(User::getId,AggregateFunction.AVG)
+                .select(User::getId,AggregateFunction.COUNT)
+                .getObjectsList();
+
+        for (Object[] object : objects) {
+            System.out.println(Arrays.toString(object));
+        }
 
         // List<User> resultList = from.getResultList();
         // System.out.println(resultList.size());

@@ -1,5 +1,6 @@
 package github.sql.dsl.query.suport.builder.query;
 
+import github.sql.dsl.query.suport.builder.component.Selection;
 import github.sql.dsl.util.Array;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.PathExpression;
@@ -14,13 +15,13 @@ public class CriteriaQueryImpl implements CriteriaQuery {
     private final Expression<Boolean> restriction;
     private final Array<Order> orderList;
     private final Array<Expression<?>> groupList;
-    private final Array<Expression<?>> selection;
+    private final Array<Selection<?>> selection;
     private final Array<PathExpression<?>> fetch;
 
     public CriteriaQueryImpl(Expression<Boolean> restriction,
                              Array<Order> orderList,
                              Array<Expression<?>> groupList,
-                             Array<Expression<?>> selection,
+                             Array<Selection<?>> selection,
                              Array<PathExpression<?>> fetch) {
         this.restriction = restriction;
         this.orderList = orderList;
@@ -39,8 +40,8 @@ public class CriteriaQueryImpl implements CriteriaQuery {
                 criteriaQuery.getRestriction(),
                 criteriaQuery.getOrderList(),
                 criteriaQuery.getGroupList(),
-                criteriaQuery.getSelection(),
-                criteriaQuery.getFetch()
+                criteriaQuery.getSelectionList(),
+                criteriaQuery.getFetchList()
         );
     }
 
@@ -56,7 +57,7 @@ public class CriteriaQueryImpl implements CriteriaQuery {
         return new CriteriaQueryImpl(restriction, orderList, groupList, selection, fetch);
     }
 
-    public CriteriaQueryImpl updateSelection(Array<Expression<?>> selection) {
+    public CriteriaQueryImpl updateSelection(Array<Selection<?>> selection) {
         return new CriteriaQueryImpl(restriction, orderList, groupList, selection, fetch);
     }
 
@@ -80,12 +81,12 @@ public class CriteriaQueryImpl implements CriteriaQuery {
     }
 
     @Override
-    public Array<Expression<?>> getSelection() {
+    public Array<Selection<?>> getSelectionList() {
         return selection;
     }
 
     @Override
-    public Array<PathExpression<?>> getFetch() {
+    public Array<PathExpression<?>> getFetchList() {
         return fetch;
     }
 

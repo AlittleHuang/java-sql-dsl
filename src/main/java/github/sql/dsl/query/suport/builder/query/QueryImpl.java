@@ -1,15 +1,15 @@
 package github.sql.dsl.query.suport.builder.query;
 
-import github.sql.dsl.query.api.builder.Fetchable;
-import github.sql.dsl.query.api.builder.Groupable;
-import github.sql.dsl.query.api.builder.Selectable;
-import github.sql.dsl.query.api.builder.Sortable;
+import github.sql.dsl.query.api.builder.*;
+import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
+import github.sql.dsl.query.api.query.AggregateObjectsQuery;
 import github.sql.dsl.query.api.query.EntityQuery;
 import github.sql.dsl.query.api.query.ObjectsQuery;
 import github.sql.dsl.query.api.Query;
 import github.sql.dsl.query.api.query.WhereBuilder;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +47,12 @@ public class QueryImpl<T> extends AbstractResult<T> implements Query<T> {
     @Override
     protected @NotNull Selectable<T, ObjectsQuery<T>> getSelectable() {
         return super.getSelectable();
+    }
+
+    @Delegate
+    @Override
+    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+        return super.getAggregateSelectable();
     }
 
 }

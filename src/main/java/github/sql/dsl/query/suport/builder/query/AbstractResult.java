@@ -1,13 +1,7 @@
 package github.sql.dsl.query.suport.builder.query;
 
-import github.sql.dsl.query.api.query.ObjectsTypeQuery;
-import github.sql.dsl.query.api.query.ProjectionResults;
-import github.sql.dsl.query.api.query.TypeQuery;
 import github.sql.dsl.query.api.builder.*;
-import github.sql.dsl.query.api.query.EntityQuery;
-import github.sql.dsl.query.api.query.ObjectsQuery;
-import github.sql.dsl.query.api.query.WhereBuilder;
-import github.sql.dsl.query.api.query.Whereable;
+import github.sql.dsl.query.api.query.*;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.ResultsFactory;
 import github.sql.dsl.query.suport.builder.criteria.*;
@@ -62,7 +56,7 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
 
     @NotNull
     protected Selectable<T, ObjectsQuery<T>> getSelectable() {
-        return new SelectableImpl<>(this.criteriaQuery.getSelection(), next ->
+        return new SelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
                 new ObjectsQueryImpl<>(this.resultsFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
@@ -82,7 +76,7 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
 
     @NotNull
     protected Fetchable<T, EntityQuery<T>> getFetchable() {
-        return new FetchableImpl<>(criteriaQuery.getFetch(),
+        return new FetchableImpl<>(criteriaQuery.getFetchList(),
                 next -> new EntityQueryImpl<>(resultsFactory, entityType, criteriaQuery.updateFetch(next)));
     }
 
@@ -132,4 +126,11 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
             return new EntityQueryImpl<>(resultsFactory, entityType, updated);
         });
     }
+
+    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+        return new AggregateSelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
+                new AggregateObjectsQueryImpl<>(this.resultsFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
+    }
+
+
 }

@@ -3,6 +3,7 @@ package github.sql.dsl.query.suport.builder.component;
 import github.sql.dsl.query.api.expression.BooleanExpression;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
+import github.sql.dsl.query.api.expression.OperatorExpressionImpl;
 
 import java.util.List;
 

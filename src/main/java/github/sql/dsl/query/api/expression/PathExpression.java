@@ -1,5 +1,7 @@
 package github.sql.dsl.query.api.expression;
 
+import github.sql.dsl.query.suport.builder.component.AggregateFunction;
+import github.sql.dsl.query.suport.builder.component.Selection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -8,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class PathExpression<T> implements Expression<T>, Iterable<String> {
+public class PathExpression<T> implements Selection<T>, Iterable<String> {
 
     protected final String[] path;
     protected int length;
@@ -155,5 +157,10 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
 
     public List<? extends Expression<?>> getExpressions() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public AggregateFunction getAggregateFunction() {
+        return null;
     }
 }

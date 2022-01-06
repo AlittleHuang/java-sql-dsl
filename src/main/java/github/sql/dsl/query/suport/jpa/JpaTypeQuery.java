@@ -1,13 +1,17 @@
 package github.sql.dsl.query.suport.jpa;
 
-import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.expression.Expression;
+import github.sql.dsl.query.api.expression.Operator;
+import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.api.query.ObjectsTypeQuery;
 import github.sql.dsl.query.api.query.ProjectionResults;
 import github.sql.dsl.query.api.query.TypeQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.util.Array;
+import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import github.sql.dsl.query.suport.builder.component.Order;
+import github.sql.dsl.query.suport.builder.component.Selection;
 import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
+import github.sql.dsl.util.Array;
 import lombok.var;
 
 import javax.persistence.EntityManager;
@@ -87,7 +91,7 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
             buildWhere();
             builderOrderBy();
 
-            Array<PathExpression<?>> list = criteria.getFetch();
+            Array<PathExpression<?>> list = criteria.getFetchList();
             if (list != null) {
                 for (PathExpression<?> expression : list) {
                     Fetch<?, ?> fetch = null;
@@ -141,7 +145,27 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
             }
             builderOrderBy();
             javax.persistence.criteria.CriteriaQuery<R> select = query.multiselect(
-                    criteria.getSelection().stream().map(this::toExpression).collect(Collectors.toList())
+                    criteria.getSelectionList().stream()
+                            .map((Selection<?> selection) -> {
+                                javax.persistence.criteria.Expression<?> e = toExpression(selection);
+                                AggregateFunction function = selection.getAggregateFunction();
+                                if (function != null) {
+                                    switch (function) {
+                                        case MIN:
+                                            return cb.min(asNumber(e));
+                                        case MAX:
+                                            return cb.max(asNumber(e));
+                                        case COUNT:
+                                            return cb.count(e);
+                                        case AVG:
+                                            return cb.avg(asNumber(e));
+                                        case SUM:
+                                            return cb.sum(asNumber(e));
+                                    }
+                                }
+                                return e;
+                            })
+                            .collect(Collectors.toList())
             );
 
             TypedQuery<?> typedQuery = entityManager.createQuery(select);

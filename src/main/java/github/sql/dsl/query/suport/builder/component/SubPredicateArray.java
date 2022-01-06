@@ -4,6 +4,7 @@ import github.sql.dsl.query.api.expression.ConstantExpression;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
 import github.sql.dsl.query.api.expression.PathExpression;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -119,7 +120,7 @@ public class SubPredicateArray implements Expression<Boolean> {
     }
 
     @Override
-    public <X> Expression<X> then(Operator operator, Collection<?> args) {
+    public <X> Expression<X> then(Operator operator, @NotNull Collection<?> args) {
         if (operator == Operator.AND || operator == Operator.OR) {
             Object next = args.iterator().next();
             //noinspection unchecked

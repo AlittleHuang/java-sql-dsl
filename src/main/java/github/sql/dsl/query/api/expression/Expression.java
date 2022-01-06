@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.expression;
 
-import github.sql.dsl.query.suport.builder.component.OperatorExpressionImpl;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +24,7 @@ public interface Expression<T> {
         return thenOperator(this, operator, list);
     }
 
-    default <X> Expression<X> then(Operator operator, Collection<?> args) {
+    default <X> Expression<X> then(Operator operator, @NotNull Collection<?> args) {
         List<? extends Expression<?>> list = args.stream().map(Expression::of)
                 .collect(Collectors.toList());
         return thenOperator(this, operator, list);

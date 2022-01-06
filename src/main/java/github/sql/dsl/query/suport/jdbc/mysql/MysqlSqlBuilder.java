@@ -1,15 +1,20 @@
 package github.sql.dsl.query.suport.jdbc.mysql;
 
-import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.expression.Expression;
+import github.sql.dsl.query.api.expression.Operator;
+import github.sql.dsl.query.api.expression.OperatorExpression;
+import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.api.expression.path.Entity;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.util.Array;
+import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import github.sql.dsl.query.suport.builder.component.Order;
+import github.sql.dsl.query.suport.builder.component.Selection;
 import github.sql.dsl.query.suport.jdbc.meta.Attribute;
 import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
 import github.sql.dsl.query.suport.jdbc.sql.EntityQueryPreparedSql;
 import github.sql.dsl.query.suport.jdbc.sql.PreparedSql;
 import github.sql.dsl.query.suport.jdbc.sql.PreparedSqlBuilder;
+import github.sql.dsl.util.Array;
 import github.sql.dsl.util.Assert;
 import lombok.Data;
 
@@ -71,8 +76,8 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
         protected void appendFetchPath() {
-            if (criteria.getFetch() != null) {
-                for (PathExpression<?> fetch : criteria.getFetch()) {
+            if (criteria.getFetchList() != null) {
+                for (PathExpression<?> fetch : criteria.getFetchList()) {
                     Attribute attribute = getAttribute(fetch);
                     EntityInformation<?> entityInfo = getEntityInformation(attribute);
                     for (Attribute basicAttribute : entityInfo.getBasicAttributes()) {
@@ -420,7 +425,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
         protected void appendSelectedPath() {
-            Iterable<Expression<?>> select = criteria.getSelection();
+            Iterable<Selection<?>> select = criteria.getSelectionList();
             if (select == null || !select.iterator().hasNext()) {
                 select = rootEntityInfo.getBasicAttributes()
                         .stream()
@@ -431,9 +436,18 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                         .collect(Collectors.toList());
             }
             String join = "";
-            for (Expression<?> expression : select) {
+            for (Selection<?> selection : select) {
                 sql.append(join);
-                appendExpression(expression);
+                AggregateFunction function = selection.getAggregateFunction();
+                if (function != null) {
+                    appendBlank()
+                            .append(function.name().toLowerCase())
+                            .append('(');
+                    appendExpression(selection);
+                    sql.append(')');
+                } else {
+                    appendExpression(selection);
+                }
                 join = ",";
             }
         }

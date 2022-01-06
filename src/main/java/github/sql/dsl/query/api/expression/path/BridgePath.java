@@ -3,6 +3,8 @@ package github.sql.dsl.query.api.expression.path;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.api.expression.path.bridge.*;
+import github.sql.dsl.query.suport.builder.component.AggregateFunction;
+import github.sql.dsl.query.suport.builder.component.Selection;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -12,7 +14,7 @@ import java.util.Objects;
 
 public class BridgePath<T, R>
         extends PathExpression<R>
-        implements AttributeBridge<T, R> {
+        implements AttributeBridge<T, R>, Selection<R> {
 
     public BridgePath(String... path) {
         super(path);
@@ -112,4 +114,8 @@ public class BridgePath<T, R>
         return path;
     }
 
+    @Override
+    public AggregateFunction getAggregateFunction() {
+        return null;
+    }
 }

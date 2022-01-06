@@ -1,8 +1,4 @@
-package github.sql.dsl.query.suport.builder.component;
-
-import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.OperatorExpression;
+package github.sql.dsl.query.api.expression;
 
 import java.util.Collections;
 import java.util.List;
