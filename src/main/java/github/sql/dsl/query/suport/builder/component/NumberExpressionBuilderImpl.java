@@ -3,7 +3,6 @@ package github.sql.dsl.query.suport.builder.component;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.NumberExpressionBuilder;
 import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.OperatorExpression;
 import github.sql.dsl.query.api.expression.path.bridge.NumberAttributeBridge;
 
 import java.util.function.Function;

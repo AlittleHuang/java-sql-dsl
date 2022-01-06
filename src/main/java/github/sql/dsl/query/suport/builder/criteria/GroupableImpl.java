@@ -1,11 +1,11 @@
 package github.sql.dsl.query.suport.builder.criteria;
 
-import github.sql.dsl.util.Array;
-import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.builder.Groupable;
-import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
+import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.path.BridgePath;
+import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
+import github.sql.dsl.util.Array;
 
 import java.util.List;
 import java.util.function.Function;

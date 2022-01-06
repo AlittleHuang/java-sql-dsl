@@ -2,7 +2,6 @@ package github.sql.dsl.query.suport;
 
 import github.sql.dsl.query.DbSet;
 import github.sql.dsl.query.api.Query;
-import github.sql.dsl.query.suport.ResultsFactory;
 import github.sql.dsl.query.suport.builder.query.QueryImpl;
 import github.sql.dsl.query.suport.jdbc.JdbcDbSet;
 import github.sql.dsl.query.suport.jdbc.mysql.MysqlSqlBuilder;

@@ -1,15 +1,15 @@
 package github.sql.dsl.query.suport.builder.criteria;
 
+import github.sql.dsl.query.api.builder.Sortable;
+import github.sql.dsl.query.api.expression.Expression;
+import github.sql.dsl.query.api.expression.path.BridgePath;
 import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
 import github.sql.dsl.query.api.expression.path.bridge.ComparableAttributeBridge;
 import github.sql.dsl.query.api.expression.path.bridge.NumberAttributeBridge;
 import github.sql.dsl.query.api.expression.path.bridge.StringAttributeBridge;
-import github.sql.dsl.util.Array;
-import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.builder.Sortable;
-import github.sql.dsl.query.api.expression.path.BridgePath;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
 import github.sql.dsl.query.suport.builder.component.Order;
+import github.sql.dsl.util.Array;
 
 import java.util.Date;
 import java.util.function.BiFunction;

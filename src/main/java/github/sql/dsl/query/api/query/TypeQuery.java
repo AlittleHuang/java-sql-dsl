@@ -1,6 +1,5 @@
 package github.sql.dsl.query.api.query;
 
-import github.sql.dsl.query.api.query.ProjectionResults;
 import github.sql.dsl.util.Assert;
 
 import java.util.List;

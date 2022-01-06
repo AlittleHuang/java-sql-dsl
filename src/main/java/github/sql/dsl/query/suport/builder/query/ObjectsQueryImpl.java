@@ -3,8 +3,8 @@ package github.sql.dsl.query.suport.builder.query;
 import github.sql.dsl.query.api.builder.Groupable;
 import github.sql.dsl.query.api.builder.Selectable;
 import github.sql.dsl.query.api.builder.Sortable;
-import github.sql.dsl.query.api.query.Whereable;
 import github.sql.dsl.query.api.query.ObjectsQuery;
+import github.sql.dsl.query.api.query.Whereable;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.ResultsFactory;
 import lombok.experimental.Delegate;
@@ -39,7 +39,6 @@ public class ObjectsQueryImpl<T> extends AbstractResult<T> implements ObjectsQue
     protected @NotNull Selectable<T, ObjectsQuery<T>> getSelectable() {
         return super.getSelectable();
     }
-
 
 
 }

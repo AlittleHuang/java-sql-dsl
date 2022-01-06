@@ -1,10 +1,10 @@
 package github.sql.dsl.query.suport;
 
-import github.sql.dsl.query.suport.builder.component.Selection;
-import github.sql.dsl.util.Array;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.suport.builder.component.Order;
+import github.sql.dsl.query.suport.builder.component.Selection;
+import github.sql.dsl.util.Array;
 
 public interface CriteriaQuery {
 

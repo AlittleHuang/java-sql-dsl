@@ -1,15 +1,13 @@
 package github.sql.dsl.query.suport.builder.query;
 
+import github.sql.dsl.query.api.Query;
 import github.sql.dsl.query.api.builder.*;
-import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
 import github.sql.dsl.query.api.query.AggregateObjectsQuery;
 import github.sql.dsl.query.api.query.EntityQuery;
 import github.sql.dsl.query.api.query.ObjectsQuery;
-import github.sql.dsl.query.api.Query;
 import github.sql.dsl.query.api.query.WhereBuilder;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.ResultsFactory;
-import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 

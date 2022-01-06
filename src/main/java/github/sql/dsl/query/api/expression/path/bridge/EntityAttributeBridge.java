@@ -1,6 +1,5 @@
 package github.sql.dsl.query.api.expression.path.bridge;
 
-import github.sql.dsl.query.api.expression.path.Entity;
 import github.sql.dsl.query.api.expression.path.*;
 
 import java.util.Date;

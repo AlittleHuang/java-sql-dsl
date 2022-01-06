@@ -1,7 +1,7 @@
 package github.sql.dsl.query.api;
 
-import github.sql.dsl.query.api.query.*;
 import github.sql.dsl.query.api.builder.*;
+import github.sql.dsl.query.api.query.*;
 
 public interface Query<T> extends
         Whereable<T, WhereBuilder<T>>,

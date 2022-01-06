@@ -1,9 +1,9 @@
 package github.sql.dsl.query.suport.builder.component;
 
-import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.Operator;
 import github.sql.dsl.query.api.expression.BooleanExpression;
 import github.sql.dsl.query.api.expression.ConstantExpression;
+import github.sql.dsl.query.api.expression.Expression;
+import github.sql.dsl.query.api.expression.Operator;
 
 public class BooleanConstantExpression extends ConstantExpression<Boolean> implements BooleanExpression {
 

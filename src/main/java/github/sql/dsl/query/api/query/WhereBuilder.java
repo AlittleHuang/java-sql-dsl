@@ -11,5 +11,4 @@ public interface WhereBuilder<T> extends
         TypeQuery<T> {
 
 
-
 }

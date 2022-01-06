@@ -1,6 +1,9 @@
 package github.sql.dsl.query.api.expression.path;
 
-import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.expression.ComparableExpressionBuilder;
+import github.sql.dsl.query.api.expression.ExpressionBuilder;
+import github.sql.dsl.query.api.expression.NumberExpressionBuilder;
+import github.sql.dsl.query.api.expression.StringExpressionBuilder;
 import github.sql.dsl.query.api.expression.path.bridge.*;
 
 import java.util.Date;
