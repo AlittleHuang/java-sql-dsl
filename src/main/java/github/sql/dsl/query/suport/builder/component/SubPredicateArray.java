@@ -131,19 +131,5 @@ public class SubPredicateArray implements Expression<Boolean> {
         return Expression.super.then(operator, args);
     }
 
-    // @Override
-    // public Expression<Boolean> then(Operator operator, Collection<?> args) {
-    //     if (operator == Operator.AND || operator == Operator.OR) {
-    //         Object next = args.iterator().next();
-    //         //noinspection unchecked
-    //         Expression<Boolean> of = (Expression<Boolean>) Expression.of(next);
-    //         return new SubPredicateArray(values.concat(new SubPredicate(of, operator, false)));
-    //     }
-    //     return Expression.super.then(operator, args);
-    // }
-    //
-    // @Override
-    // public Expression<Boolean> then(Operator operator, Object... args) {
-    //     return then(operator, Arrays.asList(args));
-    // }
+
 }

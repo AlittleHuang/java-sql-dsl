@@ -2,8 +2,6 @@ package github.sql.dsl.query.suport.builder.component;
 
 import github.sql.dsl.query.api.expression.BooleanExpression;
 import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.SubExpression;
 import github.sql.dsl.query.api.query.SubPredicateCombinable;
 import github.sql.dsl.query.suport.builder.criteria.PredicateCombinableImpl;
 
@@ -57,36 +55,6 @@ public class SubPredicateCombinableImpl<T, NEXT>
                 return new BooleanOperatorExpression(expression.getExpressions(), expression.getOperator());
         }
         throw new UnsupportedOperationException();
-    }
-
-
-    private static class SubExpressionImpl implements SubExpression<Boolean> {
-
-        private final Expression<Boolean> value;
-        private final Operator operator;
-        private final Boolean negate;
-
-        public SubExpressionImpl(Expression<Boolean> value, Operator operator, Boolean negate) {
-            this.value = value;
-            this.operator = operator;
-            this.negate = negate;
-        }
-
-        @Override
-        public Expression<Boolean> getValue() {
-            return value;
-        }
-
-        @Override
-        public Boolean isNegate() {
-            return negate;
-        }
-
-        @Override
-        public Operator getOperator() {
-            return operator;
-        }
-
     }
 
 }

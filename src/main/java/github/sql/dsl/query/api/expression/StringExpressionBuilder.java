@@ -10,9 +10,6 @@ public interface StringExpressionBuilder<T, V> extends ComparableExpressionBuild
 
     V contains(String value);
 
-    @Override
-    StringExpressionBuilder<T, V> nullIf(String value);
-
     StringExpressionBuilder<T, V> lower();
 
     StringExpressionBuilder<T, V> upper();
