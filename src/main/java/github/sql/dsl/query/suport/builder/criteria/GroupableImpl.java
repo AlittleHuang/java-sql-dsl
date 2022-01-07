@@ -2,8 +2,8 @@ package github.sql.dsl.query.suport.builder.criteria;
 
 import github.sql.dsl.query.api.builder.Groupable;
 import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.path.BridgePath;
-import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
+import github.sql.dsl.query.api.expression.path.AttributePath;
+import github.sql.dsl.query.api.expression.path.bridge.Attribute;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
 import github.sql.dsl.util.Array;
 
@@ -22,15 +22,15 @@ public class GroupableImpl<T, NEXT> implements Groupable<T, NEXT> {
     }
 
     @Override
-    public NEXT groupBy(AttributeBridge<T, ?> attribute) {
-        BridgePath<T, ?> path = BridgePath.exchange(attribute);
+    public NEXT groupBy(Attribute<T, ?> attribute) {
+        AttributePath<T, ?> path = AttributePath.exchange(attribute);
         values = values.concat(path);
         return mapper.apply(values);
     }
 
     @Override
-    public NEXT groupBy(List<AttributeBridge<T, ?>> attributes) {
-        List<? extends BridgePath<T, ?>> list = attributes.stream().map(BridgePath::exchange)
+    public NEXT groupBy(List<Attribute<T, ?>> attributes) {
+        List<? extends AttributePath<T, ?>> list = attributes.stream().map(AttributePath::exchange)
                 .collect(Collectors.toList());
         values = values.concat(list);
         return mapper.apply(values);

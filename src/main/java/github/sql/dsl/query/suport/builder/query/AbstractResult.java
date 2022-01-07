@@ -3,7 +3,7 @@ package github.sql.dsl.query.suport.builder.query;
 import github.sql.dsl.query.api.builder.*;
 import github.sql.dsl.query.api.query.*;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 import github.sql.dsl.query.suport.builder.criteria.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,22 +11,22 @@ import java.util.List;
 
 public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuery {
 
-    protected final ResultsFactory resultsFactory;
+    protected final TypeQueryFactory typeQueryFactory;
     protected final Class<T> entityType;
     protected final CriteriaQueryImpl criteriaQuery;
 
-    public AbstractResult(ResultsFactory resultsFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
-        this.resultsFactory = resultsFactory;
+    public AbstractResult(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+        this.typeQueryFactory = typeQueryFactory;
         this.entityType = entityType;
         this.criteriaQuery = CriteriaQueryImpl.from(criteriaQuery);
     }
 
     protected ObjectsTypeQuery getObjectsTypeQuery() {
-        return resultsFactory.arrayResults(criteriaQuery, entityType);
+        return typeQueryFactory.arrayResults(criteriaQuery, entityType);
     }
 
     protected TypeQuery<T> getTypeQuery() {
-        return resultsFactory.results(criteriaQuery, entityType);
+        return typeQueryFactory.results(criteriaQuery, entityType);
     }
 
     @Override
@@ -49,21 +49,16 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
         return getTypeQuery().exist(offset);
     }
 
-    @Override
-    public <U> ProjectionResults<T> projection(Class<U> projectionType) {
-        return getTypeQuery().projection(projectionType);
-    }
-
     @NotNull
     protected Selectable<T, ObjectsQuery<T>> getSelectable() {
         return new SelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
-                new ObjectsQueryImpl<>(this.resultsFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
+                new ObjectsQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
     @NotNull
     protected Groupable<T, ObjectsQuery<T>> getGroupable() {
         return new GroupableImpl<>(criteriaQuery.getGroupList(), next -> new ObjectsQueryImpl<>(
-                this.resultsFactory,
+                this.typeQueryFactory,
                 this.entityType,
                 this.criteriaQuery.updateGroupList(next)));
     }
@@ -77,7 +72,7 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
     @NotNull
     protected Fetchable<T, EntityQuery<T>> getFetchable() {
         return new FetchableImpl<>(criteriaQuery.getFetchList(),
-                next -> new EntityQueryImpl<>(resultsFactory, entityType, criteriaQuery.updateFetch(next)));
+                next -> new EntityQueryImpl<>(typeQueryFactory, entityType, criteriaQuery.updateFetch(next)));
     }
 
     @NotNull
@@ -88,19 +83,19 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
     @NotNull
     protected PredicateCombinable<T, EntityQuery<T>> getRestrictionBuilder() {
         return new PredicateCombinableImpl<>(criteriaQuery.getRestriction(),
-                next -> new EntityQueryImpl<>(resultsFactory, entityType, criteriaQuery.updateRestriction(next)));
+                next -> new EntityQueryImpl<>(typeQueryFactory, entityType, criteriaQuery.updateRestriction(next)));
     }
 
 
     protected WhereBuilder<T> whereBuilder(CriteriaQuery criteriaQuery) {
-        return new WhereBuilderImpl<>(this.resultsFactory, this.entityType, criteriaQuery);
+        return new WhereBuilderImpl<>(this.typeQueryFactory, this.entityType, criteriaQuery);
     }
 
     @NotNull
     protected Whereable<T, ObjectsQuery<T>> getObjectsWhereable() {
         return new WhereableImpl<>(next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
-            return new ObjectsQueryImpl<>(resultsFactory, entityType, updated);
+            return new ObjectsQueryImpl<>(typeQueryFactory, entityType, updated);
         });
 
     }
@@ -109,27 +104,27 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
     protected Sortable<T, ObjectsQuery<T>> getObjectsSortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
-            return new ObjectsQueryImpl<>(resultsFactory, entityType, updated);
+            return new ObjectsQueryImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
     protected @NotNull PredicateCombinable<T, WhereBuilder<T>> getWereBuilderRestrictionBuilder() {
         return new PredicateCombinableImpl<>(criteriaQuery.getRestriction(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
-            return new WhereBuilderImpl<>(resultsFactory, entityType, updated);
+            return new WhereBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
     protected @NotNull Sortable<T, EntityQuery<T>> getEntityQuerySortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
-            return new EntityQueryImpl<>(resultsFactory, entityType, updated);
+            return new EntityQueryImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
     protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
         return new AggregateSelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
-                new AggregateObjectsQueryImpl<>(this.resultsFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
+                new AggregateObjectsQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
 

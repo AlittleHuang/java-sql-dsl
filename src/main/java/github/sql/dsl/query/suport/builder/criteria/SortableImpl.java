@@ -2,11 +2,11 @@ package github.sql.dsl.query.suport.builder.criteria;
 
 import github.sql.dsl.query.api.builder.Sortable;
 import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.path.BridgePath;
-import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
-import github.sql.dsl.query.api.expression.path.bridge.ComparableAttributeBridge;
-import github.sql.dsl.query.api.expression.path.bridge.NumberAttributeBridge;
-import github.sql.dsl.query.api.expression.path.bridge.StringAttributeBridge;
+import github.sql.dsl.query.api.expression.path.AttributePath;
+import github.sql.dsl.query.api.expression.path.bridge.Attribute;
+import github.sql.dsl.query.api.expression.path.bridge.ComparableAttribute;
+import github.sql.dsl.query.api.expression.path.bridge.NumberAttribute;
+import github.sql.dsl.query.api.expression.path.bridge.StringAttribute;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
 import github.sql.dsl.query.suport.builder.component.Order;
 import github.sql.dsl.util.Array;
@@ -27,22 +27,22 @@ public class SortableImpl<T, NEXT> implements Sortable<T, NEXT> {
     }
 
     @Override
-    public <U extends Number> Sort<NEXT> orderBy(NumberAttributeBridge<T, U> attribute) {
-        return orderBy((AttributeBridge<?, ?>) attribute);
+    public <U extends Number> Sort<NEXT> orderBy(NumberAttribute<T, U> attribute) {
+        return orderBy((Attribute<?, ?>) attribute);
     }
 
     @Override
-    public <U extends Date> Sort<NEXT> orderBy(ComparableAttributeBridge<T, U> attribute) {
-        return orderBy((AttributeBridge<?, ?>) attribute);
+    public <U extends Date> Sort<NEXT> orderBy(ComparableAttribute<T, U> attribute) {
+        return orderBy((Attribute<?, ?>) attribute);
     }
 
     @Override
-    public Sort<NEXT> orderBy(StringAttributeBridge<T> attribute) {
-        return orderBy((AttributeBridge<?, ?>) attribute);
+    public Sort<NEXT> orderBy(StringAttribute<T> attribute) {
+        return orderBy((Attribute<?, ?>) attribute);
     }
 
-    public Sort<NEXT> orderBy(AttributeBridge<?, ?> attribute) {
-        return new SortImpl<>(BridgePath.exchange(attribute), ((expression, desc) -> {
+    public Sort<NEXT> orderBy(Attribute<?, ?> attribute) {
+        return new SortImpl<>(AttributePath.exchange(attribute), ((expression, desc) -> {
             Order order = new Order(expression, desc);
             Array<Order> orders = values == null ? new ConstantList<>(order) : values.concat(order);
             return mapper.apply(orders);

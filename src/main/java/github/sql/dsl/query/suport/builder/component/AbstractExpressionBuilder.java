@@ -2,7 +2,7 @@ package github.sql.dsl.query.suport.builder.component;
 
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.path.bridge.AttributeBridge;
+import github.sql.dsl.query.api.expression.path.bridge.Attribute;
 import lombok.Getter;
 
 import java.util.Collection;
@@ -90,23 +90,23 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
         return next(Operator.LT, value);
     }
 
-    public NEXT ge(AttributeBridge<T, U> value) {
+    public NEXT ge(Attribute<T, U> value) {
         return next(Operator.GE, value);
     }
 
-    public NEXT gt(AttributeBridge<T, U> value) {
+    public NEXT gt(Attribute<T, U> value) {
         return next(Operator.GT, value);
     }
 
-    public NEXT le(AttributeBridge<T, U> value) {
+    public NEXT le(Attribute<T, U> value) {
         return next(Operator.LE, value);
     }
 
-    public NEXT between(AttributeBridge<T, U> a, AttributeBridge<T, U> b) {
+    public NEXT between(Attribute<T, U> a, Attribute<T, U> b) {
         return next(Operator.BETWEEN, a, b);
     }
 
-    public NEXT lt(AttributeBridge<T, U> value) {
+    public NEXT lt(Attribute<T, U> value) {
         return next(Operator.LT, value);
     }
 

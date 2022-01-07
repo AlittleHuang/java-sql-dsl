@@ -5,13 +5,13 @@ import github.sql.dsl.query.api.query.EntityQuery;
 import github.sql.dsl.query.api.query.ObjectsQuery;
 import github.sql.dsl.query.api.query.WhereBuilder;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class WhereBuilderImpl<T> extends AbstractResult<T> implements WhereBuilder<T> {
-    public WhereBuilderImpl(ResultsFactory resultsFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
-        super(resultsFactory, entityType, criteriaQuery);
+    public WhereBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+        super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate

@@ -12,59 +12,59 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;
 
-public class BridgePath<T, R>
+public class AttributePath<T, R>
         extends PathExpression<R>
-        implements AttributeBridge<T, R>, Selection<R> {
+        implements Attribute<T, R>, Selection<R> {
 
-    public BridgePath(String... path) {
+    public AttributePath(String... path) {
         super(path);
     }
 
-    public static Expression<?> asExpression(AttributeBridge<?, ?> attribute) {
+    public static Expression<?> asExpression(Attribute<?, ?> attribute) {
         return exchange(attribute);
     }
 
-    public static <T, R extends Entity> EntityPath<T, R> exchange(EntityAttributeBridge<T, R> attribute) {
+    public static <T, R extends Entity> EntityPath<T, R> exchange(EntityAttribute<T, R> attribute) {
         if (attribute instanceof EntityPath) {
             return (EntityPath<T, R>) attribute;
         }
         return new EntityPath<>(getAttributeName(attribute));
     }
 
-    public static <T, R> BridgePath<T, R> exchange(AttributeBridge<T, R> attribute) {
-        if (attribute instanceof BridgePath) {
-            return (BridgePath<T, R>) attribute;
+    public static <T, R> AttributePath<T, R> exchange(Attribute<T, R> attribute) {
+        if (attribute instanceof AttributePath) {
+            return (AttributePath<T, R>) attribute;
         }
-        return new BridgePath<>(getAttributeName(attribute));
+        return new AttributePath<>(getAttributeName(attribute));
     }
 
-    public static <R extends Number, T> NumberAttributeBridge<T, R>
-    fromNumberAttributeBridge(NumberAttributeBridge<T, R> attribute) {
-        if (attribute instanceof BridgePath) {
+    public static <R extends Number, T> NumberAttribute<T, R>
+    fromNumberAttributeBridge(NumberAttribute<T, R> attribute) {
+        if (attribute instanceof AttributePath) {
             return attribute;
         }
         return new NumberPath<>(getAttributeName(attribute));
     }
 
 
-    public static <T> StringAttributeBridge<T> fromStringAttributeBridge(StringAttributeBridge<T> attribute) {
-        if (attribute instanceof BridgePath) {
+    public static <T> StringAttribute<T> fromStringAttributeBridge(StringAttribute<T> attribute) {
+        if (attribute instanceof AttributePath) {
             return attribute;
         }
         return new StringPath<>(getAttributeName(attribute));
     }
 
-    public static <R extends Date, T> ComparableAttributeBridge<T, R>
-    fromComparableAttributeBridge(ComparableAttributeBridge<T, R> attribute) {
-        if (attribute instanceof BridgePath) {
+    public static <R extends Date, T> ComparableAttribute<T, R>
+    fromComparableAttributeBridge(ComparableAttribute<T, R> attribute) {
+        if (attribute instanceof AttributePath) {
             return attribute;
         }
         return new ComparablePath<>(getAttributeName(attribute));
     }
 
 
-    public static <T> BooleanAttributeBridge<T> fromBooleanAttributeBridge(BooleanAttributeBridge<T> attribute) {
-        if (attribute instanceof BridgePath) {
+    public static <T> BooleanAttribute<T> fromBooleanAttributeBridge(BooleanAttribute<T> attribute) {
+        if (attribute instanceof AttributePath) {
             return attribute;
         }
         return new BooleanPath<>(getAttributeName(attribute));
@@ -101,45 +101,45 @@ public class BridgePath<T, R>
         }
     }
 
-    private static String getAttributeName(AttributeBridge<?, ?> attribute) {
+    private static String getAttributeName(Attribute<?, ?> attribute) {
         return toAttrName(getLambdaMethodName(attribute));
     }
 
     @Override
-    public R bridge(T t) {
+    public R map(T t) {
         throw new UnsupportedOperationException();
     }
 
 
-    public <V extends Entity> EntityPath<T, V> map(EntityAttributeBridge<R, V> attribute) {
+    public <V extends Entity> EntityPath<T, V> map(EntityAttribute<R, V> attribute) {
         return new EntityPath<>(pathTo(attribute));
     }
 
-    public <V extends Number> NumberPath<T, V> map(NumberAttributeBridge<R, V> attribute) {
+    public <V extends Number> NumberPath<T, V> map(NumberAttribute<R, V> attribute) {
         return new NumberPath<>(pathTo(attribute));
     }
 
-    public <V extends Date> ComparablePath<T, V> map(ComparableAttributeBridge<R, V> attribute) {
+    public <V extends Date> ComparablePath<T, V> map(ComparableAttribute<R, V> attribute) {
         return new ComparablePath<>(pathTo(attribute));
     }
 
-    public StringPath<T> map(StringAttributeBridge<R> attribute) {
+    public StringPath<T> map(StringAttribute<R> attribute) {
         return new StringPath<>(pathTo(attribute));
     }
 
-    public BooleanPath<T> map(BooleanAttributeBridge<R> attribute) {
+    public BooleanPath<T> map(BooleanAttribute<R> attribute) {
         return new BooleanPath<>(pathTo(attribute));
     }
 
-    public <V> BridgePath<T, V> map(AttributeBridge<R, V> attribute) {
-        return new BridgePath<>(pathTo(attribute));
+    public <V> AttributePath<T, V> map(Attribute<R, V> attribute) {
+        return new AttributePath<>(pathTo(attribute));
     }
 
-    public <V> BridgePath<T, V> mapTo(AttributeBridge<?, ?> attribute) {
-        return new BridgePath<>(pathTo(attribute));
+    public <V> AttributePath<T, V> mapTo(Attribute<?, ?> attribute) {
+        return new AttributePath<>(pathTo(attribute));
     }
 
-    private String[] pathTo(AttributeBridge<?, ?> attribute) {
+    private String[] pathTo(Attribute<?, ?> attribute) {
         String[] path = new String[length + 1];
         this.arraycopy(0, path, 0, length);
         path[this.length] = getAttributeName(attribute);

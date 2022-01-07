@@ -12,45 +12,45 @@ import java.util.function.Function;
 
 public interface PredicateCombinable<T, NEXT> {
 
-    <R extends Entity> PathBuilder<T, R, NEXT> and(EntityAttributeBridge<T, R> attribute);
+    <R extends Entity> PathBuilder<T, R, NEXT> and(EntityAttribute<T, R> attribute);
 
-    <R extends Entity> PathBuilder<T, R, NEXT> or(EntityAttributeBridge<T, R> attribute);
+    <R extends Entity> PathBuilder<T, R, NEXT> or(EntityAttribute<T, R> attribute);
 
-    <R extends Entity> PathBuilder<T, R, NEXT> andNot(EntityAttributeBridge<T, R> attribute);
+    <R extends Entity> PathBuilder<T, R, NEXT> andNot(EntityAttribute<T, R> attribute);
 
-    <R extends Entity> PathBuilder<T, R, NEXT> orNot(EntityAttributeBridge<T, R> attribute);
+    <R extends Entity> PathBuilder<T, R, NEXT> orNot(EntityAttribute<T, R> attribute);
 
-    <R> ExpressionBuilder<T, R, NEXT> and(AttributeBridge<T, R> attribute);
+    <R> ExpressionBuilder<T, R, NEXT> and(Attribute<T, R> attribute);
 
-    <R> ExpressionBuilder<T, R, NEXT> or(AttributeBridge<T, R> attribute);
+    <R> ExpressionBuilder<T, R, NEXT> or(Attribute<T, R> attribute);
 
-    <R> ExpressionBuilder<T, R, NEXT> andNot(AttributeBridge<T, R> attribute);
+    <R> ExpressionBuilder<T, R, NEXT> andNot(Attribute<T, R> attribute);
 
-    <R> ExpressionBuilder<T, R, NEXT> orNot(AttributeBridge<T, R> attribute);
+    <R> ExpressionBuilder<T, R, NEXT> orNot(Attribute<T, R> attribute);
 
-    <R extends Number> NumberExpressionBuilder<T, R, NEXT> and(NumberAttributeBridge<T, R> attribute);
+    <R extends Number> NumberExpressionBuilder<T, R, NEXT> and(NumberAttribute<T, R> attribute);
 
-    <R extends Number> NumberExpressionBuilder<T, R, NEXT> or(NumberAttributeBridge<T, R> attribute);
+    <R extends Number> NumberExpressionBuilder<T, R, NEXT> or(NumberAttribute<T, R> attribute);
 
-    <R extends Number> NumberExpressionBuilder<T, R, NEXT> andNot(NumberAttributeBridge<T, R> attribute);
+    <R extends Number> NumberExpressionBuilder<T, R, NEXT> andNot(NumberAttribute<T, R> attribute);
 
-    <R extends Number> NumberExpressionBuilder<T, R, NEXT> orNot(NumberAttributeBridge<T, R> attribute);
+    <R extends Number> NumberExpressionBuilder<T, R, NEXT> orNot(NumberAttribute<T, R> attribute);
 
-    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> and(ComparableAttributeBridge<T, R> attribute);
+    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> and(ComparableAttribute<T, R> attribute);
 
-    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> or(ComparableAttributeBridge<T, R> attribute);
+    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> or(ComparableAttribute<T, R> attribute);
 
-    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> andNot(ComparableAttributeBridge<T, R> attribute);
+    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> andNot(ComparableAttribute<T, R> attribute);
 
-    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> orNot(ComparableAttributeBridge<T, R> attribute);
+    <R extends Date> ComparableExpressionBuilder<T, R, NEXT> orNot(ComparableAttribute<T, R> attribute);
 
-    StringExpressionBuilder<T, NEXT> and(StringAttributeBridge<T> attribute);
+    StringExpressionBuilder<T, NEXT> and(StringAttribute<T> attribute);
 
-    StringExpressionBuilder<T, NEXT> or(StringAttributeBridge<T> attribute);
+    StringExpressionBuilder<T, NEXT> or(StringAttribute<T> attribute);
 
-    StringExpressionBuilder<T, NEXT> andNot(StringAttributeBridge<T> attribute);
+    StringExpressionBuilder<T, NEXT> andNot(StringAttribute<T> attribute);
 
-    StringExpressionBuilder<T, NEXT> orNot(StringAttributeBridge<T> attribute);
+    StringExpressionBuilder<T, NEXT> orNot(StringAttribute<T> attribute);
 
     NEXT And(Function<SubPredicateHeaderCombinable<T, SubPredicateCombinable<T, NEXT>>, BooleanExpression> builder);
 

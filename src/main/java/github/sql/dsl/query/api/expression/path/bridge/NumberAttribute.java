@@ -1,6 +1,7 @@
 package github.sql.dsl.query.api.expression.path.bridge;
 
+
 @FunctionalInterface
-public interface StringAttributeBridge<T> extends AttributeBridge<T, String> {
+public interface NumberAttribute<T, R extends Number> extends Attribute<T, R> {
 
 }

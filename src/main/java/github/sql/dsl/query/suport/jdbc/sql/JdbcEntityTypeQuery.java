@@ -32,8 +32,4 @@ public class JdbcEntityTypeQuery<T> implements TypeQuery<T> {
         return executor.exist(builder.exist(offset), entityType);
     }
 
-    @Override
-    public <U> ProjectionResults<T> projection(Class<U> projectionType) {
-        throw new UnsupportedOperationException();
-    }
 }

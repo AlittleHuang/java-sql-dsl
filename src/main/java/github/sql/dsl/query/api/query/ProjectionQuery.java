@@ -5,10 +5,8 @@ import github.sql.dsl.util.Assert;
 import java.util.List;
 import java.util.Objects;
 
-public interface TypeQuery<T> {
-    int NON = Integer.MIN_VALUE / 2;
-
-    int count();
+public interface ProjectionQuery<T> {
+    int NON = TypeQuery.NON;
 
     default T getFirst() {
         return getFirst(NON);
@@ -43,10 +41,5 @@ public interface TypeQuery<T> {
         return getResultList(NON, NON);
     }
 
-    default boolean exist() {
-        return exist(NON);
-    }
-
-    boolean exist(int offset);
 
 }

@@ -1,20 +1,20 @@
 package github.sql.dsl.query.suport.jdbc;
 
 import github.sql.dsl.query.suport.DbSets;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 import github.sql.dsl.query.suport.jdbc.sql.*;
 
 import javax.sql.DataSource;
 
 public class JdbcDbSet extends DbSets {
 
-    public JdbcDbSet(ResultsFactory resultsFactory) {
-        super(resultsFactory);
+    public JdbcDbSet(TypeQueryFactory typeQueryFactory) {
+        super(typeQueryFactory);
     }
 
     public JdbcDbSet(PreparedSqlExecutor executor,
                      SqlBuilderFactory sqlBuilderFactory) {
-        this(new JdbcQueryResultsFactory(executor, sqlBuilderFactory));
+        this(new JdbcQueryTypeQueryFactory(executor, sqlBuilderFactory));
     }
 
 

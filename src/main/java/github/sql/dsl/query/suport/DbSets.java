@@ -12,15 +12,15 @@ import javax.sql.DataSource;
 
 public class DbSets implements DbSet {
 
-    private final ResultsFactory resultsFactory;
+    private final TypeQueryFactory typeQueryFactory;
 
-    public DbSets(ResultsFactory resultsFactory) {
-        this.resultsFactory = resultsFactory;
+    public DbSets(TypeQueryFactory typeQueryFactory) {
+        this.typeQueryFactory = typeQueryFactory;
     }
 
     @Override
     public <T> Query<T> from(Class<T> type) {
-        return new QueryImpl<>(resultsFactory, type, null);
+        return new QueryImpl<>(typeQueryFactory, type, null);
     }
 
     public static DbSet mysql(DataSource source) {

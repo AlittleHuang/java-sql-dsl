@@ -55,11 +55,6 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
         return new Builder<>(Object.class).exist(offset);
     }
 
-    @Override
-    public <U> ProjectionResults<T> projection(Class<U> projectionType) {
-        throw new UnsupportedOperationException();
-    }
-
     class CountBuilder extends Builder<Long> {
 
         public CountBuilder() {

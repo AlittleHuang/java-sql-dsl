@@ -3,7 +3,7 @@ package github.sql.dsl.query.suport.builder.component;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.NumberExpressionBuilder;
 import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.path.bridge.NumberAttributeBridge;
+import github.sql.dsl.query.api.expression.path.bridge.NumberAttribute;
 
 import java.util.function.Function;
 
@@ -67,7 +67,7 @@ public class NumberExpressionBuilderImpl<T, U extends Number, NEXT>
     }
 
     @Override
-    public NumberExpressionBuilder<T, U, NEXT> add(NumberAttributeBridge<T, U> v) {
+    public NumberExpressionBuilder<T, U, NEXT> add(NumberAttribute<T, U> v) {
         return new NumberExpressionBuilderImpl<>(
                 expression.then(Operator.ADD, v),
                 combined,
@@ -77,7 +77,7 @@ public class NumberExpressionBuilderImpl<T, U extends Number, NEXT>
     }
 
     @Override
-    public NumberExpressionBuilder<T, U, NEXT> subtract(NumberAttributeBridge<T, U> v) {
+    public NumberExpressionBuilder<T, U, NEXT> subtract(NumberAttribute<T, U> v) {
         return new NumberExpressionBuilderImpl<>(
                 expression.then(Operator.SUBTRACT, v),
                 combined,
@@ -87,7 +87,7 @@ public class NumberExpressionBuilderImpl<T, U extends Number, NEXT>
     }
 
     @Override
-    public NumberExpressionBuilder<T, U, NEXT> multiply(NumberAttributeBridge<T, U> v) {
+    public NumberExpressionBuilder<T, U, NEXT> multiply(NumberAttribute<T, U> v) {
         return new NumberExpressionBuilderImpl<>(
                 expression.then(Operator.MULTIPLY, v),
                 combined,
@@ -97,7 +97,7 @@ public class NumberExpressionBuilderImpl<T, U extends Number, NEXT>
     }
 
     @Override
-    public NumberExpressionBuilder<T, U, NEXT> divide(NumberAttributeBridge<T, U> v) {
+    public NumberExpressionBuilder<T, U, NEXT> divide(NumberAttribute<T, U> v) {
         return new NumberExpressionBuilderImpl<>(
                 expression.then(Operator.DIVIDE, v),
                 combined,
@@ -107,7 +107,7 @@ public class NumberExpressionBuilderImpl<T, U extends Number, NEXT>
     }
 
     @Override
-    public NumberExpressionBuilder<T, U, NEXT> mod(NumberAttributeBridge<T, U> v) {
+    public NumberExpressionBuilder<T, U, NEXT> mod(NumberAttribute<T, U> v) {
         return new NumberExpressionBuilderImpl<>(
                 expression.then(Operator.MOD, v),
                 combined,
@@ -168,27 +168,27 @@ public class NumberExpressionBuilderImpl<T, U extends Number, NEXT>
 
 
     @Override
-    public NEXT ge(NumberAttributeBridge<T, U> value) {
+    public NEXT ge(NumberAttribute<T, U> value) {
         return super.ge(value);
     }
 
     @Override
-    public NEXT gt(NumberAttributeBridge<T, U> value) {
+    public NEXT gt(NumberAttribute<T, U> value) {
         return super.gt(value);
     }
 
     @Override
-    public NEXT le(NumberAttributeBridge<T, U> value) {
+    public NEXT le(NumberAttribute<T, U> value) {
         return super.le(value);
     }
 
     @Override
-    public NEXT between(NumberAttributeBridge<T, U> a, NumberAttributeBridge<T, U> b) {
+    public NEXT between(NumberAttribute<T, U> a, NumberAttribute<T, U> b) {
         return super.between(a, b);
     }
 
     @Override
-    public NEXT lt(NumberAttributeBridge<T, U> value) {
+    public NEXT lt(NumberAttribute<T, U> value) {
         return super.lt(value);
     }
 

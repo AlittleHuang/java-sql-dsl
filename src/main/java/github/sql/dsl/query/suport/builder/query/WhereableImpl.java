@@ -28,54 +28,54 @@ public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
 
 
     @Override
-    public <U extends Entity> PathBuilder<T, U, NEXT> where(EntityAttributeBridge<T, U> attribute) {
+    public <U extends Entity> PathBuilder<T, U, NEXT> where(EntityAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U> ExpressionBuilder<T, U, NEXT> where(AttributeBridge<T, U> attribute) {
+    public <U> ExpressionBuilder<T, U, NEXT> where(Attribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
     public <U extends Number> NumberExpressionBuilder<T, U, NEXT>
-    where(NumberAttributeBridge<T, U> attribute) {
+    where(NumberAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
     public <U extends Date> ComparableExpressionBuilder<T, U, NEXT>
-    where(ComparableAttributeBridge<T, U> attribute) {
+    where(ComparableAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> where(StringAttributeBridge<T> attribute) {
+    public StringExpressionBuilder<T, NEXT> where(StringAttribute<T> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U extends Entity> PathBuilder<T, U, NEXT> whereNot(EntityAttributeBridge<T, U> attribute) {
+    public <U extends Entity> PathBuilder<T, U, NEXT> whereNot(EntityAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U> ExpressionBuilder<T, U, NEXT> whereNot(AttributeBridge<T, U> attribute) {
+    public <U> ExpressionBuilder<T, U, NEXT> whereNot(Attribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Number> NumberExpressionBuilder<T, U, NEXT> whereNot(NumberAttributeBridge<T, U> attribute) {
+    public <U extends Number> NumberExpressionBuilder<T, U, NEXT> whereNot(NumberAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Date> ComparableExpressionBuilder<T, U, NEXT> whereNot(ComparableAttributeBridge<T, U> attribute) {
+    public <U extends Date> ComparableExpressionBuilder<T, U, NEXT> whereNot(ComparableAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> whereNot(StringAttributeBridge<T> attribute) {
+    public StringExpressionBuilder<T, NEXT> whereNot(StringAttribute<T> attribute) {
         return getBuilder().andNot(attribute);
     }
 

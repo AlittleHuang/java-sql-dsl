@@ -7,14 +7,14 @@ import github.sql.dsl.query.api.query.AggregateObjectsQuery;
 import github.sql.dsl.query.api.query.ObjectsQuery;
 import github.sql.dsl.query.api.query.Whereable;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class AggregateObjectsQueryImpl<T> extends AbstractResult<T> implements AggregateObjectsQuery<T> {
 
-    public AggregateObjectsQueryImpl(ResultsFactory resultsFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
-        super(resultsFactory, entityType, criteriaQuery);
+    public AggregateObjectsQueryImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+        super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate

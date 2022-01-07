@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 public class JpaDbSet extends DbSets {
 
     public JpaDbSet(EntityManager entityManager) {
-        super(new JpaResultsFactory(entityManager));
+        super(new JpaTypeQueryFactory(entityManager));
     }
 
 }

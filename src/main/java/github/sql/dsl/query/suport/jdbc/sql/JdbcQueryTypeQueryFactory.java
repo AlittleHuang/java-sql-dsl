@@ -3,14 +3,14 @@ package github.sql.dsl.query.suport.jdbc.sql;
 import github.sql.dsl.query.api.query.ObjectsTypeQuery;
 import github.sql.dsl.query.api.query.TypeQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 
-public class JdbcQueryResultsFactory implements ResultsFactory {
+public class JdbcQueryTypeQueryFactory implements TypeQueryFactory {
     private final PreparedSqlExecutor executor;
     private final SqlBuilderFactory sqlBuilder;
 
-    public JdbcQueryResultsFactory(PreparedSqlExecutor executor,
-                                   SqlBuilderFactory sqlBuilder) {
+    public JdbcQueryTypeQueryFactory(PreparedSqlExecutor executor,
+                                     SqlBuilderFactory sqlBuilder) {
         this.executor = executor;
         this.sqlBuilder = sqlBuilder;
     }

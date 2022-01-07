@@ -3,15 +3,15 @@ package github.sql.dsl.query.suport.jpa;
 import github.sql.dsl.query.api.query.ObjectsTypeQuery;
 import github.sql.dsl.query.api.query.TypeQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 
 import javax.persistence.EntityManager;
 
-public class JpaResultsFactory implements ResultsFactory {
+public class JpaTypeQueryFactory implements TypeQueryFactory {
 
     private final EntityManager entityManager;
 
-    public JpaResultsFactory(EntityManager entityManager) {
+    public JpaTypeQueryFactory(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

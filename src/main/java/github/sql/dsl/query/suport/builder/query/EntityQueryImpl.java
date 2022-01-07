@@ -5,14 +5,14 @@ import github.sql.dsl.query.api.builder.PredicateCombinable;
 import github.sql.dsl.query.api.builder.Sortable;
 import github.sql.dsl.query.api.query.EntityQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityQueryImpl<T> extends AbstractResult<T> implements EntityQuery<T> {
 
-    public EntityQueryImpl(ResultsFactory resultsFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
-        super(resultsFactory, entityType, criteriaQuery);
+    public EntityQueryImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+        super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate

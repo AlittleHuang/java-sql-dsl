@@ -2,7 +2,7 @@ package github.sql.dsl.query.suport.builder.criteria;
 
 import github.sql.dsl.query.api.builder.PredicateCombinable;
 import github.sql.dsl.query.api.expression.*;
-import github.sql.dsl.query.api.expression.path.BridgePath;
+import github.sql.dsl.query.api.expression.path.AttributePath;
 import github.sql.dsl.query.api.expression.path.Entity;
 import github.sql.dsl.query.api.expression.path.PathBuilder;
 import github.sql.dsl.query.api.expression.path.bridge.*;
@@ -26,103 +26,103 @@ public class PredicateCombinableImpl<T, NEXT> implements PredicateCombinable<T, 
     }
 
     @Override
-    public <R extends Entity> PathBuilder<T, R, NEXT> and(EntityAttributeBridge<T, R> attribute) {
-        return new PathBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, false, this::mapperNext);
+    public <R extends Entity> PathBuilder<T, R, NEXT> and(EntityAttribute<T, R> attribute) {
+        return new PathBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Entity> PathBuilder<T, R, NEXT> or(EntityAttributeBridge<T, R> attribute) {
-        return new PathBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, false, this::mapperNext);
+    public <R extends Entity> PathBuilder<T, R, NEXT> or(EntityAttribute<T, R> attribute) {
+        return new PathBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Entity> PathBuilder<T, R, NEXT> andNot(EntityAttributeBridge<T, R> attribute) {
-        return new PathBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, true, this::mapperNext);
+    public <R extends Entity> PathBuilder<T, R, NEXT> andNot(EntityAttribute<T, R> attribute) {
+        return new PathBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Entity> PathBuilder<T, R, NEXT> orNot(EntityAttributeBridge<T, R> attribute) {
-        return new PathBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, true, this::mapperNext);
+    public <R extends Entity> PathBuilder<T, R, NEXT> orNot(EntityAttribute<T, R> attribute) {
+        return new PathBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
     @Override
-    public <R> ExpressionBuilder<T, R, NEXT> and(AttributeBridge<T, R> attribute) {
-        return new ExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, false, this::mapperNext);
+    public <R> ExpressionBuilder<T, R, NEXT> and(Attribute<T, R> attribute) {
+        return new ExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public <R> ExpressionBuilder<T, R, NEXT> or(AttributeBridge<T, R> attribute) {
-        return new ExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, false, this::mapperNext);
+    public <R> ExpressionBuilder<T, R, NEXT> or(Attribute<T, R> attribute) {
+        return new ExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public <R> ExpressionBuilder<T, R, NEXT> andNot(AttributeBridge<T, R> attribute) {
-        return new ExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, true, this::mapperNext);
+    public <R> ExpressionBuilder<T, R, NEXT> andNot(Attribute<T, R> attribute) {
+        return new ExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public <R> ExpressionBuilder<T, R, NEXT> orNot(AttributeBridge<T, R> attribute) {
-        return new ExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, true, this::mapperNext);
+    public <R> ExpressionBuilder<T, R, NEXT> orNot(Attribute<T, R> attribute) {
+        return new ExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> and(NumberAttributeBridge<T, R> attribute) {
-        return new NumberExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, false, this::mapperNext);
+    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> and(NumberAttribute<T, R> attribute) {
+        return new NumberExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> or(NumberAttributeBridge<T, R> attribute) {
-        return new NumberExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, false, this::mapperNext);
+    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> or(NumberAttribute<T, R> attribute) {
+        return new NumberExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> andNot(NumberAttributeBridge<T, R> attribute) {
-        return new NumberExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, true, this::mapperNext);
+    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> andNot(NumberAttribute<T, R> attribute) {
+        return new NumberExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> orNot(NumberAttributeBridge<T, R> attribute) {
-        return new NumberExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, true, this::mapperNext);
+    public <R extends Number> NumberExpressionBuilder<T, R, NEXT> orNot(NumberAttribute<T, R> attribute) {
+        return new NumberExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> and(ComparableAttributeBridge<T, R> attribute) {
-        return new ComparableExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, false, this::mapperNext);
+    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> and(ComparableAttribute<T, R> attribute) {
+        return new ComparableExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> or(ComparableAttributeBridge<T, R> attribute) {
-        return new ComparableExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, false, this::mapperNext);
+    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> or(ComparableAttribute<T, R> attribute) {
+        return new ComparableExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> andNot(ComparableAttributeBridge<T, R> attribute) {
-        return new ComparableExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, true, this::mapperNext);
+    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> andNot(ComparableAttribute<T, R> attribute) {
+        return new ComparableExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> orNot(ComparableAttributeBridge<T, R> attribute) {
-        return new ComparableExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, true, this::mapperNext);
+    public <R extends Date> ComparableExpressionBuilder<T, R, NEXT> orNot(ComparableAttribute<T, R> attribute) {
+        return new ComparableExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> and(StringAttributeBridge<T> attribute) {
-        return new StringExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, false, this::mapperNext);
+    public StringExpressionBuilder<T, NEXT> and(StringAttribute<T> attribute) {
+        return new StringExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> or(StringAttributeBridge<T> attribute) {
-        return new StringExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, false, this::mapperNext);
+    public StringExpressionBuilder<T, NEXT> or(StringAttribute<T> attribute) {
+        return new StringExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> andNot(StringAttributeBridge<T> attribute) {
-        return new StringExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.AND, true, this::mapperNext);
+    public StringExpressionBuilder<T, NEXT> andNot(StringAttribute<T> attribute) {
+        return new StringExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> orNot(StringAttributeBridge<T> attribute) {
-        return new StringExpressionBuilderImpl<>(BridgePath.exchange(attribute), Operator.OR, true, this::mapperNext);
+    public StringExpressionBuilder<T, NEXT> orNot(StringAttribute<T> attribute) {
+        return new StringExpressionBuilderImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
     @Override

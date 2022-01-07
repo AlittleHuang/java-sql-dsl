@@ -2,9 +2,9 @@ package github.sql.dsl.query.suport.builder.criteria;
 
 import github.sql.dsl.query.api.builder.Fetchable;
 import github.sql.dsl.query.api.expression.PathExpression;
-import github.sql.dsl.query.api.expression.path.BridgePath;
+import github.sql.dsl.query.api.expression.path.AttributePath;
 import github.sql.dsl.query.api.expression.path.EntityPath;
-import github.sql.dsl.query.api.expression.path.bridge.EntityAttributeBridge;
+import github.sql.dsl.query.api.expression.path.bridge.EntityAttribute;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
 import github.sql.dsl.util.Array;
 import lombok.Getter;
@@ -24,8 +24,8 @@ public class FetchableImpl<T, NEXT> implements Fetchable<T, NEXT> {
     }
 
     @Override
-    public NEXT fetch(EntityAttributeBridge<T, ?> attribute) {
-        EntityPath<T, ?> exchange = BridgePath.exchange(attribute);
+    public NEXT fetch(EntityAttribute<T, ?> attribute) {
+        EntityPath<T, ?> exchange = AttributePath.exchange(attribute);
         Array<PathExpression<?>> then = this.values == null
                 ? new ConstantList<>(exchange)
                 : this.values.concat(exchange);

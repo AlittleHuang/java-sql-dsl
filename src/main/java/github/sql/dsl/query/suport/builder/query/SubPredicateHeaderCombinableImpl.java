@@ -26,54 +26,54 @@ public class SubPredicateHeaderCombinableImpl<T, NEXT> implements SubPredicateHe
 
 
     @Override
-    public <U extends Entity> PathBuilder<T, U, NEXT> get(EntityAttributeBridge<T, U> attribute) {
+    public <U extends Entity> PathBuilder<T, U, NEXT> get(EntityAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U> ExpressionBuilder<T, U, NEXT> get(AttributeBridge<T, U> attribute) {
+    public <U> ExpressionBuilder<T, U, NEXT> get(Attribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
     public <U extends Number> NumberExpressionBuilder<T, U, NEXT>
-    get(NumberAttributeBridge<T, U> attribute) {
+    get(NumberAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
     public <U extends Date> ComparableExpressionBuilder<T, U, NEXT>
-    get(ComparableAttributeBridge<T, U> attribute) {
+    get(ComparableAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> get(StringAttributeBridge<T> attribute) {
+    public StringExpressionBuilder<T, NEXT> get(StringAttribute<T> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U extends Entity> PathBuilder<T, U, NEXT> not(EntityAttributeBridge<T, U> attribute) {
+    public <U extends Entity> PathBuilder<T, U, NEXT> not(EntityAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U> ExpressionBuilder<T, U, NEXT> not(AttributeBridge<T, U> attribute) {
+    public <U> ExpressionBuilder<T, U, NEXT> not(Attribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Number> NumberExpressionBuilder<T, U, NEXT> not(NumberAttributeBridge<T, U> attribute) {
+    public <U extends Number> NumberExpressionBuilder<T, U, NEXT> not(NumberAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Date> ComparableExpressionBuilder<T, U, NEXT> not(ComparableAttributeBridge<T, U> attribute) {
+    public <U extends Date> ComparableExpressionBuilder<T, U, NEXT> not(ComparableAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public StringExpressionBuilder<T, NEXT> not(StringAttributeBridge<T> attribute) {
+    public StringExpressionBuilder<T, NEXT> not(StringAttribute<T> attribute) {
         return getBuilder().andNot(attribute);
     }
 

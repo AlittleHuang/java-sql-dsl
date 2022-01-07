@@ -1,10 +1,10 @@
 package github.sql.dsl.query.api.expression.path;
 
-import github.sql.dsl.query.api.expression.path.bridge.NumberAttributeBridge;
+import github.sql.dsl.query.api.expression.path.bridge.NumberAttribute;
 
 public class NumberPath<T, R extends Number>
-        extends BridgePath<T, R>
-        implements NumberAttributeBridge<T, R> {
+        extends AttributePath<T, R>
+        implements NumberAttribute<T, R> {
     public NumberPath(String... path) {
         super(path);
     }

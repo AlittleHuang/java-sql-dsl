@@ -6,14 +6,14 @@ import github.sql.dsl.query.api.builder.Sortable;
 import github.sql.dsl.query.api.query.ObjectsQuery;
 import github.sql.dsl.query.api.query.Whereable;
 import github.sql.dsl.query.suport.CriteriaQuery;
-import github.sql.dsl.query.suport.ResultsFactory;
+import github.sql.dsl.query.suport.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class ObjectsQueryImpl<T> extends AbstractResult<T> implements ObjectsQuery<T> {
 
-    public ObjectsQueryImpl(ResultsFactory resultsFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
-        super(resultsFactory, entityType, criteriaQuery);
+    public ObjectsQueryImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+        super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate

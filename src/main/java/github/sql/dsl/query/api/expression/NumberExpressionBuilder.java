@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.expression;
 
-import github.sql.dsl.query.api.expression.path.bridge.NumberAttributeBridge;
+import github.sql.dsl.query.api.expression.path.bridge.NumberAttribute;
 
 public interface NumberExpressionBuilder<T, U extends Number, V> extends ExpressionBuilder<T, U, V> {
 
@@ -28,25 +28,25 @@ public interface NumberExpressionBuilder<T, U extends Number, V> extends Express
     V lt(U value);
 
 
-    NumberExpressionBuilder<T, U, V> add(NumberAttributeBridge<T, U> v);
+    NumberExpressionBuilder<T, U, V> add(NumberAttribute<T, U> v);
 
-    NumberExpressionBuilder<T, U, V> subtract(NumberAttributeBridge<T, U> v);
+    NumberExpressionBuilder<T, U, V> subtract(NumberAttribute<T, U> v);
 
-    NumberExpressionBuilder<T, U, V> multiply(NumberAttributeBridge<T, U> v);
+    NumberExpressionBuilder<T, U, V> multiply(NumberAttribute<T, U> v);
 
-    NumberExpressionBuilder<T, U, V> divide(NumberAttributeBridge<T, U> v);
+    NumberExpressionBuilder<T, U, V> divide(NumberAttribute<T, U> v);
 
-    NumberExpressionBuilder<T, U, V> mod(NumberAttributeBridge<T, U> v);
+    NumberExpressionBuilder<T, U, V> mod(NumberAttribute<T, U> v);
 
-    V ge(NumberAttributeBridge<T, U> value);
+    V ge(NumberAttribute<T, U> value);
 
-    V gt(NumberAttributeBridge<T, U> value);
+    V gt(NumberAttribute<T, U> value);
 
-    V le(NumberAttributeBridge<T, U> value);
+    V le(NumberAttribute<T, U> value);
 
-    V between(NumberAttributeBridge<T, U> a, NumberAttributeBridge<T, U> b);
+    V between(NumberAttribute<T, U> a, NumberAttribute<T, U> b);
 
-    V lt(NumberAttributeBridge<T, U> value);
+    V lt(NumberAttribute<T, U> value);
 
     NumberExpressionBuilder<T, U, V> add(Expression<U> v);
 
