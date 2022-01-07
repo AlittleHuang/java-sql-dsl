@@ -1,13 +1,16 @@
 package github.sql.dsl.query.suport;
 
 import github.sql.dsl.query.api.query.ObjectsTypeQuery;
+import github.sql.dsl.query.api.query.ProjectionQuery;
 import github.sql.dsl.query.api.query.TypeQuery;
 
 public interface TypeQueryFactory {
 
-    <T> TypeQuery<T> results(CriteriaQuery criteriaQuery, Class<T> type);
+    <T> TypeQuery<T> getTypeQuery(CriteriaQuery criteriaQuery, Class<T> type);
 
-    ObjectsTypeQuery arrayResults(CriteriaQuery criteriaQuery, Class<?> type);
+    <T, R> ProjectionQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery, Class<T> type, Class<R> projectionType);
+
+    ObjectsTypeQuery getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type);
 
 
 }

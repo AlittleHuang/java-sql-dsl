@@ -1,6 +1,7 @@
 package github.sql.dsl.query.suport.jpa;
 
 import github.sql.dsl.query.api.query.ObjectsTypeQuery;
+import github.sql.dsl.query.api.query.ProjectionQuery;
 import github.sql.dsl.query.api.query.TypeQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.TypeQueryFactory;
@@ -17,12 +18,20 @@ public class JpaTypeQueryFactory implements TypeQueryFactory {
 
 
     @Override
-    public <T> TypeQuery<T> results(CriteriaQuery criteriaQuery, Class<T> type) {
+    public <T> TypeQuery<T> getTypeQuery(CriteriaQuery criteriaQuery, Class<T> type) {
         return new JpaTypeQuery<>(entityManager, type, criteriaQuery);
     }
 
     @Override
-    public ObjectsTypeQuery arrayResults(CriteriaQuery criteriaQuery, Class<?> type) {
+    public <T, R> ProjectionQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery,
+                                                        Class<T> type,
+                                                        Class<R> projectionType) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public ObjectsTypeQuery getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type) {
         return new JpaTypeQuery<>(entityManager, type, criteriaQuery);
     }
 

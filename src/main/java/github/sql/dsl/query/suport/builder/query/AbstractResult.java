@@ -22,11 +22,11 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
     }
 
     protected ObjectsTypeQuery getObjectsTypeQuery() {
-        return typeQueryFactory.arrayResults(criteriaQuery, entityType);
+        return typeQueryFactory.getObjectsTypeQuery(criteriaQuery, entityType);
     }
 
     protected TypeQuery<T> getTypeQuery() {
-        return typeQueryFactory.results(criteriaQuery, entityType);
+        return typeQueryFactory.getTypeQuery(criteriaQuery, entityType);
     }
 
     @Override

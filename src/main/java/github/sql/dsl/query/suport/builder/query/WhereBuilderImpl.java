@@ -3,6 +3,7 @@ package github.sql.dsl.query.suport.builder.query;
 import github.sql.dsl.query.api.builder.*;
 import github.sql.dsl.query.api.query.EntityQuery;
 import github.sql.dsl.query.api.query.ObjectsQuery;
+import github.sql.dsl.query.api.query.ProjectionQuery;
 import github.sql.dsl.query.api.query.WhereBuilder;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.TypeQueryFactory;
@@ -41,5 +42,10 @@ public class WhereBuilderImpl<T> extends AbstractResult<T> implements WhereBuild
     @Override
     protected @NotNull Selectable<T, ObjectsQuery<T>> getSelectable() {
         return super.getSelectable();
+    }
+
+    @Override
+    public <R> ProjectionQuery<R> projected(Class<R> projectionType) {
+        return new ProjectionQueryImpl<>(typeQueryFactory, entityType, criteriaQuery, projectionType);
     }
 }

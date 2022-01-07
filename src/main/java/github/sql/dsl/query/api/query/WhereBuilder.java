@@ -8,6 +8,7 @@ public interface WhereBuilder<T> extends
         Sortable<T, WhereBuilder<T>>,
         Groupable<T, ObjectsQuery<T>>,
         Selectable<T, ObjectsQuery<T>>,
+        Projectable<T>,
         TypeQuery<T> {
 
 

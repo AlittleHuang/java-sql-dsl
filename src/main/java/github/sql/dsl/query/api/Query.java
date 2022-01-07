@@ -10,6 +10,7 @@ public interface Query<T> extends
         Groupable<T, ObjectsQuery<T>>,
         Selectable<T, ObjectsQuery<T>>,
         AggregateSelectable<T, AggregateObjectsQuery<T>>,
+        Projectable<T>,
         TypeQuery<T> {
 
 
