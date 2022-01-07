@@ -38,6 +38,38 @@ public class BridgePath<T, R>
         return new BridgePath<>(getAttributeName(attribute));
     }
 
+    public static <R extends Number, T> NumberAttributeBridge<T, R>
+    fromNumberAttributeBridge(NumberAttributeBridge<T, R> attribute) {
+        if (attribute instanceof BridgePath) {
+            return attribute;
+        }
+        return new NumberPath<>(getAttributeName(attribute));
+    }
+
+
+    public static <T> StringAttributeBridge<T> fromStringAttributeBridge(StringAttributeBridge<T> attribute) {
+        if (attribute instanceof BridgePath) {
+            return attribute;
+        }
+        return new StringPath<>(getAttributeName(attribute));
+    }
+
+    public static <R extends Date, T> ComparableAttributeBridge<T, R>
+    fromComparableAttributeBridge(ComparableAttributeBridge<T, R> attribute) {
+        if (attribute instanceof BridgePath) {
+            return attribute;
+        }
+        return new ComparablePath<>(getAttributeName(attribute));
+    }
+
+
+    public static <T> BooleanAttributeBridge<T> fromBooleanAttributeBridge(BooleanAttributeBridge<T> attribute) {
+        if (attribute instanceof BridgePath) {
+            return attribute;
+        }
+        return new BooleanPath<>(getAttributeName(attribute));
+    }
+
     public static String toAttrName(String getterName) {
         StringBuilder builder = null;
         if (getterName != null) {

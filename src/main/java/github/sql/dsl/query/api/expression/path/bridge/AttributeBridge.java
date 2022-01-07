@@ -17,22 +17,22 @@ public interface AttributeBridge<T, R> extends Serializable {
 
 
     static <T, R extends Number> NumberAttributeBridge<T, R> of(NumberAttributeBridge<T, R> attribute) {
-        throw new UnsupportedOperationException();
+        return BridgePath.fromNumberAttributeBridge(attribute);
     }
 
 
     static <T> StringAttributeBridge<T> of(StringAttributeBridge<T> attribute) {
-        throw new UnsupportedOperationException();
+        return BridgePath.fromStringAttributeBridge(attribute);
     }
 
 
     static <T, R extends Date> ComparableAttributeBridge<T, R> of(ComparableAttributeBridge<T, R> attribute) {
-        throw new UnsupportedOperationException();
+        return BridgePath.fromComparableAttributeBridge(attribute);
     }
 
 
     static <T, R extends Number> BooleanAttributeBridge<T> of(BooleanAttributeBridge<T> attribute) {
-        throw new UnsupportedOperationException();
+        return BridgePath.fromBooleanAttributeBridge(attribute);
     }
 
 
