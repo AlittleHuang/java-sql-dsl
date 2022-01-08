@@ -19,7 +19,7 @@ public class DbSets implements DbSet {
     }
 
     @Override
-    public <T> Query<T> from(Class<T> type) {
+    public <T> Query<T> create(Class<T> type) {
         return new QueryImpl<>(typeQueryFactory, type, null);
     }
 
