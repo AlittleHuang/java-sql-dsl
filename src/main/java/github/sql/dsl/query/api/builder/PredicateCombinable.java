@@ -1,11 +1,10 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.builder.combination.*;
+import github.sql.dsl.query.api.expression.BooleanExpression;
 import github.sql.dsl.query.api.expression.path.Entity;
 import github.sql.dsl.query.api.expression.path.PathBuilder;
-import github.sql.dsl.query.api.expression.path.bridge.*;
-import github.sql.dsl.query.api.query.SubPredicateCombinable;
-import github.sql.dsl.query.api.query.SubPredicateHeaderCombinable;
+import github.sql.dsl.query.api.expression.path.attribute.*;
 
 import java.util.Date;
 import java.util.function.Function;

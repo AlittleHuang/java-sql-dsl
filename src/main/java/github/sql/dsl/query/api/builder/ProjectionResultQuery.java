@@ -1,12 +1,12 @@
-package github.sql.dsl.query.api.query;
+package github.sql.dsl.query.api.builder;
 
 import github.sql.dsl.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
 
-public interface EntityResultQuery<T> {
-    int NON = Integer.MIN_VALUE / 2;
+public interface ProjectionResultQuery<T> {
+    int NON = EntityResultQuery.NON;
 
     int count();
 

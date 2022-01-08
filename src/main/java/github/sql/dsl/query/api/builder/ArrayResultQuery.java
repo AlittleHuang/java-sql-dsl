@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.query;
+package github.sql.dsl.query.api.builder;
 
 import github.sql.dsl.util.Assert;
 

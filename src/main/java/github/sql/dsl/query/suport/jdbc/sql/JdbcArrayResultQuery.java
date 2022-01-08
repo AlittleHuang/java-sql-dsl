@@ -1,6 +1,6 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import github.sql.dsl.query.api.query.ArrayResultQuery;
+import github.sql.dsl.query.api.builder.ArrayResultQuery;
 
 import java.util.List;
 

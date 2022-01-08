@@ -3,7 +3,7 @@ package github.sql.dsl.query.suport.builder.criteria;
 import github.sql.dsl.query.api.builder.AggregateSelectable;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.path.AttributePath;
-import github.sql.dsl.query.api.expression.path.bridge.Attribute;
+import github.sql.dsl.query.api.expression.path.attribute.Attribute;
 import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
 import github.sql.dsl.query.suport.builder.component.Selection;

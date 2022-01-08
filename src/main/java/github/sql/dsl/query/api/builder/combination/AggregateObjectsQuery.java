@@ -1,6 +1,7 @@
-package github.sql.dsl.query.api.query;
+package github.sql.dsl.query.api.builder.combination;
 
 import github.sql.dsl.query.api.builder.AggregateSelectable;
+import github.sql.dsl.query.api.builder.ArrayResultQuery;
 import github.sql.dsl.query.api.builder.Groupable;
 import github.sql.dsl.query.api.builder.Sortable;
 

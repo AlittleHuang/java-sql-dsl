@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.expression.path.bridge;
+package github.sql.dsl.query.api.expression.path.attribute;
 
 @FunctionalInterface
 public interface StringAttribute<T> extends Attribute<T, String> {

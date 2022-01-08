@@ -1,4 +1,4 @@
-package github.sql.dsl.query.suport.jdbc.meta;
+package github.sql.dsl.query.suport.meta;
 
 import github.sql.dsl.util.Assert;
 import lombok.Getter;

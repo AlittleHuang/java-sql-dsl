@@ -3,7 +3,7 @@ package github.sql.dsl.query.suport.builder.query;
 import github.sql.dsl.query.api.builder.Fetchable;
 import github.sql.dsl.query.api.builder.PredicateCombinable;
 import github.sql.dsl.query.api.builder.Sortable;
-import github.sql.dsl.query.api.query.EntityQuery;
+import github.sql.dsl.query.api.builder.combination.EntityQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.TypeQueryFactory;
 import lombok.experimental.Delegate;

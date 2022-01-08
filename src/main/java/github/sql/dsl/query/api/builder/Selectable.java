@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.expression.path.bridge.Attribute;
+import github.sql.dsl.query.api.expression.path.attribute.Attribute;
 
 import java.util.List;
 

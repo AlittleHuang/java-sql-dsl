@@ -1,16 +1,15 @@
 package github.sql.dsl.query.suport.jpa;
 
+import github.sql.dsl.query.api.builder.ArrayResultQuery;
+import github.sql.dsl.query.api.builder.EntityResultQuery;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
 import github.sql.dsl.query.api.expression.PathExpression;
-import github.sql.dsl.query.api.query.ArrayResultQuery;
-import github.sql.dsl.query.api.query.EntityResultQuery;
-import github.sql.dsl.query.api.query.ProjectionResults;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import github.sql.dsl.query.suport.builder.component.Order;
 import github.sql.dsl.query.suport.builder.component.Selection;
-import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
+import github.sql.dsl.query.suport.meta.EntityInformation;
 import github.sql.dsl.util.Array;
 import lombok.var;
 
@@ -121,10 +120,6 @@ public class JpaEntityResultQuery<T> implements EntityResultQuery<T>, ArrayResul
             return !query.setMaxResults(1)
                     .getResultList()
                     .isEmpty();
-        }
-
-        public <U> ProjectionResults<T> projection(Class<U> projectionType) {
-            throw new UnsupportedOperationException();
         }
 
         public List<Object[]> getObjectsList(int offset, int maxResult) {

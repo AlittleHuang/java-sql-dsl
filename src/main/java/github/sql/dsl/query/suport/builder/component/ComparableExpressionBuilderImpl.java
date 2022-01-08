@@ -1,6 +1,6 @@
 package github.sql.dsl.query.suport.builder.component;
 
-import github.sql.dsl.query.api.expression.ComparableExpressionBuilder;
+import github.sql.dsl.query.api.builder.combination.ComparableExpressionBuilder;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
 

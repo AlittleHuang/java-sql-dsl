@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.expression.path.bridge;
+package github.sql.dsl.query.api.expression.path.attribute;
 
 import github.sql.dsl.query.api.expression.path.AttributePath;
 import org.jetbrains.annotations.NotNull;

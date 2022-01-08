@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.query;
+package github.sql.dsl.query.api.builder.combination;
 
 import github.sql.dsl.query.api.builder.*;
 

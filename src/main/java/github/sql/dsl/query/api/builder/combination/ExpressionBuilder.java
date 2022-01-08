@@ -1,4 +1,4 @@
-package github.sql.dsl.query.api.expression;
+package github.sql.dsl.query.api.builder.combination;
 
 import java.util.Arrays;
 import java.util.Collection;

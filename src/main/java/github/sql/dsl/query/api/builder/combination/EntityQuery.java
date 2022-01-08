@@ -1,5 +1,6 @@
-package github.sql.dsl.query.api.query;
+package github.sql.dsl.query.api.builder.combination;
 
+import github.sql.dsl.query.api.builder.EntityResultQuery;
 import github.sql.dsl.query.api.builder.Fetchable;
 import github.sql.dsl.query.api.builder.PredicateCombinable;
 import github.sql.dsl.query.api.builder.Sortable;

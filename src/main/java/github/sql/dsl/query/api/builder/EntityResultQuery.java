@@ -1,13 +1,15 @@
-package github.sql.dsl.query.api.query;
+package github.sql.dsl.query.api.builder;
 
 import github.sql.dsl.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
 
-public interface ProjectionResults<T> {
+//组件组合
+public interface EntityResultQuery<T> {
+    int NON = Integer.MIN_VALUE / 2;
 
-    int NON = EntityResultQuery.NON;
+    int count();
 
     default T getFirst() {
         return getFirst(NON);
@@ -32,7 +34,7 @@ public interface ProjectionResults<T> {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    List<T> getResultList(int offset, int maxResultant);
+    List<T> getResultList(int offset, int maxResult);
 
     default List<T> getResultList(int offset) {
         return getResultList(offset, NON);
@@ -41,5 +43,11 @@ public interface ProjectionResults<T> {
     default List<T> getResultList() {
         return getResultList(NON, NON);
     }
+
+    default boolean exist() {
+        return exist(NON);
+    }
+
+    boolean exist(int offset);
 
 }

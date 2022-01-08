@@ -1,8 +1,8 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.expression.path.bridge.ComparableAttribute;
-import github.sql.dsl.query.api.expression.path.bridge.NumberAttribute;
-import github.sql.dsl.query.api.expression.path.bridge.StringAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.ComparableAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.NumberAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.StringAttribute;
 
 import java.util.Date;
 

@@ -1,10 +1,14 @@
 package github.sql.dsl.query.suport.builder.component;
 
-import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.builder.combination.ComparableExpressionBuilder;
+import github.sql.dsl.query.api.builder.combination.ExpressionBuilder;
+import github.sql.dsl.query.api.builder.combination.NumberExpressionBuilder;
+import github.sql.dsl.query.api.builder.combination.StringExpressionBuilder;
+import github.sql.dsl.query.api.expression.Operator;
 import github.sql.dsl.query.api.expression.path.AttributePath;
 import github.sql.dsl.query.api.expression.path.Entity;
 import github.sql.dsl.query.api.expression.path.PathBuilder;
-import github.sql.dsl.query.api.expression.path.bridge.*;
+import github.sql.dsl.query.api.expression.path.attribute.*;
 
 import java.util.Date;
 import java.util.function.Function;

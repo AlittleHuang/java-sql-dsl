@@ -1,9 +1,9 @@
 package github.sql.dsl.query.suport.builder.query;
 
 import github.sql.dsl.query.api.builder.*;
-import github.sql.dsl.query.api.query.ArrayQuery;
-import github.sql.dsl.query.api.query.EntityQuery;
-import github.sql.dsl.query.api.query.WhereBuilder;
+import github.sql.dsl.query.api.builder.combination.ArrayQuery;
+import github.sql.dsl.query.api.builder.combination.EntityQuery;
+import github.sql.dsl.query.api.builder.combination.WhereBuilder;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.TypeQueryFactory;
 import lombok.experimental.Delegate;

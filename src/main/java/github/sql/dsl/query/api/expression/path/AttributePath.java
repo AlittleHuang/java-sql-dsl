@@ -2,7 +2,7 @@ package github.sql.dsl.query.api.expression.path;
 
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.PathExpression;
-import github.sql.dsl.query.api.expression.path.bridge.*;
+import github.sql.dsl.query.api.expression.path.attribute.*;
 import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import github.sql.dsl.query.suport.builder.component.Selection;
 

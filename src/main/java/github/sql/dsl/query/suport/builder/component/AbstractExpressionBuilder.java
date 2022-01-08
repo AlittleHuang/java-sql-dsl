@@ -2,7 +2,7 @@ package github.sql.dsl.query.suport.builder.component;
 
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.path.bridge.Attribute;
+import github.sql.dsl.query.api.expression.path.attribute.Attribute;
 import lombok.Getter;
 
 import java.util.Collection;

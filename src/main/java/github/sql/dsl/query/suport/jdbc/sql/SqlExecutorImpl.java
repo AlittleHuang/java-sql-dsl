@@ -1,22 +1,15 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
 import github.sql.dsl.query.api.expression.PathExpression;
-import github.sql.dsl.query.suport.jdbc.meta.Attribute;
-import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
-import github.sql.dsl.query.suport.jdbc.meta.ProjectionAttribute;
-import github.sql.dsl.query.suport.jdbc.meta.ProjectionInformation;
-import github.sql.dsl.query.suport.jdbc.util.JacksonMapper;
 import github.sql.dsl.query.suport.jdbc.util.JdbcUtil;
+import github.sql.dsl.query.suport.meta.Attribute;
+import github.sql.dsl.query.suport.meta.EntityInformation;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SqlExecutorImpl implements PreparedSqlExecutor {
 
@@ -29,80 +22,6 @@ public class SqlExecutorImpl implements PreparedSqlExecutor {
     @Override
     public <T> List<T> getEntityList(SelectedPreparedSql sql, Class<T> entityType) {
         return getResultSet(sql, resultSet -> mapToEntity(sql, entityType, resultSet));
-    }
-
-    @Override
-    public <T, R> List<R> getProjectionList(SelectedPreparedSql sql, Class<T> entityType, Class<R> projectionType) {
-
-        return getResultSet(sql, resultSet -> projection(resultSet, sql, entityType, projectionType));
-    }
-
-    @SneakyThrows
-    private <T, R> List<R> projection(ResultSet resultSet, SelectedPreparedSql sql, Class<T> entityType, Class<R> projectionType) {
-        ProjectionInformation info = ProjectionInformation.get(entityType, projectionType);
-        List<R> result = new ArrayList<>();
-
-        int columnsCount = resultSet.getMetaData().getColumnCount();
-        if (projectionType.isInterface()) {
-            Class<?>[] interfaces = {projectionType};
-            ClassLoader classLoader = projectionType.getClassLoader();
-
-            while (resultSet.next()) {
-                List<PathExpression<?>> selectedPath = sql.getSelectedPath();
-                Map<Method, Object> row = new HashMap<>();
-                for (int i = 0; i < columnsCount; i++) {
-                    PathExpression<?> path = selectedPath.get(i);
-                    int size = path.size();
-                    if (resultSet.getObject(i + 1) != null) {
-                        for (int j = 0; j < size; j++) {
-                            String name = path.get(j);
-                            ProjectionAttribute attribute = info.get(name);
-                            if (j == size - 1) {
-                                Object value = JdbcUtil.getValue(resultSet, i + 1, attribute.getJavaType());
-                                row.put(attribute.getGetter(), value);
-                            } else {
-                                throw new UnsupportedOperationException();
-                            }
-                        }
-                    }
-                }
-                //noinspection unchecked
-                R r = (R) Proxy.newProxyInstance(classLoader, interfaces, (proxy, method, args) -> {
-                    if (row.containsKey(method)) {
-                        return row.get(method);
-                    }
-                    if (method.getName().equals("toString") && method.getParameterTypes().length == 0) {
-                        return JacksonMapper.writeValueAsString(proxy);
-                    }
-                    return method.invoke(row, args);
-                });
-
-                result.add(r);
-            }
-        } else {
-            while (resultSet.next()) {
-                List<PathExpression<?>> selectedPath = sql.getSelectedPath();
-                R row = projectionType.getConstructor().newInstance();
-                for (int i = 0; i < columnsCount; i++) {
-                    PathExpression<?> path = selectedPath.get(i);
-                    int size = path.size();
-                    if (resultSet.getObject(i + 1) != null) {
-                        for (int j = 0; j < size; j++) {
-                            String name = path.get(j);
-                            ProjectionAttribute attribute = info.get(name);
-                            if (j == size - 1) {
-                                Object value = JdbcUtil.getValue(resultSet, i + 1, attribute.getJavaType());
-                                attribute.setValue(row, value);
-                            } else {
-                                throw new UnsupportedOperationException();
-                            }
-                        }
-                    }
-                }
-                result.add(row);
-            }
-        }
-        return result;
     }
 
     @SneakyThrows

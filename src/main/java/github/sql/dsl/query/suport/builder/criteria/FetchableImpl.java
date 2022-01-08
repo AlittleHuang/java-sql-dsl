@@ -4,7 +4,7 @@ import github.sql.dsl.query.api.builder.Fetchable;
 import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.api.expression.path.AttributePath;
 import github.sql.dsl.query.api.expression.path.EntityPath;
-import github.sql.dsl.query.api.expression.path.bridge.EntityAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.EntityAttribute;
 import github.sql.dsl.query.suport.builder.component.ConstantList;
 import github.sql.dsl.util.Array;
 import lombok.Getter;

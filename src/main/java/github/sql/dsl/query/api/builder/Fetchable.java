@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.builder;
 
-import github.sql.dsl.query.api.expression.path.bridge.EntityAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.EntityAttribute;
 
 public interface Fetchable<T, NEXT> {
 

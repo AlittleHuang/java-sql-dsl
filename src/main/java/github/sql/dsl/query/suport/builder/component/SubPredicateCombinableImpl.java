@@ -1,8 +1,8 @@
 package github.sql.dsl.query.suport.builder.component;
 
+import github.sql.dsl.query.api.builder.combination.SubPredicateCombinable;
 import github.sql.dsl.query.api.expression.BooleanExpression;
 import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.query.SubPredicateCombinable;
 import github.sql.dsl.query.suport.builder.criteria.PredicateCombinableImpl;
 
 import java.util.function.Function;

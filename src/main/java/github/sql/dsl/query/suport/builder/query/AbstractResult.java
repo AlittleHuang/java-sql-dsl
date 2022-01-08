@@ -1,7 +1,7 @@
 package github.sql.dsl.query.suport.builder.query;
 
 import github.sql.dsl.query.api.builder.*;
-import github.sql.dsl.query.api.query.*;
+import github.sql.dsl.query.api.builder.combination.*;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.TypeQueryFactory;
 import github.sql.dsl.query.suport.builder.criteria.*;

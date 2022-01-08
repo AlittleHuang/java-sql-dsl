@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.expression.path;
 
-import github.sql.dsl.query.api.expression.path.bridge.StringAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.StringAttribute;
 
 public class StringPath<T>
         extends AttributePath<T, String>

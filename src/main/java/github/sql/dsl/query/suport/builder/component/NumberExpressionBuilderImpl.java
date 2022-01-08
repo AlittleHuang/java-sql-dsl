@@ -1,9 +1,9 @@
 package github.sql.dsl.query.suport.builder.component;
 
+import github.sql.dsl.query.api.builder.combination.NumberExpressionBuilder;
 import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.NumberExpressionBuilder;
 import github.sql.dsl.query.api.expression.Operator;
-import github.sql.dsl.query.api.expression.path.bridge.NumberAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.NumberAttribute;
 
 import java.util.function.Function;
 

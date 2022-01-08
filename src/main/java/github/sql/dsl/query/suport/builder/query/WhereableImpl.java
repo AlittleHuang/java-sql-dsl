@@ -1,12 +1,11 @@
 package github.sql.dsl.query.suport.builder.query;
 
-import github.sql.dsl.query.api.expression.*;
+import github.sql.dsl.query.api.builder.combination.*;
+import github.sql.dsl.query.api.expression.BooleanExpression;
+import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.path.Entity;
 import github.sql.dsl.query.api.expression.path.PathBuilder;
-import github.sql.dsl.query.api.expression.path.bridge.*;
-import github.sql.dsl.query.api.query.SubPredicateCombinable;
-import github.sql.dsl.query.api.query.SubPredicateHeaderCombinable;
-import github.sql.dsl.query.api.query.Whereable;
+import github.sql.dsl.query.api.expression.path.attribute.*;
 import github.sql.dsl.query.suport.builder.criteria.PredicateCombinableImpl;
 import org.jetbrains.annotations.NotNull;
 

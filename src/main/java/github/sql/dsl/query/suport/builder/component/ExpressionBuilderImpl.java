@@ -1,8 +1,8 @@
 package github.sql.dsl.query.suport.builder.component;
 
+import github.sql.dsl.query.api.builder.combination.ExpressionBuilder;
 import github.sql.dsl.query.api.expression.ConstantExpression;
 import github.sql.dsl.query.api.expression.Expression;
-import github.sql.dsl.query.api.expression.ExpressionBuilder;
 import github.sql.dsl.query.api.expression.Operator;
 
 import java.util.function.Function;

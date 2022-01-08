@@ -1,6 +1,6 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import github.sql.dsl.query.api.query.EntityResultQuery;
+import github.sql.dsl.query.api.builder.EntityResultQuery;
 
 import java.util.List;
 

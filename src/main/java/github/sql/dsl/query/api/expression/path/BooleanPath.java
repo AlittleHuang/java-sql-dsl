@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.expression.path;
 
-import github.sql.dsl.query.api.expression.path.bridge.BooleanAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.BooleanAttribute;
 
 public class BooleanPath<T>
         extends AttributePath<T, Boolean>

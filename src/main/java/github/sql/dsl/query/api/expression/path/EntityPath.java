@@ -1,6 +1,6 @@
 package github.sql.dsl.query.api.expression.path;
 
-import github.sql.dsl.query.api.expression.path.bridge.EntityAttribute;
+import github.sql.dsl.query.api.expression.path.attribute.EntityAttribute;
 
 public class EntityPath<T, R extends Entity>
         extends AttributePath<T, R>
