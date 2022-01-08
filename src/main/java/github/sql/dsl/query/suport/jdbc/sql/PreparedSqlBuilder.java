@@ -10,5 +10,5 @@ public interface PreparedSqlBuilder {
 
     PreparedSql count();
 
-    SelectedPreparedSql getProjectionList(int offset, int maxResul, Class<?> projectionType);
+    SelectedPreparedSql getProjectionList(int offset, int maxResult, Class<?> projectionType);
 }

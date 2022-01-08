@@ -56,8 +56,8 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
     }
 
     @Override
-    public SelectedPreparedSql getProjectionList(int offset, int maxResul, Class<?> projectionType) {
-        return new ProjectionBuilder(projectionType).getProjectionList(offset, maxResul);
+    public SelectedPreparedSql getProjectionList(int offset, int maxResult, Class<?> projectionType) {
+        return new ProjectionBuilder(projectionType).getProjectionList(offset, maxResult);
     }
 
     private class ProjectionBuilder extends Builder implements SelectedPreparedSql {

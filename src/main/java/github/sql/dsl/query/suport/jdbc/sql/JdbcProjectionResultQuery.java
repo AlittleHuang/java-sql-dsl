@@ -27,8 +27,8 @@ public class JdbcProjectionResultQuery<T, R> implements ProjectionResultQuery<R>
     }
 
     @Override
-    public List<R> getResultList(int offset, int maxResul) {
-        SelectedPreparedSql sql = builder.getProjectionList(offset, maxResul, projectionType);
+    public List<R> getResultList(int offset, int maxResult) {
+        SelectedPreparedSql sql = builder.getProjectionList(offset, maxResult, projectionType);
         return executor.getProjectionList(sql, entityType, projectionType);
     }
 

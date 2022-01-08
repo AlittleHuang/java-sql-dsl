@@ -22,8 +22,8 @@ public class JdbcEntityEntityResultQuery<T> implements EntityResultQuery<T> {
     }
 
     @Override
-    public List<T> getResultList(int offset, int maxResul) {
-        return executor.getEntityList(builder.getEntityList(offset, maxResul), entityType);
+    public List<T> getResultList(int offset, int maxResult) {
+        return executor.getEntityList(builder.getEntityList(offset, maxResult), entityType);
     }
 
     @Override

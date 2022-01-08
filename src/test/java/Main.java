@@ -4,6 +4,7 @@ import github.sql.dsl.query.DbSet;
 import github.sql.dsl.query.api.Query;
 import github.sql.dsl.query.suport.DbSets;
 import github.sql.dsl.query.suport.builder.component.AggregateFunction;
+import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.util.Arrays;
@@ -68,9 +69,11 @@ public class Main {
         }
 
 
-        List<UserProjection> resultList1 = from.projected(UserProjection.class)
+        List<?> resultList1 = from
+                .orderBy(User::getId).asc()
+                .projected(UserProjection2.class)
                 .getResultList();
-        for (UserProjection userProjection : resultList1) {
+        for (Object userProjection : resultList1) {
             System.out.println(userProjection);
         }
         // List<User> resultList = from.getResultList();
@@ -100,6 +103,13 @@ public class Main {
         int getId();
 
         String getUsername();
+    }
+
+    @Data
+    public static class UserProjection2 {
+        int id;
+
+        String username;
     }
 
 

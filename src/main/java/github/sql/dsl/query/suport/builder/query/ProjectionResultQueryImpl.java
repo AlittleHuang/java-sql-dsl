@@ -25,8 +25,8 @@ public class ProjectionResultQueryImpl<T, R> implements ProjectionResultQuery<R>
 
 
     @Override
-    public List<R> getResultList(int offset, int maxResul) {
-        return executor.getProjectionList(builder.getProjectionList(offset, maxResul, projectionType), entityType, projectionType);
+    public List<R> getResultList(int offset, int maxResult) {
+        return executor.getProjectionList(builder.getProjectionList(offset, maxResult, projectionType), entityType, projectionType);
     }
 
     @Override

@@ -33,7 +33,7 @@ public interface ProjectionResultQuery<T> {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    List<T> getResultList(int offset, int maxResul);
+    List<T> getResultList(int offset, int maxResult);
 
     default List<T> getResultList(int offset) {
         return getResultList(offset, NON);

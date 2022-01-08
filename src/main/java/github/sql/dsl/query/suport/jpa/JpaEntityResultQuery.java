@@ -43,8 +43,8 @@ public class JpaEntityResultQuery<T> implements EntityResultQuery<T>, ArrayResul
     }
 
     @Override
-    public List<T> getResultList(int offset, int maxResul) {
-        return new Builder<>(entityType).getResultList(offset, maxResul);
+    public List<T> getResultList(int offset, int maxResult) {
+        return new Builder<>(entityType).getResultList(offset, maxResult);
     }
 
     @Override
@@ -316,17 +316,6 @@ public class JpaEntityResultQuery<T> implements EntityResultQuery<T>, ArrayResul
             if (where != null) {
                 query.where(toPredicate(where));
             }
-        }
-    }
-
-    public static void main(String[] args) {
-
-        System.out.println(Number.class.isAssignableFrom(Integer.class));
-
-        System.out.println(Integer.class.isAssignableFrom(Number.class));
-
-        for (Operator operator : Operator.values()) {
-            System.out.println("else if(\"" + operator.toString().toUpperCase() + "\".equals(operator.getSign())){\n\n}");
         }
     }
 

@@ -1,11 +1,11 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.suport.jdbc.meta.Attribute;
 import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
 import github.sql.dsl.query.suport.jdbc.meta.ProjectionAttribute;
 import github.sql.dsl.query.suport.jdbc.meta.ProjectionInformation;
+import github.sql.dsl.query.suport.jdbc.util.JacksonMapper;
 import github.sql.dsl.query.suport.jdbc.util.JdbcUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SqlExecutorImpl implements PreparedSqlExecutor {
-    private static final JsonMapper jsonMapper = new JsonMapper();
-
 
     protected final SqlExecutor sqlExecutor;
 
@@ -74,7 +72,7 @@ public class SqlExecutorImpl implements PreparedSqlExecutor {
                         return row.get(method);
                     }
                     if (method.getName().equals("toString") && method.getParameterTypes().length == 0) {
-                        return jsonMapper.writeValueAsString(proxy);
+                        return JacksonMapper.writeValueAsString(proxy);
                     }
                     return method.invoke(row, args);
                 });

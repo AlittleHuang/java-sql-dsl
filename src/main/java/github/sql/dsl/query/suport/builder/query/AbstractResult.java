@@ -40,8 +40,8 @@ public abstract class AbstractResult<T> implements EntityResultQuery<T>, ArrayRe
     }
 
     @Override
-    public List<T> getResultList(int offset, int maxResul) {
-        return getTypeQuery().getResultList(offset, maxResul);
+    public List<T> getResultList(int offset, int maxResult) {
+        return getTypeQuery().getResultList(offset, maxResult);
     }
 
     @Override
