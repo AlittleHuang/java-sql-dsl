@@ -36,6 +36,10 @@ public class Main {
         //                 .build()
         //         )
         //         .getResultList();
+        List<User> all = from.fetch(User::getParentUser).getResultList();
+        for (User user : all) {
+            System.out.println(user);
+        }
 
 
         List<User> resultList = from

@@ -16,10 +16,7 @@ import lombok.var;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Fetch;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,9 +90,9 @@ public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
                     PathExpression<?> path = expression.asPathExpression();
                     for (String stringPath : path) {
                         if (fetch == null) {
-                            fetch = root.fetch(stringPath);
+                            fetch = root.fetch(stringPath, JoinType.LEFT);
                         } else {
-                            fetch = fetch.fetch(stringPath);
+                            fetch = fetch.fetch(stringPath, JoinType.LEFT);
                         }
                     }
                 }
