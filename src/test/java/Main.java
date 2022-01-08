@@ -69,12 +69,14 @@ public class Main {
         }
 
 
-        List<?> resultList1 = from
+        List<UserProjection> resultList1 = from
                 .orderBy(User::getId).asc()
-                .projected(UserProjection2.class)
+                .projected(UserProjection.class)
                 .getResultList();
-        for (Object userProjection : resultList1) {
+        for (UserProjection userProjection : resultList1) {
+            System.out.println(userProjection.equals(resultList1.get(0)));
             System.out.println(userProjection);
+            System.out.println(userProjection.hashCode());
         }
         // List<User> resultList = from.getResultList();
         // System.out.println(resultList.size());
@@ -100,9 +102,13 @@ public class Main {
     }
 
     public interface UserProjection {
+
         int getId();
 
         String getUsername();
+
+        boolean test();
+
     }
 
     @Data

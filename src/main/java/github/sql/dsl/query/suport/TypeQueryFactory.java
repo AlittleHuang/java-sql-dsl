@@ -10,6 +10,7 @@ import github.sql.dsl.query.suport.builder.query.CriteriaQueryImpl;
 import github.sql.dsl.query.suport.jdbc.util.JacksonMapper;
 import github.sql.dsl.query.suport.meta.ProjectionAttribute;
 import github.sql.dsl.query.suport.meta.ProjectionInformation;
+import github.sql.dsl.query.suport.meta.ProjectionProxyInstance;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Method;
@@ -49,32 +50,52 @@ public interface TypeQueryFactory {
                 List<Object[]> objects = getObjectsTypeQuery(cq, type)
                         .getObjectsList(offset, maxResult);
                 return objects.stream()
-                        .map(os -> mapToRejection(info, paths, os))
+                        .map(os -> mapToRejection(info, paths, os, projectionType))
                         .collect(Collectors.toList());
             }
 
             @SneakyThrows
-            private R mapToRejection(ProjectionInformation info, ArrayList<String> paths, Object[] os) {
+            private R mapToRejection(ProjectionInformation info, ArrayList<String> paths, Object[] os, Class<R> projectionType) {
                 ClassLoader classLoader = projectionType.getClassLoader();
-                Class<?>[] interfaces = {projectionType};
+                Class<?>[] interfaces = {projectionType, ProjectionProxyInstance.class};
 
                 if (projectionType.isInterface()) {
-                    Map<Method, Object> row = new HashMap<>();
+                    Map<Method, Object> map = new HashMap<>();
                     int i = 0;
                     for (ProjectionAttribute attribute : info) {
                         Object value = os[i++];
-                        row.put(attribute.getGetter(), value);
+                        map.put(attribute.getGetter(), value);
                     }
-
                     //noinspection unchecked
                     return (R) Proxy.newProxyInstance(classLoader, interfaces, (proxy, method, args) -> {
-                        if (row.containsKey(method)) {
-                            return row.get(method);
+                        if (map.containsKey(method)) {
+                            return map.get(method);
                         }
-                        if (method.getName().equals("toString") && method.getParameterTypes().length == 0) {
+                        if (ProjectionProxyInstance.TO_STRING_METHOD.equals(method)) {
                             return JacksonMapper.writeValueAsString(proxy);
                         }
-                        return method.invoke(row, args);
+
+                        if (ProjectionProxyInstance.GET_RESULT_MAP_METHOD.equals(method)) {
+                            return map;
+                        }
+
+                        if (ProjectionProxyInstance.GET_PROJECTION_CLASS_METHOD.equals(method)) {
+                            return projectionType;
+                        }
+
+                        if (ProjectionProxyInstance.EQUALS_METHOD.equals(method)) {
+                            if (args[0] instanceof ProjectionProxyInstance) {
+                                ProjectionProxyInstance instance = (ProjectionProxyInstance) args[0];
+                                if (instance.$getProjectionClass$() == projectionType) {
+                                    return map.equals(instance.$getResultMap$());
+                                }
+                            }
+                            return false;
+                        }
+                        if (method.getDeclaringClass() == Object.class) {
+                            return method.invoke(map, args);
+                        }
+                        return null;
                     });
                 } else {
                     R result = projectionType.getConstructor().newInstance();
