@@ -24,7 +24,9 @@ public interface TypeQueryFactory {
 
     <T> EntityResultQuery<T> getTypeQuery(CriteriaQuery criteriaQuery, Class<T> type);
 
-    default <T, R> ProjectionResultQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery, Class<T> type, Class<R> projectionType) {
+    default <T, R> ProjectionResultQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery,
+                                                               Class<T> type,
+                                                               Class<R> projectionType) {
         return new ProjectionResultQuery<R>() {
             @Override
             public int count() {
