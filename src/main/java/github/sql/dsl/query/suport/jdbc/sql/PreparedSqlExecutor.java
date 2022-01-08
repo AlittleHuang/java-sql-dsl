@@ -4,7 +4,9 @@ import java.util.List;
 
 public interface PreparedSqlExecutor {
 
-    <T> List<T> getEntityList(EntityQueryPreparedSql sql, Class<T> entityType);
+    <T> List<T> getEntityList(SelectedPreparedSql sql, Class<T> entityType);
+
+    <T, R> List<R> getProjectionList(SelectedPreparedSql sql, Class<T> entityType, Class<R> projectionType);
 
     List<Object[]> listResult(PreparedSql sql, Class<?> entityType);
 

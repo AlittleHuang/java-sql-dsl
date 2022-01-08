@@ -11,9 +11,11 @@ import github.sql.dsl.query.suport.builder.component.Order;
 import github.sql.dsl.query.suport.builder.component.Selection;
 import github.sql.dsl.query.suport.jdbc.meta.Attribute;
 import github.sql.dsl.query.suport.jdbc.meta.EntityInformation;
-import github.sql.dsl.query.suport.jdbc.sql.EntityQueryPreparedSql;
+import github.sql.dsl.query.suport.jdbc.meta.ProjectionAttribute;
+import github.sql.dsl.query.suport.jdbc.meta.ProjectionInformation;
 import github.sql.dsl.query.suport.jdbc.sql.PreparedSql;
 import github.sql.dsl.query.suport.jdbc.sql.PreparedSqlBuilder;
+import github.sql.dsl.query.suport.jdbc.sql.SelectedPreparedSql;
 import github.sql.dsl.util.Array;
 import github.sql.dsl.util.Assert;
 import lombok.Data;
@@ -34,7 +36,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
     }
 
     @Override
-    public EntityQueryPreparedSql getEntityList(int offset, int maxResultant) {
+    public SelectedPreparedSql getEntityList(int offset, int maxResultant) {
         return new EntityBuilder().getEntityList(offset, maxResultant);
     }
 
@@ -53,10 +55,49 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         return new Builder().count();
     }
 
-    private class EntityBuilder extends Builder implements EntityQueryPreparedSql {
+    @Override
+    public SelectedPreparedSql getProjectionList(int offset, int maxResul, Class<?> projectionType) {
+        return new ProjectionBuilder(projectionType).getProjectionList(offset, maxResul);
+    }
+
+    private class ProjectionBuilder extends Builder implements SelectedPreparedSql {
+        protected final List<PathExpression<?>> selectedPath = new ArrayList<>();
+        private final Class<?> projectionType;
+
+        private ProjectionBuilder(Class<?> projectionType) {
+            this.projectionType = projectionType;
+        }
+
+        protected SelectedPreparedSql getProjectionList(int offset, int maxResult) {
+            sql.append("select ");
+            appendProjectionPath();
+            appendQueryConditions(offset, maxResult);
+            return this;
+        }
+
+        private void appendProjectionPath() {
+            String join = "";
+            ProjectionInformation attributes = ProjectionInformation
+                    .get(rootEntityInfo.getJavaType(), projectionType);
+            for (ProjectionAttribute basicAttribute : attributes) {
+                sql.append(join);
+                PathExpression<Object> path = new PathExpression<>(basicAttribute.getFieldName());
+                appendPath(path);
+                selectedPath.add(path);
+                join = ",";
+            }
+        }
+
+        @Override
+        public List<PathExpression<?>> getSelectedPath() {
+            return selectedPath;
+        }
+    }
+
+    private class EntityBuilder extends Builder implements SelectedPreparedSql {
         protected final List<PathExpression<?>> selectedPath = new ArrayList<>();
 
-        protected EntityQueryPreparedSql getEntityList(int offset, int maxResult) {
+        protected SelectedPreparedSql getEntityList(int offset, int maxResult) {
             sql.append("select ");
             appendEntityPath();
             appendFetchPath();

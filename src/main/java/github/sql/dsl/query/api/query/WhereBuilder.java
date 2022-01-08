@@ -6,10 +6,10 @@ public interface WhereBuilder<T> extends
         PredicateCombinable<T, WhereBuilder<T>>,
         Fetchable<T, EntityQuery<T>>,
         Sortable<T, WhereBuilder<T>>,
-        Groupable<T, ObjectsQuery<T>>,
-        Selectable<T, ObjectsQuery<T>>,
+        Groupable<T, ArrayQuery<T>>,
+        Selectable<T, ArrayQuery<T>>,
         Projectable<T>,
-        TypeQuery<T> {
+        EntityResultQuery<T> {
 
 
 }

@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import github.sql.dsl.query.DbSet;
 import github.sql.dsl.query.api.Query;
@@ -13,7 +14,7 @@ public class Main {
 
     @SneakyThrows
     public static void main(String[] args) {
-
+        JsonMapper jsonMapper = new JsonMapper();
         MysqlDataSource source = new MysqlDataSource();
         source.setUrl("jdbc:mysql:///xiaoxi");
         source.setUser("root");
@@ -58,14 +59,20 @@ public class Main {
 
         List<Object[]> objects = from
                 .select(User::getId, AggregateFunction.SUM)
-                .select(User::getId,AggregateFunction.AVG)
-                .select(User::getId,AggregateFunction.COUNT)
+                .select(User::getId, AggregateFunction.AVG)
+                .select(User::getId, AggregateFunction.COUNT)
                 .getObjectsList();
 
         for (Object[] object : objects) {
             System.out.println(Arrays.toString(object));
         }
 
+
+        List<UserProjection> resultList1 = from.projected(UserProjection.class)
+                .getResultList();
+        for (UserProjection userProjection : resultList1) {
+            System.out.println(userProjection);
+        }
         // List<User> resultList = from.getResultList();
         // System.out.println(resultList.size());
         //
@@ -87,6 +94,12 @@ public class Main {
         //
         // admin.forEach(System.out::println);
 
+    }
+
+    public interface UserProjection {
+        int getId();
+
+        String getUsername();
     }
 
 

@@ -1,17 +1,16 @@
 package github.sql.dsl.query.suport.jdbc.sql;
 
-import github.sql.dsl.query.api.query.ProjectionResults;
-import github.sql.dsl.query.api.query.TypeQuery;
+import github.sql.dsl.query.api.query.EntityResultQuery;
 
 import java.util.List;
 
-public class JdbcEntityTypeQuery<T> implements TypeQuery<T> {
+public class JdbcEntityEntityResultQuery<T> implements EntityResultQuery<T> {
 
     private final PreparedSqlExecutor executor;
     private final PreparedSqlBuilder builder;
     private final Class<T> entityType;
 
-    public JdbcEntityTypeQuery(PreparedSqlExecutor executor, PreparedSqlBuilder builder, Class<T> entityType) {
+    public JdbcEntityEntityResultQuery(PreparedSqlExecutor executor, PreparedSqlBuilder builder, Class<T> entityType) {
         this.executor = executor;
         this.builder = builder;
         this.entityType = entityType;

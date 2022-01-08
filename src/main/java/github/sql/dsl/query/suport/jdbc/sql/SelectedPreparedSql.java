@@ -4,7 +4,7 @@ import github.sql.dsl.query.api.expression.PathExpression;
 
 import java.util.List;
 
-public interface EntityQueryPreparedSql extends PreparedSql {
+public interface SelectedPreparedSql extends PreparedSql {
 
     List<PathExpression<?>> getSelectedPath();
 

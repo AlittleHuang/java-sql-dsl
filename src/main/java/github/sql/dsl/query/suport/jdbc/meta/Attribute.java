@@ -43,6 +43,14 @@ public class Attribute {
         this.javaType = initJavaType();
     }
 
+    public boolean isBasic() {
+        return manyToOne == null
+                && oneToMany == null
+                && manyToMany == null
+                && oneToOne == null
+                && !collection;
+    }
+
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         if (field != null) {
             T annotation = field.getAnnotation(annotationClass);

@@ -206,7 +206,7 @@ public class EntityInformation<T> {
         return tableName;
     }
 
-    private static Field getDeclaredField(Class<?> clazz, String name) {
+    public static Field getDeclaredField(Class<?> clazz, String name) {
         try {
             return clazz.getDeclaredField(name);
         } catch (NoSuchFieldException e) {

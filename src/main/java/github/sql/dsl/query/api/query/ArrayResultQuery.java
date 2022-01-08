@@ -4,10 +4,10 @@ import github.sql.dsl.util.Assert;
 
 import java.util.List;
 
-public interface ObjectsTypeQuery {
+public interface ArrayResultQuery {
 
     default Object[] getFirstObjects() {
-        return getFirstObjects(TypeQuery.NON);
+        return getFirstObjects(EntityResultQuery.NON);
     }
 
     default Object[] getFirstObjects(int offset) {
@@ -22,17 +22,17 @@ public interface ObjectsTypeQuery {
     }
 
     default Object[] getSingleObjects() {
-        return getSingleObjects(TypeQuery.NON);
+        return getSingleObjects(EntityResultQuery.NON);
     }
 
     List<Object[]> getObjectsList(int offset, int maxResult);
 
     default List<Object[]> getObjectsList(int offset) {
-        return getObjectsList(offset, TypeQuery.NON);
+        return getObjectsList(offset, EntityResultQuery.NON);
     }
 
     default List<Object[]> getObjectsList() {
-        return getObjectsList(TypeQuery.NON, TypeQuery.NON);
+        return getObjectsList(EntityResultQuery.NON, EntityResultQuery.NON);
     }
 
 }

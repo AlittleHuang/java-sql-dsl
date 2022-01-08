@@ -8,6 +8,6 @@ public interface EntityQuery<T> extends
         PredicateCombinable<T, EntityQuery<T>>,
         Fetchable<T, EntityQuery<T>>,
         Sortable<T, EntityQuery<T>>,
-        TypeQuery<T> {
+        EntityResultQuery<T> {
 
 }

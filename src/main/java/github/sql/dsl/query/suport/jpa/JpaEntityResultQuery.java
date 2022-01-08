@@ -3,9 +3,9 @@ package github.sql.dsl.query.suport.jpa;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.Operator;
 import github.sql.dsl.query.api.expression.PathExpression;
-import github.sql.dsl.query.api.query.ObjectsTypeQuery;
+import github.sql.dsl.query.api.query.ArrayResultQuery;
+import github.sql.dsl.query.api.query.EntityResultQuery;
 import github.sql.dsl.query.api.query.ProjectionResults;
-import github.sql.dsl.query.api.query.TypeQuery;
 import github.sql.dsl.query.suport.CriteriaQuery;
 import github.sql.dsl.query.suport.builder.component.AggregateFunction;
 import github.sql.dsl.query.suport.builder.component.Order;
@@ -20,13 +20,13 @@ import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JpaTypeQuery<T> implements TypeQuery<T>, ObjectsTypeQuery {
+public class JpaEntityResultQuery<T> implements EntityResultQuery<T>, ArrayResultQuery {
     private final EntityManager entityManager;
     private final Class<T> entityType;
     private final CriteriaQuery criteria;
 
 
-    public JpaTypeQuery(EntityManager entityManager, Class<T> type, CriteriaQuery criteria) {
+    public JpaEntityResultQuery(EntityManager entityManager, Class<T> type, CriteriaQuery criteria) {
         this.entityManager = entityManager;
         this.entityType = type;
         this.criteria = criteria;

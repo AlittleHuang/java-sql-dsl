@@ -2,7 +2,7 @@ package github.sql.dsl.query.suport.jdbc.sql;
 
 public interface PreparedSqlBuilder {
 
-    EntityQueryPreparedSql getEntityList(int offset, int maxResultant);
+    SelectedPreparedSql getEntityList(int offset, int maxResultant);
 
     PreparedSql getObjectsList(int offset, int maxResultant);
 
@@ -10,4 +10,5 @@ public interface PreparedSqlBuilder {
 
     PreparedSql count();
 
+    SelectedPreparedSql getProjectionList(int offset, int maxResul, Class<?> projectionType);
 }

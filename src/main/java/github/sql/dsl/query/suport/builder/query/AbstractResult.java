@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuery {
+public abstract class AbstractResult<T> implements EntityResultQuery<T>, ArrayResultQuery {
 
     protected final TypeQueryFactory typeQueryFactory;
     protected final Class<T> entityType;
@@ -21,11 +21,11 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
         this.criteriaQuery = CriteriaQueryImpl.from(criteriaQuery);
     }
 
-    protected ObjectsTypeQuery getObjectsTypeQuery() {
+    protected ArrayResultQuery getObjectsTypeQuery() {
         return typeQueryFactory.getObjectsTypeQuery(criteriaQuery, entityType);
     }
 
-    protected TypeQuery<T> getTypeQuery() {
+    protected EntityResultQuery<T> getTypeQuery() {
         return typeQueryFactory.getTypeQuery(criteriaQuery, entityType);
     }
 
@@ -50,14 +50,14 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
     }
 
     @NotNull
-    protected Selectable<T, ObjectsQuery<T>> getSelectable() {
+    protected Selectable<T, ArrayQuery<T>> getSelectable() {
         return new SelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
-                new ObjectsQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
+                new ArrayQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
     @NotNull
-    protected Groupable<T, ObjectsQuery<T>> getGroupable() {
-        return new GroupableImpl<>(criteriaQuery.getGroupList(), next -> new ObjectsQueryImpl<>(
+    protected Groupable<T, ArrayQuery<T>> getGroupable() {
+        return new GroupableImpl<>(criteriaQuery.getGroupList(), next -> new ArrayQueryImpl<>(
                 this.typeQueryFactory,
                 this.entityType,
                 this.criteriaQuery.updateGroupList(next)));
@@ -92,19 +92,19 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
     }
 
     @NotNull
-    protected Whereable<T, ObjectsQuery<T>> getObjectsWhereable() {
+    protected Whereable<T, ArrayQuery<T>> getObjectsWhereable() {
         return new WhereableImpl<>(next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
-            return new ObjectsQueryImpl<>(typeQueryFactory, entityType, updated);
+            return new ArrayQueryImpl<>(typeQueryFactory, entityType, updated);
         });
 
     }
 
     @NotNull
-    protected Sortable<T, ObjectsQuery<T>> getObjectsSortable() {
+    protected Sortable<T, ArrayQuery<T>> getObjectsSortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
-            return new ObjectsQueryImpl<>(typeQueryFactory, entityType, updated);
+            return new ArrayQueryImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
@@ -127,5 +127,8 @@ public abstract class AbstractResult<T> implements TypeQuery<T>, ObjectsTypeQuer
                 new AggregateObjectsQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
+    public <R> ProjectionResultQuery<R> projected(Class<R> projectionType) {
+        return typeQueryFactory.getProjectionQuery(this.criteriaQuery, entityType, projectionType);
+    }
 
 }

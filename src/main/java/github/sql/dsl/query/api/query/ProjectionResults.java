@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public interface ProjectionResults<T> {
 
-    int NON = TypeQuery.NON;
+    int NON = EntityResultQuery.NON;
 
     default T getFirst() {
         return getFirst(NON);
