@@ -31,7 +31,7 @@ public class SubPredicateArray implements Expression<Boolean> {
         this.values = values;
     }
 
-    private Expression<Boolean> expression() {
+    public Expression<Boolean> value() {
         return value != null ? value : (value = merge());
     }
 
@@ -91,27 +91,27 @@ public class SubPredicateArray implements Expression<Boolean> {
 
     @Override
     public PathExpression<Boolean> asPathExpression() {
-        return expression().asPathExpression();
+        return value().asPathExpression();
     }
 
     @Override
     public Type getType() {
-        return expression().getType();
+        return value().getType();
     }
 
     @Override
     public Boolean getValue() {
-        return expression().getValue();
+        return value().getValue();
     }
 
     @Override
     public Operator getOperator() {
-        return expression().getOperator();
+        return value().getOperator();
     }
 
     @Override
     public List<? extends Expression<?>> getExpressions() {
-        return expression().getExpressions();
+        return value().getExpressions();
     }
 
     @Override

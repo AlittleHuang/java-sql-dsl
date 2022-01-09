@@ -23,7 +23,7 @@ public class Main {
 
         DbSet query = DbSets.mysql(source);
 
-        Query<User> from = query.create(User.class);
+        Query<User> from = query.query(User.class);
         // from.where(User::getId)
         //         .eq(111)
         //         .Or(builder -> builder.get(User::getId).eq(44)

@@ -46,15 +46,7 @@ public class SubPredicateCombinableImpl<T, NEXT>
 
     @Override
     public BooleanExpression build() {
-        switch (expression.getType()) {
-            case PATH:
-                return BooleanPathExpression.fromPathExpression(expression);
-            case CONSTANT:
-                return BooleanConstantExpression.fromConstantExpression(expression);
-            case OPERATOR:
-                return new BooleanOperatorExpression(expression.getExpressions(), expression.getOperator());
-        }
-        throw new UnsupportedOperationException();
+        return BooleanExpression.of(expression.value());
     }
 
 }
