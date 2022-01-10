@@ -10,22 +10,22 @@ public interface SubPredicateHeaderCombinable<T, NEXT> {
 
     <U extends Entity> PathBuilder<T, U, NEXT> get(EntityAttribute<T, U> column);
 
-    <U> ExpressionBuilder<T, U, NEXT> get(Attribute<T, U> attribute);
+    <U> PredicateBuilder<T, U, NEXT> get(Attribute<T, U> attribute);
 
-    <U extends Number> NumberExpressionBuilder<T, U, NEXT> get(NumberAttribute<T, U> column);
+    <U extends Number> NumberPredicateBuilder<T, U, NEXT> get(NumberAttribute<T, U> column);
 
-    <U extends Date> ComparableExpressionBuilder<T, U, NEXT> get(ComparableAttribute<T, U> column);
+    <U extends Date> ComparablePredicateBuilder<T, U, NEXT> get(ComparableAttribute<T, U> column);
 
-    StringExpressionBuilder<T, NEXT> get(StringAttribute<T> column);
+    StringPredicateBuilder<T, NEXT> get(StringAttribute<T> column);
 
     <U extends Entity> PathBuilder<T, U, NEXT> not(EntityAttribute<T, U> column);
 
-    <U> ExpressionBuilder<T, U, NEXT> not(Attribute<T, U> attribute);
+    <U> PredicateBuilder<T, U, NEXT> not(Attribute<T, U> attribute);
 
-    <U extends Number> NumberExpressionBuilder<T, U, NEXT> not(NumberAttribute<T, U> column);
+    <U extends Number> NumberPredicateBuilder<T, U, NEXT> not(NumberAttribute<T, U> column);
 
-    <U extends Date> ComparableExpressionBuilder<T, U, NEXT> not(ComparableAttribute<T, U> column);
+    <U extends Date> ComparablePredicateBuilder<T, U, NEXT> not(ComparableAttribute<T, U> column);
 
-    StringExpressionBuilder<T, NEXT> not(StringAttribute<T> column);
+    StringPredicateBuilder<T, NEXT> not(StringAttribute<T> column);
 
 }

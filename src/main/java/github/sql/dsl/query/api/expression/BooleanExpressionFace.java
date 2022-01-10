@@ -7,7 +7,7 @@ import java.util.Objects;
 public class BooleanExpressionFace implements BooleanExpression {
 
     @Delegate
-    private final Expression<Boolean> target;
+    protected final Expression<Boolean> target;
 
     public BooleanExpressionFace(Expression<Boolean> target) {
         this.target = Objects.requireNonNull(target);

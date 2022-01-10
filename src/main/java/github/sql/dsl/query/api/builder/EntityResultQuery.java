@@ -5,7 +5,6 @@ import github.sql.dsl.util.Assert;
 import java.util.List;
 import java.util.Objects;
 
-//组件组合
 public interface EntityResultQuery<T> {
     int NON = Integer.MIN_VALUE / 2;
 

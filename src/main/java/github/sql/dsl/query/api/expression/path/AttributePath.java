@@ -3,8 +3,8 @@ package github.sql.dsl.query.api.expression.path;
 import github.sql.dsl.query.api.expression.Expression;
 import github.sql.dsl.query.api.expression.PathExpression;
 import github.sql.dsl.query.api.expression.path.attribute.*;
-import github.sql.dsl.query.suport.builder.component.AggregateFunction;
-import github.sql.dsl.query.suport.builder.component.Selection;
+import github.sql.dsl.query.api.suport.builder.component.AggregateFunction;
+import github.sql.dsl.query.api.suport.builder.component.Selection;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;

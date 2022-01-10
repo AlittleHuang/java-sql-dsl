@@ -31,7 +31,7 @@ public interface Attribute<T, R> extends Serializable {
     }
 
 
-    static <T, R extends Number> BooleanAttribute<T> of(BooleanAttribute<T> attribute) {
+    static <T> BooleanAttribute<T> of(BooleanAttribute<T> attribute) {
         return AttributePath.fromBooleanAttributeBridge(attribute);
     }
 

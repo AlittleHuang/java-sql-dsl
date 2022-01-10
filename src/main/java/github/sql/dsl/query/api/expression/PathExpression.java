@@ -1,7 +1,7 @@
 package github.sql.dsl.query.api.expression;
 
-import github.sql.dsl.query.suport.builder.component.AggregateFunction;
-import github.sql.dsl.query.suport.builder.component.Selection;
+import github.sql.dsl.query.api.suport.builder.component.AggregateFunction;
+import github.sql.dsl.query.api.suport.builder.component.Selection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

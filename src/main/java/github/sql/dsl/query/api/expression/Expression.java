@@ -10,6 +10,18 @@ import java.util.stream.Collectors;
 
 public interface Expression<T> {
 
+    // Predicate isNull();
+    //
+    // Predicate isNotNull();
+    //
+    // Predicate in(Object... values);
+    //
+    // Predicate in(Expression<?>... values);
+    //
+    // Predicate in(Collection<?> values);
+    //
+    // Predicate in(Expression<Collection<?>> values);
+
     static Expression<?> of(Object value) {
         if (value instanceof Expression) {
             return (Expression<?>) value;
@@ -42,6 +54,10 @@ public interface Expression<T> {
 
     static <T, X> OperatorExpressionImpl<X> thenOperator(Expression<T> e, Operator operator, Collection<? extends Expression<?>> args) {
         return thenOperator(e, operator, args == null ? new Expression[0] : args.toArray(new Expression[0]));
+    }
+
+    default Expression<T> unwrap() {
+        return this;
     }
 
     PathExpression<T> asPathExpression();
