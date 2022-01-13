@@ -52,4 +52,10 @@ public class QueryImpl<T> extends AbstractResult<T> implements Query<T> {
         return super.getAggregateSelectable();
     }
 
+    @Delegate
+    @Override
+    protected TypeResultQuery<T> getTypeQuery() {
+        return super.getTypeQuery();
+    }
+
 }

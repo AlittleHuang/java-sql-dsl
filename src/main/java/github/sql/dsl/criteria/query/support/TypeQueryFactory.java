@@ -1,8 +1,6 @@
 package github.sql.dsl.criteria.query.support;
 
-import github.sql.dsl.criteria.query.builder.ArrayResultQuery;
-import github.sql.dsl.criteria.query.builder.EntityResultQuery;
-import github.sql.dsl.criteria.query.builder.ProjectionResultQuery;
+import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.support.builder.component.ConstantList;
 import github.sql.dsl.criteria.query.support.builder.component.Selection;
@@ -23,15 +21,15 @@ import java.util.stream.Collectors;
 
 public interface TypeQueryFactory {
 
-    <T> EntityResultQuery<T> getTypeQuery(CriteriaQuery criteriaQuery, Class<T> type);
+    <T> TypeResultQuery<T> getEntityResultQuery(CriteriaQuery criteriaQuery, Class<T> type);
 
-    default <T, R> ProjectionResultQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery,
-                                                               Class<T> type,
-                                                               Class<R> projectionType) {
-        return new ProjectionResultQuery<R>() {
+    default <T, R> TypeResultQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery,
+                                                         Class<T> type,
+                                                         Class<R> projectionType) {
+        return new TypeResultQuery<R>() {
             @Override
             public int count() {
-                return getTypeQuery(criteriaQuery, type).count();
+                return getEntityResultQuery(criteriaQuery, type).count();
             }
 
             @Override
@@ -48,7 +46,7 @@ public interface TypeQueryFactory {
                 CriteriaQueryImpl cq = CriteriaQueryImpl.from(criteriaQuery)
                         .updateSelection(array);
                 List<Object[]> objects = getObjectsTypeQuery(cq, type)
-                        .getObjectsList(offset, maxResult);
+                        .getResultList(offset, maxResult);
                 return objects.stream()
                         .map(os -> mapToRejection(info, paths, os, projectionType))
                         .collect(Collectors.toList());
@@ -111,12 +109,12 @@ public interface TypeQueryFactory {
 
             @Override
             public boolean exist(int offset) {
-                return getTypeQuery(criteriaQuery, type).exist(offset);
+                return getEntityResultQuery(criteriaQuery, type).exist(offset);
             }
         };
     }
 
-    ArrayResultQuery getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type);
+    TypeResultQuery<Object[]> getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type);
 
 
 }

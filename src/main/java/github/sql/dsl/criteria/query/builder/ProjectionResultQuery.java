@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public interface ProjectionResultQuery<T> {
-    int NON = EntityResultQuery.NON;
+    int NON = TypeResultQuery.NON;
 
     int count();
 

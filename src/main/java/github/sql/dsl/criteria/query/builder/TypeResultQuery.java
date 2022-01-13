@@ -5,7 +5,7 @@ import github.sql.dsl.util.Assert;
 import java.util.List;
 import java.util.Objects;
 
-public interface EntityResultQuery<T> {
+public interface TypeResultQuery<T> {
     int NON = Integer.MIN_VALUE / 2;
 
     int count();

@@ -3,6 +3,7 @@ package github.sql.dsl.criteria.query.support.builder.query;
 import github.sql.dsl.criteria.query.builder.Groupable;
 import github.sql.dsl.criteria.query.builder.Selectable;
 import github.sql.dsl.criteria.query.builder.Sortable;
+import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
 import github.sql.dsl.criteria.query.builder.combination.Whereable;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
@@ -40,5 +41,10 @@ public class ArrayQueryImpl<T> extends AbstractResult<T> implements ArrayQuery<T
         return super.getSelectable();
     }
 
+    @Delegate
+    @Override
+    protected TypeResultQuery<Object[]> getObjectsTypeQuery() {
+        return super.getObjectsTypeQuery();
+    }
 
 }

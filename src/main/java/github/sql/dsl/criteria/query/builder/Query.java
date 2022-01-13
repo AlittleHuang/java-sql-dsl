@@ -10,7 +10,7 @@ public interface Query<T> extends
         Selectable<T, ArrayQuery<T>>,
         AggregateSelectable<T, AggregateObjectsQuery<T>>,
         Projectable<T>,
-        EntityResultQuery<T> {
+        TypeResultQuery<T> {
 
 
 }

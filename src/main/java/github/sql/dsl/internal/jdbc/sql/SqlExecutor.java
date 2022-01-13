@@ -86,7 +86,6 @@ public interface SqlExecutor {
 
     @FunctionalInterface
     interface ConnectionCallback<T> {
-        @SuppressWarnings("unused")
         T doInConnection(Connection connection) throws SQLException;
     }
 

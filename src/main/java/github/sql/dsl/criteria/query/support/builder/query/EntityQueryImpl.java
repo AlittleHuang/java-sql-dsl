@@ -3,6 +3,7 @@ package github.sql.dsl.criteria.query.support.builder.query;
 import github.sql.dsl.criteria.query.builder.Fetchable;
 import github.sql.dsl.criteria.query.builder.PredicateCombinable;
 import github.sql.dsl.criteria.query.builder.Sortable;
+import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
@@ -33,4 +34,10 @@ public class EntityQueryImpl<T> extends AbstractResult<T> implements EntityQuery
         return super.getEntityQuerySortable();
     }
 
+
+    @Delegate
+    @Override
+    protected TypeResultQuery<T> getTypeQuery() {
+        return super.getTypeQuery();
+    }
 }

@@ -1,10 +1,10 @@
 package github.sql.dsl.internal.jdbc.sql;
 
-import github.sql.dsl.criteria.query.builder.EntityResultQuery;
+import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 
 import java.util.List;
 
-public class JdbcEntityEntityResultQuery<T> implements EntityResultQuery<T> {
+public class JdbcEntityEntityResultQuery<T> implements TypeResultQuery<T> {
 
     private final PreparedSqlExecutor executor;
     private final PreparedSqlBuilder builder;

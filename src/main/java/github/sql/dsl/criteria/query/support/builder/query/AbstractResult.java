@@ -7,9 +7,8 @@ import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import github.sql.dsl.criteria.query.support.builder.criteria.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+public abstract class AbstractResult<T> {
 
-public abstract class AbstractResult<T> implements EntityResultQuery<T>, ArrayResultQuery {
 
     protected final TypeQueryFactory typeQueryFactory;
     protected final Class<T> entityType;
@@ -21,32 +20,12 @@ public abstract class AbstractResult<T> implements EntityResultQuery<T>, ArrayRe
         this.criteriaQuery = CriteriaQueryImpl.from(criteriaQuery);
     }
 
-    protected ArrayResultQuery getObjectsTypeQuery() {
+    protected TypeResultQuery<Object[]> getObjectsTypeQuery() {
         return typeQueryFactory.getObjectsTypeQuery(criteriaQuery, entityType);
     }
 
-    protected EntityResultQuery<T> getTypeQuery() {
-        return typeQueryFactory.getTypeQuery(criteriaQuery, entityType);
-    }
-
-    @Override
-    public List<Object[]> getObjectsList(int offset, int maxResult) {
-        return getObjectsTypeQuery().getObjectsList(offset, maxResult);
-    }
-
-    @Override
-    public int count() {
-        return getTypeQuery().count();
-    }
-
-    @Override
-    public List<T> getResultList(int offset, int maxResult) {
-        return getTypeQuery().getResultList(offset, maxResult);
-    }
-
-    @Override
-    public boolean exist(int offset) {
-        return getTypeQuery().exist(offset);
+    protected TypeResultQuery<T> getTypeQuery() {
+        return typeQueryFactory.getEntityResultQuery(criteriaQuery, entityType);
     }
 
     @NotNull
@@ -127,7 +106,7 @@ public abstract class AbstractResult<T> implements EntityResultQuery<T>, ArrayRe
                 new AggregateObjectsQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
-    public <R> ProjectionResultQuery<R> projected(Class<R> projectionType) {
+    public <R> TypeResultQuery<R> projected(Class<R> projectionType) {
         return typeQueryFactory.getProjectionQuery(this.criteriaQuery, entityType, projectionType);
     }
 

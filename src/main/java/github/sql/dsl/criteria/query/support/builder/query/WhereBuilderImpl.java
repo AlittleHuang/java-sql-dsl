@@ -43,5 +43,10 @@ public class WhereBuilderImpl<T> extends AbstractResult<T> implements WhereBuild
         return super.getSelectable();
     }
 
+    @Delegate
+    @Override
+    protected TypeResultQuery<T> getTypeQuery() {
+        return super.getTypeQuery();
+    }
 
 }

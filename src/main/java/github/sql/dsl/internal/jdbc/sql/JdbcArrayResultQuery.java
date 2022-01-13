@@ -1,10 +1,10 @@
 package github.sql.dsl.internal.jdbc.sql;
 
-import github.sql.dsl.criteria.query.builder.ArrayResultQuery;
+import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 
 import java.util.List;
 
-public class JdbcArrayResultQuery implements ArrayResultQuery {
+public class JdbcArrayResultQuery implements TypeResultQuery<Object[]> {
 
     private final PreparedSqlExecutor executor;
     private final PreparedSqlBuilder builder;
@@ -17,7 +17,18 @@ public class JdbcArrayResultQuery implements ArrayResultQuery {
     }
 
     @Override
-    public List<Object[]> getObjectsList(int offset, int maxResult) {
+    public List<Object[]> getResultList(int offset, int maxResult) {
         return executor.listResult(builder.getObjectsList(offset, maxResult), entityType);
     }
+
+    @Override
+    public int count() {
+        return executor.count(builder.count(), entityType);
+    }
+
+    @Override
+    public boolean exist(int offset) {
+        return executor.exist(builder.exist(offset), entityType);
+    }
+
 }

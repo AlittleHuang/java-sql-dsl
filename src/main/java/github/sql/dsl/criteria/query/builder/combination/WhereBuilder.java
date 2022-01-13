@@ -9,7 +9,7 @@ public interface WhereBuilder<T> extends
         Groupable<T, ArrayQuery<T>>,
         Selectable<T, ArrayQuery<T>>,
         Projectable<T>,
-        EntityResultQuery<T> {
+        TypeResultQuery<T> {
 
 
 }

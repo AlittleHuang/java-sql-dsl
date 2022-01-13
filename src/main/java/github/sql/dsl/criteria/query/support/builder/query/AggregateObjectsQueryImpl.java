@@ -3,6 +3,7 @@ package github.sql.dsl.criteria.query.support.builder.query;
 import github.sql.dsl.criteria.query.builder.AggregateSelectable;
 import github.sql.dsl.criteria.query.builder.Groupable;
 import github.sql.dsl.criteria.query.builder.Sortable;
+import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsQuery;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
 import github.sql.dsl.criteria.query.builder.combination.Whereable;
@@ -41,4 +42,9 @@ public class AggregateObjectsQueryImpl<T> extends AbstractResult<T> implements A
         return super.getAggregateSelectable();
     }
 
+    @Delegate
+    @Override
+    protected TypeResultQuery<Object[]> getObjectsTypeQuery() {
+        return super.getObjectsTypeQuery();
+    }
 }
