@@ -1,7 +1,7 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
 import github.sql.dsl.criteria.query.builder.Fetchable;
-import github.sql.dsl.criteria.query.builder.PredicateCombinable;
+import github.sql.dsl.criteria.query.builder.PredicateAssembler;
 import github.sql.dsl.criteria.query.builder.Sortable;
 import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
@@ -18,7 +18,7 @@ public class EntityQueryImpl<T> extends AbstractResult<T> implements EntityQuery
 
     @Delegate
     @Override
-    protected @NotNull PredicateCombinable<T, EntityQuery<T>> getRestrictionBuilder() {
+    protected @NotNull PredicateAssembler<T, EntityQuery<T>> getRestrictionBuilder() {
         return super.getRestrictionBuilder();
     }
 

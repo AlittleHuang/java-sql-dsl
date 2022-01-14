@@ -3,19 +3,19 @@ package github.sql.dsl.criteria.query.support.builder.query;
 import github.sql.dsl.criteria.query.builder.*;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
 import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
-import github.sql.dsl.criteria.query.builder.combination.WhereBuilder;
+import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
-public class WhereBuilderImpl<T> extends AbstractResult<T> implements WhereBuilder<T> {
-    public WhereBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+public class WhereAssemblerImpl<T> extends AbstractResult<T> implements WhereAssembler<T> {
+    public WhereAssemblerImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate
-    protected @NotNull PredicateCombinable<T, WhereBuilder<T>> getWereBuilderRestrictionBuilder() {
+    protected @NotNull PredicateAssembler<T, WhereAssembler<T>> getWereBuilderRestrictionBuilder() {
         return super.getWereBuilderRestrictionBuilder();
     }
 
@@ -27,7 +27,7 @@ public class WhereBuilderImpl<T> extends AbstractResult<T> implements WhereBuild
 
     @Delegate
     @Override
-    protected @NotNull Sortable<T, WhereBuilder<T>> getSortable() {
+    protected @NotNull Sortable<T, WhereAssembler<T>> getSortable() {
         return super.getSortable();
     }
 

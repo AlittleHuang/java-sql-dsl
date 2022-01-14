@@ -2,10 +2,10 @@ package github.sql.dsl.criteria.query.builder.combination;
 
 import github.sql.dsl.criteria.query.builder.*;
 
-public interface WhereBuilder<T> extends
-        PredicateCombinable<T, WhereBuilder<T>>,
+public interface WhereAssembler<T> extends
+        PredicateAssembler<T, WhereAssembler<T>>,
         Fetchable<T, EntityQuery<T>>,
-        Sortable<T, WhereBuilder<T>>,
+        Sortable<T, WhereAssembler<T>>,
         Groupable<T, ArrayQuery<T>>,
         Selectable<T, ArrayQuery<T>>,
         Projectable<T>,

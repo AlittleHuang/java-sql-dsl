@@ -4,7 +4,7 @@ import github.sql.dsl.criteria.query.builder.*;
 import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsQuery;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
 import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
-import github.sql.dsl.criteria.query.builder.combination.WhereBuilder;
+import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
@@ -18,7 +18,7 @@ public class QueryImpl<T> extends AbstractResult<T> implements Query<T> {
 
     @Delegate
     @Override
-    protected @NotNull WhereableImpl<T, WhereBuilder<T>> getWhereable() {
+    protected @NotNull WhereableImpl<T, WhereAssembler<T>> getWhereable() {
         return super.getWhereable();
     }
 
@@ -30,7 +30,7 @@ public class QueryImpl<T> extends AbstractResult<T> implements Query<T> {
 
     @Delegate
     @Override
-    protected @NotNull Sortable<T, WhereBuilder<T>> getSortable() {
+    protected @NotNull Sortable<T, WhereAssembler<T>> getSortable() {
         return super.getSortable();
     }
 

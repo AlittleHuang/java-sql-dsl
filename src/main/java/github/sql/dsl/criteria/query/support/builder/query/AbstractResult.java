@@ -43,7 +43,7 @@ public abstract class AbstractResult<T> {
     }
 
     @NotNull
-    protected Sortable<T, WhereBuilder<T>> getSortable() {
+    protected Sortable<T, WhereAssembler<T>> getSortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(),
                 next -> whereBuilder(this.criteriaQuery.updateOrderList(next)));
     }
@@ -55,19 +55,19 @@ public abstract class AbstractResult<T> {
     }
 
     @NotNull
-    protected WhereableImpl<T, WhereBuilder<T>> getWhereable() {
+    protected WhereableImpl<T, WhereAssembler<T>> getWhereable() {
         return new WhereableImpl<>(next -> whereBuilder(criteriaQuery.updateRestriction(next)));
     }
 
     @NotNull
-    protected PredicateCombinable<T, EntityQuery<T>> getRestrictionBuilder() {
-        return new PredicateCombinableImpl<>(criteriaQuery.getRestriction(),
+    protected PredicateAssembler<T, EntityQuery<T>> getRestrictionBuilder() {
+        return new PredicateAssemblerImpl<>(criteriaQuery.getRestriction(),
                 next -> new EntityQueryImpl<>(typeQueryFactory, entityType, criteriaQuery.updateRestriction(next)));
     }
 
 
-    protected WhereBuilder<T> whereBuilder(CriteriaQuery criteriaQuery) {
-        return new WhereBuilderImpl<>(this.typeQueryFactory, this.entityType, criteriaQuery);
+    protected WhereAssembler<T> whereBuilder(CriteriaQuery criteriaQuery) {
+        return new WhereAssemblerImpl<>(this.typeQueryFactory, this.entityType, criteriaQuery);
     }
 
     @NotNull
@@ -87,10 +87,10 @@ public abstract class AbstractResult<T> {
         });
     }
 
-    protected @NotNull PredicateCombinable<T, WhereBuilder<T>> getWereBuilderRestrictionBuilder() {
-        return new PredicateCombinableImpl<>(criteriaQuery.getRestriction(), next -> {
+    protected @NotNull PredicateAssembler<T, WhereAssembler<T>> getWereBuilderRestrictionBuilder() {
+        return new PredicateAssemblerImpl<>(criteriaQuery.getRestriction(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
-            return new WhereBuilderImpl<>(typeQueryFactory, entityType, updated);
+            return new WhereAssemblerImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 

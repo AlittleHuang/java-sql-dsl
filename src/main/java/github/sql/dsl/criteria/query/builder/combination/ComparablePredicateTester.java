@@ -1,6 +1,6 @@
 package github.sql.dsl.criteria.query.builder.combination;
 
-public interface ComparablePredicateBuilder<T, U extends Comparable<?>, NEXT> extends PredicateBuilder<T, U, NEXT> {
+public interface ComparablePredicateTester<T, U extends Comparable<?>, NEXT> extends PredicateTester<T, U, NEXT> {
 
     NEXT ge(U value);
 
@@ -13,6 +13,6 @@ public interface ComparablePredicateBuilder<T, U extends Comparable<?>, NEXT> ex
     NEXT lt(U value);
 
     @Override
-    ComparablePredicateBuilder<T, U, NEXT> nullIf(U value);
+    ComparablePredicateTester<T, U, NEXT> nullIf(U value);
 
 }

@@ -1,13 +1,13 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
-import github.sql.dsl.criteria.query.builder.PredicateCombinable;
+import github.sql.dsl.criteria.query.builder.PredicateAssembler;
 import github.sql.dsl.criteria.query.builder.combination.*;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Predicate;
 import github.sql.dsl.criteria.query.expression.path.Entity;
 import github.sql.dsl.criteria.query.expression.path.PathBuilder;
 import github.sql.dsl.criteria.query.expression.path.attribute.*;
-import github.sql.dsl.criteria.query.support.builder.criteria.PredicateCombinableImpl;
+import github.sql.dsl.criteria.query.support.builder.criteria.PredicateAssemblerImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
@@ -22,8 +22,8 @@ public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
     }
 
     @NotNull
-    private PredicateCombinableImpl<T, NEXT> getBuilder() {
-        return new PredicateCombinableImpl<>(null, mapper);
+    private PredicateAssemblerImpl<T, NEXT> getBuilder() {
+        return new PredicateAssemblerImpl<>(null, mapper);
     }
 
 
@@ -33,24 +33,24 @@ public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
     }
 
     @Override
-    public <U> PredicateBuilder<T, U, NEXT> where(Attribute<T, U> attribute) {
+    public <U> PredicateTester<T, U, NEXT> where(Attribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U extends Number> NumberPredicateBuilder<T, U, NEXT>
+    public <U extends Number> NumberPredicateTester<T, U, NEXT>
     where(NumberAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U extends Date> ComparablePredicateBuilder<T, U, NEXT>
+    public <U extends Date> ComparablePredicateTester<T, U, NEXT>
     where(ComparableAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> where(StringAttribute<T> attribute) {
+    public StringPredicateTester<T, NEXT> where(StringAttribute<T> attribute) {
         return getBuilder().and(attribute);
     }
 
@@ -60,27 +60,27 @@ public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
     }
 
     @Override
-    public <U> PredicateBuilder<T, U, NEXT> whereNot(Attribute<T, U> attribute) {
+    public <U> PredicateTester<T, U, NEXT> whereNot(Attribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Number> NumberPredicateBuilder<T, U, NEXT> whereNot(NumberAttribute<T, U> attribute) {
+    public <U extends Number> NumberPredicateTester<T, U, NEXT> whereNot(NumberAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Date> ComparablePredicateBuilder<T, U, NEXT> whereNot(ComparableAttribute<T, U> attribute) {
+    public <U extends Date> ComparablePredicateTester<T, U, NEXT> whereNot(ComparableAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> whereNot(StringAttribute<T> attribute) {
+    public StringPredicateTester<T, NEXT> whereNot(StringAttribute<T> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public NEXT Where(PredicateCombinable.Builder<T, NEXT> builder) {
+    public NEXT Where(PredicateAssembler.Builder<T, NEXT> builder) {
         return getBuilder().andAppend(builder);
     }
 

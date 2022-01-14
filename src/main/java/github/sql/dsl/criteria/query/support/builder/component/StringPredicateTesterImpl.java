@@ -1,20 +1,20 @@
 package github.sql.dsl.criteria.query.support.builder.component;
 
-import github.sql.dsl.criteria.query.builder.combination.NumberPredicateBuilder;
-import github.sql.dsl.criteria.query.builder.combination.StringPredicateBuilder;
+import github.sql.dsl.criteria.query.builder.combination.NumberPredicateTester;
+import github.sql.dsl.criteria.query.builder.combination.StringPredicateTester;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 
 import java.util.function.Function;
 
-public class StringPredicateBuilderImpl<T, NEXT>
+public class StringPredicateTesterImpl<T, NEXT>
         extends AbstractExpressionBuilder<T, String, NEXT>
-        implements StringPredicateBuilder<T, NEXT> {
+        implements StringPredicateTester<T, NEXT> {
 
-    public StringPredicateBuilderImpl(Expression<String> exchange,
-                                      Operator combined,
-                                      boolean negate,
-                                      Function<SubPredicate, NEXT> mapper) {
+    public StringPredicateTesterImpl(Expression<String> exchange,
+                                     Operator combined,
+                                     boolean negate,
+                                     Function<SubPredicate, NEXT> mapper) {
         super(exchange, combined, negate, mapper);
     }
 
@@ -39,8 +39,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> nullIf(String value) {
-        return new StringPredicateBuilderImpl<>(
+    public StringPredicateTester<T, NEXT> nullIf(String value) {
+        return new StringPredicateTesterImpl<>(
                 expression.then(Operator.NULLIF, value),
                 combined,
                 negate,
@@ -49,8 +49,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> lower() {
-        return new StringPredicateBuilderImpl<>(
+    public StringPredicateTester<T, NEXT> lower() {
+        return new StringPredicateTesterImpl<>(
                 expression.then(Operator.LOWER),
                 combined,
                 negate,
@@ -59,8 +59,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> upper() {
-        return new StringPredicateBuilderImpl<>(
+    public StringPredicateTester<T, NEXT> upper() {
+        return new StringPredicateTesterImpl<>(
                 expression.then(Operator.UPPER),
                 combined,
                 negate,
@@ -69,8 +69,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> substring(int a, int b) {
-        return new StringPredicateBuilderImpl<>(
+    public StringPredicateTester<T, NEXT> substring(int a, int b) {
+        return new StringPredicateTesterImpl<>(
                 expression.then(Operator.SUBSTRING, a, b),
                 combined,
                 negate,
@@ -79,8 +79,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> substring(int a) {
-        return new StringPredicateBuilderImpl<>(
+    public StringPredicateTester<T, NEXT> substring(int a) {
+        return new StringPredicateTesterImpl<>(
                 expression.then(Operator.SUBSTRING, a),
                 combined,
                 negate,
@@ -89,8 +89,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public StringPredicateBuilder<T, NEXT> trim() {
-        return new StringPredicateBuilderImpl<>(
+    public StringPredicateTester<T, NEXT> trim() {
+        return new StringPredicateTesterImpl<>(
                 expression.then(Operator.TRIM),
                 combined,
                 negate,
@@ -99,8 +99,8 @@ public class StringPredicateBuilderImpl<T, NEXT>
     }
 
     @Override
-    public NumberPredicateBuilder<T, Integer, NEXT> length() {
-        return new NumberPredicateBuilderImpl<>(
+    public NumberPredicateTester<T, Integer, NEXT> length() {
+        return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.LENGTH),
                 combined,
                 negate,

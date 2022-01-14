@@ -37,7 +37,7 @@ public abstract class JdbcUtil {
         put(Boolean.class, ResultSet::getBoolean);
         put(boolean.class, ResultSet::getBoolean);
         put(BigDecimal.class, ResultSet::getBigDecimal);
-        put(Date.class, ResultSet::getDate);
+        put(Date.class, ResultSet::getTimestamp);
         put(String.class, ResultSet::getString);
         put(Time.class, ResultSet::getTime);
 

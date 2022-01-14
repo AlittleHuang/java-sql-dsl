@@ -3,7 +3,7 @@ package github.sql.dsl.criteria.query.builder.combination;
 import java.util.Arrays;
 import java.util.Collection;
 
-public interface PredicateBuilder<T, U, NEXT> {
+public interface PredicateTester<T, U, NEXT> {
 
     NEXT isNull();
 
@@ -18,7 +18,7 @@ public interface PredicateBuilder<T, U, NEXT> {
 
     NEXT in(Collection<U> values);
 
-    PredicateBuilder<T, U, NEXT> nullIf(U value);
+    PredicateTester<T, U, NEXT> nullIf(U value);
 
 
 }
