@@ -3,8 +3,6 @@ package github.sql.dsl.criteria.query.expression.path;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.expression.path.attribute.*;
-import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
-import github.sql.dsl.criteria.query.support.builder.component.Selection;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -14,7 +12,7 @@ import java.util.Objects;
 
 public class AttributePath<T, R>
         extends PathExpression<R>
-        implements Attribute<T, R>, Selection<R> {
+        implements Attribute<T, R>, Expression<R> {
 
     public AttributePath(String... path) {
         super(path);
@@ -146,8 +144,4 @@ public class AttributePath<T, R>
         return path;
     }
 
-    @Override
-    public AggregateFunction getAggregateFunction() {
-        return null;
-    }
 }

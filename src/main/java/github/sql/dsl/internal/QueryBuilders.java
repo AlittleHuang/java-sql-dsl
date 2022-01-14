@@ -1,4 +1,4 @@
-package github.sql.dsl.criteria.query.support;
+package github.sql.dsl.internal;
 
 import github.sql.dsl.criteria.query.QueryBuilder;
 import github.sql.dsl.internal.jdbc.JdbcQueryBuilder;

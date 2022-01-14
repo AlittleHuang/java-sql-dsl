@@ -4,7 +4,6 @@ import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
-import github.sql.dsl.criteria.query.support.builder.component.Selection;
 import github.sql.dsl.util.Array;
 
 public class CriteriaQueryImpl implements CriteriaQuery {
@@ -15,13 +14,13 @@ public class CriteriaQueryImpl implements CriteriaQuery {
     private final Expression<Boolean> restriction;
     private final Array<Order> orderList;
     private final Array<Expression<?>> groupList;
-    private final Array<Selection<?>> selection;
+    private final Array<Expression<?>> selection;
     private final Array<PathExpression<?>> fetch;
 
     public CriteriaQueryImpl(Expression<Boolean> restriction,
                              Array<Order> orderList,
                              Array<Expression<?>> groupList,
-                             Array<Selection<?>> selection,
+                             Array<Expression<?>> selection,
                              Array<PathExpression<?>> fetch) {
         this.restriction = restriction;
         this.orderList = orderList;
@@ -57,7 +56,7 @@ public class CriteriaQueryImpl implements CriteriaQuery {
         return new CriteriaQueryImpl(restriction, orderList, groupList, selection, fetch);
     }
 
-    public CriteriaQueryImpl updateSelection(Array<Selection<?>> selection) {
+    public CriteriaQueryImpl updateSelection(Array<Expression<?>> selection) {
         return new CriteriaQueryImpl(restriction, orderList, groupList, selection, fetch);
     }
 
@@ -81,7 +80,7 @@ public class CriteriaQueryImpl implements CriteriaQuery {
     }
 
     @Override
-    public Array<Selection<?>> getSelectionList() {
+    public Array<Expression<?>> getSelectionList() {
         return selection;
     }
 

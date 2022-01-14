@@ -32,7 +32,15 @@ public enum Operator {
     NULLIF("nullif", 0),
     ISNULL("isnull", 0),
     IN("in", 0),
-    BETWEEN("between", 8);
+    BETWEEN("between", 8),
+
+    //aggregate function
+
+    MIN("min", 0),
+    MAX("max", 0),
+    COUNT("count", 0),
+    AVG("avg", 0),
+    SUM("sum", 0);
 
 
     private final String sign;

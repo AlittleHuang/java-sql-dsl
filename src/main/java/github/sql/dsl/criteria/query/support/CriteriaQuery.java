@@ -3,7 +3,6 @@ package github.sql.dsl.criteria.query.support;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
-import github.sql.dsl.criteria.query.support.builder.component.Selection;
 import github.sql.dsl.util.Array;
 
 public interface CriteriaQuery {
@@ -14,7 +13,7 @@ public interface CriteriaQuery {
 
     Array<Expression<?>> getGroupList();
 
-    Array<Selection<?>> getSelectionList();
+    Array<Expression<?>> getSelectionList();
 
     Array<PathExpression<?>> getFetchList();
 

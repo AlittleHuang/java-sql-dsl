@@ -1,9 +1,9 @@
 package github.sql.dsl.criteria.query.support;
 
 import github.sql.dsl.criteria.query.builder.TypeResultQuery;
+import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.support.builder.component.ConstantList;
-import github.sql.dsl.criteria.query.support.builder.component.Selection;
 import github.sql.dsl.criteria.query.support.builder.query.CriteriaQueryImpl;
 import github.sql.dsl.criteria.query.support.meta.ProjectionAttribute;
 import github.sql.dsl.criteria.query.support.meta.ProjectionInformation;
@@ -39,10 +39,10 @@ public interface TypeQueryFactory {
                 for (ProjectionAttribute attribute : info) {
                     paths.add(attribute.getFieldName());
                 }
-                Selection<?>[] selections = paths.stream()
+                Expression<?>[] selections = paths.stream()
                         .map(AttributePath::new)
-                        .toArray(Selection[]::new);
-                ConstantList<Selection<?>> array = new ConstantList<>(selections);
+                        .toArray(Expression[]::new);
+                ConstantList<Expression<?>> array = new ConstantList<>(selections);
                 CriteriaQueryImpl cq = CriteriaQueryImpl.from(criteriaQuery)
                         .updateSelection(array);
                 List<Object[]> objects = getObjectsTypeQuery(cq, type)

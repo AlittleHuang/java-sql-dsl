@@ -6,6 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface AggregateSelectable<T, NEXT> {
 
-    NEXT select(Attribute<T, ?> selection, @NotNull AggregateFunction function);
+    NEXT select(Attribute<T, ?> attribute, @NotNull AggregateFunction function);
 
 }

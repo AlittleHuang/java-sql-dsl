@@ -6,9 +6,7 @@ import github.sql.dsl.criteria.query.expression.OperatorExpression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.expression.path.Entity;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
-import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
-import github.sql.dsl.criteria.query.support.builder.component.Selection;
 import github.sql.dsl.criteria.query.support.meta.Attribute;
 import github.sql.dsl.criteria.query.support.meta.EntityInformation;
 import github.sql.dsl.criteria.query.support.meta.ProjectionAttribute;
@@ -324,7 +322,13 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                     case TRIM:
                     case LENGTH:
                     case NULLIF:
-                    case ISNULL: {
+                    case ISNULL:
+
+                    case MIN:
+                    case MAX:
+                    case COUNT:
+                    case AVG:
+                    case SUM: {
                         appendBlank().append(operator);
                         String join = "(";
                         for (Expression<?> expression : list) {
@@ -466,7 +470,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
         protected void appendSelectedPath() {
-            Iterable<Selection<?>> select = criteria.getSelectionList();
+            Iterable<Expression<?>> select = criteria.getSelectionList();
             if (select == null || !select.iterator().hasNext()) {
                 select = rootEntityInfo.getBasicAttributes()
                         .stream()
@@ -477,18 +481,9 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                         .collect(Collectors.toList());
             }
             String join = "";
-            for (Selection<?> selection : select) {
+            for (Expression<?> selection : select) {
                 sql.append(join);
-                AggregateFunction function = selection.getAggregateFunction();
-                if (function != null) {
-                    appendBlank()
-                            .append(function.name().toLowerCase())
-                            .append('(');
-                    appendExpression(selection);
-                    sql.append(')');
-                } else {
-                    appendExpression(selection);
-                }
+                appendExpression(selection);
                 join = ",";
             }
         }

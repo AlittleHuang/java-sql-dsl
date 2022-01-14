@@ -4,9 +4,7 @@ import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
-import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
-import github.sql.dsl.criteria.query.support.builder.component.Selection;
 import github.sql.dsl.util.Array;
 import lombok.var;
 
@@ -123,25 +121,7 @@ public class JpaResultQuery<T> {
             builderOrderBy();
             javax.persistence.criteria.CriteriaQuery<R> select = query.multiselect(
                     criteria.getSelectionList().stream()
-                            .map((Selection<?> selection) -> {
-                                javax.persistence.criteria.Expression<?> e = toExpression(selection);
-                                AggregateFunction function = selection.getAggregateFunction();
-                                if (function != null) {
-                                    switch (function) {
-                                        case MIN:
-                                            return cb.min(asNumber(e));
-                                        case MAX:
-                                            return cb.max(asNumber(e));
-                                        case COUNT:
-                                            return cb.count(e);
-                                        case AVG:
-                                            return cb.avg(asNumber(e));
-                                        case SUM:
-                                            return cb.sum(asNumber(e));
-                                    }
-                                }
-                                return e;
-                            })
+                            .map(this::toExpression)
                             .collect(Collectors.toList())
             );
 
@@ -254,6 +234,16 @@ public class JpaResultQuery<T> {
                                 (javax.persistence.criteria.Expression<? extends Comparable<Object>>) list.get(1),
                                 (javax.persistence.criteria.Expression<? extends Comparable<Object>>) list.get(2)
                         );
+                    case MIN:
+                        return cb.min(asNumber(e0));
+                    case MAX:
+                        return cb.max(asNumber(e0));
+                    case COUNT:
+                        return cb.count(e0);
+                    case AVG:
+                        return cb.avg(asNumber(e0));
+                    case SUM:
+                        return cb.sum(asNumber(e0));
                     default:
                         throw new UnsupportedOperationException("unknown operator " + operator);
                 }
