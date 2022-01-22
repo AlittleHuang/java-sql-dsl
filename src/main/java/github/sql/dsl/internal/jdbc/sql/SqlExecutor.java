@@ -18,7 +18,9 @@ public interface SqlExecutor {
         return new SqlExecutor() {
             @SneakyThrows
             public <T> T execute(ConnectionCallback<T> connectionCallback) {
-                return connectionCallback.doInConnection(supplier.getConnection());
+                try (Connection connection = supplier.getConnection()) {
+                    return connectionCallback.doInConnection(connection);
+                }
             }
         };
     }
@@ -51,8 +53,9 @@ public interface SqlExecutor {
         return execute(connection -> {
             PreparedStatement statement = connection.prepareStatement(sql);
             JdbcUtil.setParam(statement, args);
-            ResultSet resultSet = statement.executeQuery();
-            return resultSetCallback.doInResultSet(resultSet);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSetCallback.doInResultSet(resultSet);
+            }
         });
     }
 
@@ -65,8 +68,9 @@ public interface SqlExecutor {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             JdbcUtil.setParam(ps, args);
             ps.execute();
-            ResultSet resultSet = ps.getGeneratedKeys();
-            return resultSetCallback.doInResultSet(resultSet);
+            try (ResultSet resultSet = ps.getGeneratedKeys()) {
+                return resultSetCallback.doInResultSet(resultSet);
+            }
         });
     }
 
@@ -79,8 +83,9 @@ public interface SqlExecutor {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             JdbcUtil.setParamBatch(ps, batchArgs);
             ps.executeBatch();
-            ResultSet resultSet = ps.getGeneratedKeys();
-            return resultSetCallback.doInResultSet(resultSet);
+            try (ResultSet resultSet = ps.getGeneratedKeys()) {
+                return resultSetCallback.doInResultSet(resultSet);
+            }
         });
     }
 
