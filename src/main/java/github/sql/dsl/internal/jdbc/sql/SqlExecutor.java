@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -21,8 +22,7 @@ public interface SqlExecutor {
 
     static SqlExecutor fromConnectionSupplier(ConnectionProvider supplier) {
         return new SqlExecutor() {
-            @SneakyThrows
-            public <T> T execute(ConnectionCallback<T> connectionCallback) {
+            public <T> T execute(ConnectionCallback<T> connectionCallback) throws SQLException {
                 try (Connection connection = supplier.getConnection()) {
                     return connectionCallback.doInConnection(connection);
                 }
@@ -137,5 +137,11 @@ public interface SqlExecutor {
         }
     }
 
+    public static void main(String[] args) {
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("abc", "{abc=fff, xxx=fff}");
+        map.put("xxx", "fff");
+        System.out.println(map);
+    }
 
 }

@@ -8,7 +8,6 @@ import github.sql.dsl.criteria.query.support.builder.query.CriteriaQueryImpl;
 import github.sql.dsl.criteria.query.support.meta.ProjectionAttribute;
 import github.sql.dsl.criteria.query.support.meta.ProjectionInformation;
 import github.sql.dsl.criteria.query.support.meta.ProjectionProxyInstance;
-import github.sql.dsl.util.JacksonMapper;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Method;
@@ -70,7 +69,11 @@ public interface TypeQueryFactory {
                             return map.get(method);
                         }
                         if (ProjectionProxyInstance.TO_STRING_METHOD.equals(method)) {
-                            return JacksonMapper.writeValueAsString(proxy);
+                            Map<String, Object> stringMap = new HashMap<>();
+                            for (ProjectionAttribute attribute : info) {
+                                stringMap.put(attribute.getFieldName(), map.get(attribute.getGetter()));
+                            }
+                            return projectionType.getSimpleName() + stringMap;
                         }
 
                         if (ProjectionProxyInstance.GET_RESULT_MAP_METHOD.equals(method)) {
