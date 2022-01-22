@@ -3,7 +3,7 @@ package github.sql.dsl.criteria.query.support;
 import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
-import github.sql.dsl.criteria.query.support.builder.component.ConstantList;
+import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
 import github.sql.dsl.criteria.query.support.builder.query.CriteriaQueryImpl;
 import github.sql.dsl.criteria.query.support.meta.ProjectionAttribute;
 import github.sql.dsl.criteria.query.support.meta.ProjectionInformation;
@@ -42,7 +42,7 @@ public interface TypeQueryFactory {
                 Expression<?>[] selections = paths.stream()
                         .map(AttributePath::new)
                         .toArray(Expression[]::new);
-                ConstantList<Expression<?>> array = new ConstantList<>(selections);
+                ConstantArray<Expression<?>> array = new ConstantArray<>(selections);
                 CriteriaQueryImpl cq = CriteriaQueryImpl.from(criteriaQuery)
                         .updateSelection(array);
                 List<Object[]> objects = getObjectsTypeQuery(cq, type)

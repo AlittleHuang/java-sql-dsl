@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SubPredicateArray implements Expression<Boolean> {
 
-    private final ConstantList<SubPredicate> values;
+    private final ConstantArray<SubPredicate> values;
     private Expression<Boolean> value;
 
     public static SubPredicateArray fromExpression(Expression<Boolean> expression) {
@@ -22,12 +22,12 @@ public class SubPredicateArray implements Expression<Boolean> {
         if (expression instanceof SubPredicateArray) {
             return (SubPredicateArray) expression;
         }
-        ConstantList<SubPredicate> values =
-                new ConstantList<>(new SubPredicate(expression, Operator.AND, false));
+        ConstantArray<SubPredicate> values =
+                new ConstantArray<>(new SubPredicate(expression, Operator.AND, false));
         return new SubPredicateArray(values);
     }
 
-    public SubPredicateArray(ConstantList<SubPredicate> values) {
+    public SubPredicateArray(ConstantArray<SubPredicate> values) {
         this.values = values;
     }
 
@@ -39,7 +39,7 @@ public class SubPredicateArray implements Expression<Boolean> {
         if (values == null || values.isEmpty()) {
             return new ConstantExpression<>(false);
         }
-        if (values.size() == 1) {
+        if (values.length() == 1) {
             return values.get(0).getExpression();
         }
 

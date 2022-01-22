@@ -7,7 +7,7 @@ import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import github.sql.dsl.criteria.query.expression.path.attribute.ComparableAttribute;
 import github.sql.dsl.criteria.query.expression.path.attribute.NumberAttribute;
 import github.sql.dsl.criteria.query.expression.path.attribute.StringAttribute;
-import github.sql.dsl.criteria.query.support.builder.component.ConstantList;
+import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
 import github.sql.dsl.util.Array;
 
@@ -44,7 +44,7 @@ public class SortableImpl<T, NEXT> implements Sortable<T, NEXT> {
     public Sort<NEXT> orderBy(Attribute<?, ?> attribute) {
         return new SortImpl<>(AttributePath.exchange(attribute), ((expression, desc) -> {
             Order order = new Order(expression, desc);
-            Array<Order> orders = values == null ? new ConstantList<>(order) : ConstantList.from(values).concat(order);
+            Array<Order> orders = values == null ? new ConstantArray<>(order) : ConstantArray.from(values).concat(order);
             return mapper.apply(orders);
         }));
     }

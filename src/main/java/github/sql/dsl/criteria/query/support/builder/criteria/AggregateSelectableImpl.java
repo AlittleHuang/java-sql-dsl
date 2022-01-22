@@ -5,7 +5,7 @@ import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
-import github.sql.dsl.criteria.query.support.builder.component.ConstantList;
+import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
 import github.sql.dsl.util.Array;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public class AggregateSelectableImpl<T, NEXT> implements AggregateSelectable<T, 
     public NEXT select(Attribute<T, ?> attribute, @NotNull AggregateFunction function) {
         Expression<?> path = AttributePath.exchange(attribute);
         Expression<?> s = path.then(function.getOperator());
-        Array<Expression<?>> list = values == null ? new ConstantList<>(s) : ConstantList.from(values).concat(s);
+        Array<Expression<?>> list = values == null ? new ConstantArray<>(s) : ConstantArray.from(values).concat(s);
         return mapper.apply(list);
     }
 

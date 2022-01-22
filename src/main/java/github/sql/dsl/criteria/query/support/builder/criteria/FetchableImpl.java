@@ -5,7 +5,7 @@ import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.expression.path.EntityPath;
 import github.sql.dsl.criteria.query.expression.path.attribute.EntityAttribute;
-import github.sql.dsl.criteria.query.support.builder.component.ConstantList;
+import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
 import github.sql.dsl.util.Array;
 import lombok.Getter;
 
@@ -27,8 +27,8 @@ public class FetchableImpl<T, NEXT> implements Fetchable<T, NEXT> {
     public NEXT fetch(EntityAttribute<T, ?> attribute) {
         EntityPath<T, ?> exchange = AttributePath.exchange(attribute);
         Array<PathExpression<?>> then = this.values == null
-                ? new ConstantList<>(exchange)
-                : ConstantList.from(this.values).concat(exchange);
+                ? new ConstantArray<>(exchange)
+                : ConstantArray.from(this.values).concat(exchange);
         return mapper.apply(then);
     }
 
