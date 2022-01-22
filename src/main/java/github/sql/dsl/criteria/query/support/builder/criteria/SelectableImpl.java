@@ -25,7 +25,7 @@ public class SelectableImpl<T, NEXT> implements Selectable<T, NEXT> {
     @Override
     public NEXT select(Attribute<T, ?> selection) {
         AttributePath<T, ?> path = AttributePath.exchange(selection);
-        Array<Expression<?>> list = values == null ? new ConstantList<>(path) : values.concat(path);
+        Array<Expression<?>> list = values == null ? new ConstantList<>(path) : ConstantList.from(values).concat(path);
         return mapper.apply(list);
     }
 
@@ -36,7 +36,7 @@ public class SelectableImpl<T, NEXT> implements Selectable<T, NEXT> {
                 .collect(Collectors.toList());
         Array<Expression<?>> list = values == null
                 ? new ConstantList<>(paths)
-                : values.concat(paths);
+                : ConstantList.from(values).concat(paths);
         return mapper.apply(list);
     }
 }

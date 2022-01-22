@@ -28,7 +28,7 @@ public class FetchableImpl<T, NEXT> implements Fetchable<T, NEXT> {
         EntityPath<T, ?> exchange = AttributePath.exchange(attribute);
         Array<PathExpression<?>> then = this.values == null
                 ? new ConstantList<>(exchange)
-                : this.values.concat(exchange);
+                : ConstantList.from(this.values).concat(exchange);
         return mapper.apply(then);
     }
 

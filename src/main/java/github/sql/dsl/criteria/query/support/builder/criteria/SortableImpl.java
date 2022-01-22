@@ -44,7 +44,7 @@ public class SortableImpl<T, NEXT> implements Sortable<T, NEXT> {
     public Sort<NEXT> orderBy(Attribute<?, ?> attribute) {
         return new SortImpl<>(AttributePath.exchange(attribute), ((expression, desc) -> {
             Order order = new Order(expression, desc);
-            Array<Order> orders = values == null ? new ConstantList<>(order) : values.concat(order);
+            Array<Order> orders = values == null ? new ConstantList<>(order) : ConstantList.from(values).concat(order);
             return mapper.apply(orders);
         }));
     }

@@ -25,7 +25,7 @@ public class AggregateSelectableImpl<T, NEXT> implements AggregateSelectable<T, 
     public NEXT select(Attribute<T, ?> attribute, @NotNull AggregateFunction function) {
         Expression<?> path = AttributePath.exchange(attribute);
         Expression<?> s = path.then(function.getOperator());
-        Array<Expression<?>> list = values == null ? new ConstantList<>(s) : values.concat(s);
+        Array<Expression<?>> list = values == null ? new ConstantList<>(s) : ConstantList.from(values).concat(s);
         return mapper.apply(list);
     }
 

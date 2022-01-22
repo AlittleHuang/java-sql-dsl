@@ -22,21 +22,28 @@ public final class ConstantList<T> implements Array<T> {
         size = 0;
     }
 
+    public ConstantList(List<? extends T> values) {
+        this.values = new ArrayList<>(values);
+        this.size = values.size();
+    }
+
     public ConstantList(int initialCapacity) {
         this.values = new ArrayList<>(initialCapacity);
         size = 0;
+    }
+
+    public static <T> ConstantList<T> from(Array<T> array) {
+        if (array instanceof ConstantList) {
+            return (ConstantList<T>) array;
+        } else {
+            return new ConstantList<>(array.asList());
+        }
     }
 
     public int size() {
         return size;
     }
 
-    public ConstantList(List<? extends T> values) {
-        this.values = new ArrayList<>(values);
-        this.size = values.size();
-    }
-
-    @Override
     public ConstantList<T> concat(T t) {
         if (size == values.size()) {
             values.add(t);
@@ -51,7 +58,6 @@ public final class ConstantList<T> implements Array<T> {
         }
     }
 
-    @Override
     public ConstantList<T> concat(Collection<? extends T> collection) {
         if (size == values.size()) {
             values.addAll(collection);

@@ -24,7 +24,7 @@ public class GroupableImpl<T, NEXT> implements Groupable<T, NEXT> {
     @Override
     public NEXT groupBy(Attribute<T, ?> attribute) {
         AttributePath<T, ?> path = AttributePath.exchange(attribute);
-        values = values.concat(path);
+        values = ConstantList.from(values).concat(path);
         return mapper.apply(values);
     }
 
@@ -32,7 +32,7 @@ public class GroupableImpl<T, NEXT> implements Groupable<T, NEXT> {
     public NEXT groupBy(List<Attribute<T, ?>> attributes) {
         List<? extends AttributePath<T, ?>> list = attributes.stream().map(AttributePath::exchange)
                 .collect(Collectors.toList());
-        values = values.concat(list);
+        values = ConstantList.from(values).concat(list);
         return mapper.apply(values);
     }
 
