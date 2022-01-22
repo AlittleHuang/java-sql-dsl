@@ -95,7 +95,4 @@ public class SqlExecutorImpl implements PreparedSqlExecutor {
         return sqlExecutor.query(sql.getSql(), sql.getArgs().toArray(), callback);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Object().toString());
-    }
 }

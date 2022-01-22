@@ -4,7 +4,6 @@ import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.OperatorExpression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
-import github.sql.dsl.criteria.query.expression.path.Entity;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
 import github.sql.dsl.criteria.query.support.meta.Attribute;
@@ -16,11 +15,11 @@ import github.sql.dsl.internal.jdbc.sql.PreparedSqlBuilder;
 import github.sql.dsl.internal.jdbc.sql.SelectedPreparedSql;
 import github.sql.dsl.util.Array;
 import github.sql.dsl.util.Assert;
-import lombok.Data;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MysqlSqlBuilder implements PreparedSqlBuilder {
@@ -533,34 +532,6 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         EntityInformation<?> info = EntityInformation.getInstance(clazz);
         Assert.notNull(info, "the type " + clazz + " is not an entity type");
         return info;
-    }
-
-
-    public static void main(String[] args) {
-        @Data
-        class User implements Entity {
-
-            int id;
-
-            String username;
-
-            Date time;
-
-            Integer pid;
-
-            @ManyToOne
-            @JoinColumn(name = "pid")
-            User parentUser;
-
-        }
-
-        Builder builder = new MysqlSqlBuilder(null, User.class).new Builder();
-        Expression<?> test = new PathExpression<>("username");
-        for (Operator operator : Operator.values()) {
-            test = test.then(operator, new PathExpression<>("username"), new PathExpression<>("username"));
-        }
-        builder.appendExpression(test);
-        System.out.println(builder.getSql());
     }
 
 }

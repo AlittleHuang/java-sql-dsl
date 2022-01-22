@@ -93,7 +93,7 @@ public interface TypeQueryFactory {
                         if (method.getDeclaringClass() == Object.class) {
                             return method.invoke(map, args);
                         }
-                        return null;
+                        throw new AbstractMethodError();
                     });
                 } else {
                     R result = projectionType.getConstructor().newInstance();
