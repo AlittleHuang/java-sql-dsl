@@ -4,6 +4,7 @@ import github.sql.dsl.internal.jdbc.util.JdbcUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -13,6 +14,10 @@ import java.util.function.Function;
 public interface SqlExecutor {
 
     <T> T execute(ConnectionCallback<T> connectionCallback) throws SQLException;
+
+    static SqlExecutor fromDatasource(DataSource dataSource) {
+        return fromConnectionSupplier(dataSource::getConnection);
+    }
 
     static SqlExecutor fromConnectionSupplier(ConnectionProvider supplier) {
         return new SqlExecutor() {
