@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SqlExecutorImpl implements PreparedSqlExecutor {
 
@@ -37,12 +39,18 @@ public class SqlExecutorImpl implements PreparedSqlExecutor {
                 int size = path.size();
                 EntityInformation<T> info = EntityInformation.getInstance(type);
                 Object entity = row;
-                if (resultSet.getObject(i + 1) != null) {
+                Object object = resultSet.getObject(i + 1);
+                if (object != null) {
                     for (int j = 0; j < size; j++) {
                         Attribute attribute = info.getAttribute(path.get(j));
                         if (j == size - 1) {
-                            Object value = JdbcUtil.getValue(resultSet, i + 1, attribute.getJavaType());
-                            attribute.setValue(entity, value);
+                            Class<?> javaType = attribute.getJavaType();
+                            if (PRIMITIVE_MAP.getOrDefault(javaType, javaType).isInstance(object)) {
+                                attribute.setValue(entity, object);
+                            } else {
+                                Object value = JdbcUtil.getValue(resultSet, i + 1, javaType);
+                                attribute.setValue(entity, value);
+                            }
                         } else {
                             Object next = attribute.getValue(entity);
                             if (next == null) {
@@ -93,6 +101,39 @@ public class SqlExecutorImpl implements PreparedSqlExecutor {
 
     private <T> T getResultSet(PreparedSql sql, SqlExecutor.ResultSetCallback<T> callback) {
         return sqlExecutor.query(sql.getSql(), sql.getArgs().toArray(), callback);
+    }
+
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_MAP = getPrimitiveMap();
+
+    @NotNull
+    private static Map<Class<?>, Class<?>> getPrimitiveMap() {
+        HashMap<Class<?>, Class<?>> map = new HashMap<>();
+        Class<?>[] types = {
+                Boolean.TYPE,
+                Character.TYPE,
+                Byte.TYPE,
+                Short.TYPE,
+                Integer.TYPE,
+                Long.TYPE,
+                Float.TYPE,
+                Double.TYPE,
+                Void.TYPE
+        };
+
+        Class<?>[] types2 = {Boolean.class,
+                Character.class,
+                Byte.class,
+                Short.class,
+                Integer.class,
+                Long.class,
+                Float.class,
+                Double.class,
+                Void.class};
+
+        for (int i = 0; i < types.length; i++) {
+            map.put(types[i], types2[i]);
+        }
+        return map;
     }
 
 }
