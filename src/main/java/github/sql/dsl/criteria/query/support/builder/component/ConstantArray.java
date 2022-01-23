@@ -1,10 +1,11 @@
 package github.sql.dsl.criteria.query.support.builder.component;
 
 import github.sql.dsl.util.Array;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public final class ConstantArray<T> implements Array<T> {
 
@@ -17,7 +18,6 @@ public final class ConstantArray<T> implements Array<T> {
         } else {
             this.values = values;
         }
-
     }
 
     @SuppressWarnings("unchecked")
@@ -33,10 +33,16 @@ public final class ConstantArray<T> implements Array<T> {
         if (array instanceof ConstantArray) {
             return (ConstantArray<T>) array;
         } else {
-            return new ConstantArray<>(array.asList());
+            Object[] objects = new Object[array.length()];
+            int index = 0;
+            for (T t : array) {
+                objects[index++] = t;
+            }
+            return new ConstantArray<>(objects, false);
         }
     }
 
+    @Override
     public int length() {
         return values.length;
     }
@@ -65,24 +71,6 @@ public final class ConstantArray<T> implements Array<T> {
     public T get(int index) {
         //noinspection unchecked
         return (T) values[index];
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return length() == 0;
-    }
-
-    @Override
-    public List<T> asList() {
-        //noinspection unchecked
-        return (List<T>) Arrays.asList(values);
-    }
-
-    @NotNull
-    @Override
-    public Iterator<T> iterator() {
-        //noinspection unchecked
-        return (Iterator<T>) Stream.of(values).iterator();
     }
 
     @Override
