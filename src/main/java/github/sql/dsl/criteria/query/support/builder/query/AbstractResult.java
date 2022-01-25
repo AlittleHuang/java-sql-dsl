@@ -35,8 +35,8 @@ public abstract class AbstractResult<T> {
     }
 
     @NotNull
-    protected Groupable<T, ArrayQuery<T>> getGroupable() {
-        return new GroupableImpl<>(criteriaQuery.getGroupList(), next -> new ArrayQueryImpl<>(
+    protected Groupable<T, GroupByBuilder<T>> getGroupable() {
+        return new GroupableImpl<>(criteriaQuery.getGroupList(), next -> new GroupByBuilderImpl<>(
                 this.typeQueryFactory,
                 this.entityType,
                 this.criteriaQuery.updateGroupList(next)));

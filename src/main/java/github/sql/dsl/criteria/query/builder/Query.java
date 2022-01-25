@@ -6,7 +6,7 @@ public interface Query<T> extends
         Whereable<T, WhereAssembler<T>>,
         Fetchable<T, EntityQuery<T>>,
         Sortable<T, WhereAssembler<T>>,
-        Groupable<T, ArrayQuery<T>>,
+        Groupable<T, GroupByBuilder<T>>,
         Selectable<T, ArrayQuery<T>>,
         AggregateSelectable<T, AggregateObjectsQuery<T>>,
         Projectable<T>,

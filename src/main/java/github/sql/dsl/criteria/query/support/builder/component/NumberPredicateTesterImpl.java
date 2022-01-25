@@ -7,8 +7,8 @@ import github.sql.dsl.criteria.query.expression.path.attribute.NumberAttribute;
 
 import java.util.function.Function;
 
-public class NumberPredicateTesterImpl<T, U extends Number, NEXT>
-        extends AbstractExpressionBuilder<T, U, NEXT>
+public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT>
+        extends ComparablePredicateTesterImpl<T, U, NEXT>
         implements NumberPredicateTester<T, U, NEXT> {
 
     public NumberPredicateTesterImpl(Expression<U> exchange,
@@ -164,32 +164,6 @@ public class NumberPredicateTesterImpl<T, U extends Number, NEXT>
                 negate,
                 mapper
         );
-    }
-
-
-    @Override
-    public NEXT ge(NumberAttribute<T, U> value) {
-        return super.ge(value);
-    }
-
-    @Override
-    public NEXT gt(NumberAttribute<T, U> value) {
-        return super.gt(value);
-    }
-
-    @Override
-    public NEXT le(NumberAttribute<T, U> value) {
-        return super.le(value);
-    }
-
-    @Override
-    public NEXT between(NumberAttribute<T, U> a, NumberAttribute<T, U> b) {
-        return super.between(a, b);
-    }
-
-    @Override
-    public NEXT lt(NumberAttribute<T, U> value) {
-        return super.lt(value);
     }
 
 }

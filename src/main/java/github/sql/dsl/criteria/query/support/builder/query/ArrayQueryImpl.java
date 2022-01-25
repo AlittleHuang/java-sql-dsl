@@ -1,6 +1,5 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
-import github.sql.dsl.criteria.query.builder.Groupable;
 import github.sql.dsl.criteria.query.builder.Selectable;
 import github.sql.dsl.criteria.query.builder.Sortable;
 import github.sql.dsl.criteria.query.builder.TypeResultQuery;
@@ -27,12 +26,6 @@ public class ArrayQueryImpl<T> extends AbstractResult<T> implements ArrayQuery<T
     @Override
     protected @NotNull Sortable<T, ArrayQuery<T>> getObjectsSortable() {
         return super.getObjectsSortable();
-    }
-
-    @Delegate
-    @Override
-    protected @NotNull Groupable<T, ArrayQuery<T>> getGroupable() {
-        return super.getGroupable();
     }
 
     @Delegate

@@ -1,6 +1,5 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
-import github.sql.dsl.criteria.query.builder.PredicateAssembler;
 import github.sql.dsl.criteria.query.builder.combination.*;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Predicate;
@@ -10,7 +9,6 @@ import github.sql.dsl.criteria.query.expression.path.attribute.*;
 import github.sql.dsl.criteria.query.support.builder.criteria.PredicateAssemblerImpl;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
 import java.util.function.Function;
 
 public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
@@ -38,13 +36,13 @@ public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
     }
 
     @Override
-    public <U extends Number> NumberPredicateTester<T, U, NEXT>
+    public <U extends Number & Comparable<?>> NumberPredicateTester<T, U, NEXT>
     where(NumberAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
 
     @Override
-    public <U extends Date> ComparablePredicateTester<T, U, NEXT>
+    public <U extends Comparable<?>> ComparablePredicateTester<T, U, NEXT>
     where(ComparableAttribute<T, U> attribute) {
         return getBuilder().and(attribute);
     }
@@ -65,23 +63,18 @@ public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
     }
 
     @Override
-    public <U extends Number> NumberPredicateTester<T, U, NEXT> whereNot(NumberAttribute<T, U> attribute) {
+    public <U extends Number & Comparable<?>> NumberPredicateTester<T, U, NEXT> whereNot(NumberAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
-    public <U extends Date> ComparablePredicateTester<T, U, NEXT> whereNot(ComparableAttribute<T, U> attribute) {
+    public <U extends Comparable<?>> ComparablePredicateTester<T, U, NEXT> whereNot(ComparableAttribute<T, U> attribute) {
         return getBuilder().andNot(attribute);
     }
 
     @Override
     public StringPredicateTester<T, NEXT> whereNot(StringAttribute<T> attribute) {
         return getBuilder().andNot(attribute);
-    }
-
-    @Override
-    public NEXT Where(PredicateAssembler.Builder<T, NEXT> builder) {
-        return getBuilder().andAppend(builder);
     }
 
     @Override

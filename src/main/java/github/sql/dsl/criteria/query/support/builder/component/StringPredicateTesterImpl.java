@@ -8,7 +8,7 @@ import github.sql.dsl.criteria.query.expression.Operator;
 import java.util.function.Function;
 
 public class StringPredicateTesterImpl<T, NEXT>
-        extends AbstractExpressionBuilder<T, String, NEXT>
+        extends ComparablePredicateTesterImpl<T, String, NEXT>
         implements StringPredicateTester<T, NEXT> {
 
     public StringPredicateTesterImpl(Expression<String> exchange,

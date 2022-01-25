@@ -7,9 +7,15 @@ public interface PredicateTester<T, U, NEXT> {
 
     NEXT isNull();
 
+    /**
+     * equal
+     */
     NEXT eq(U value);
 
-    NEXT diff(U value);
+    /**
+     * not equal
+     */
+    NEXT ne(U value);
 
     @SuppressWarnings("unchecked")
     default NEXT in(U... values) {

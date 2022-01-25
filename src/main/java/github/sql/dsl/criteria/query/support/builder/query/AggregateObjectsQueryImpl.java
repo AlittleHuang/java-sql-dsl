@@ -6,6 +6,7 @@ import github.sql.dsl.criteria.query.builder.Sortable;
 import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsQuery;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
+import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
 import github.sql.dsl.criteria.query.builder.combination.Whereable;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
@@ -32,7 +33,7 @@ public class AggregateObjectsQueryImpl<T> extends AbstractResult<T> implements A
 
     @Delegate
     @Override
-    protected @NotNull Groupable<T, ArrayQuery<T>> getGroupable() {
+    protected @NotNull Groupable<T, GroupByBuilder<T>> getGroupable() {
         return super.getGroupable();
     }
 

@@ -11,7 +11,6 @@ import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
 import github.sql.dsl.util.Array;
 
-import java.util.Date;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -27,12 +26,12 @@ public class SortableImpl<T, NEXT> implements Sortable<T, NEXT> {
     }
 
     @Override
-    public <U extends Number> Sort<NEXT> orderBy(NumberAttribute<T, U> attribute) {
+    public <U extends Number & Comparable<?>> Sort<NEXT> orderBy(NumberAttribute<T, U> attribute) {
         return orderBy((Attribute<?, ?>) attribute);
     }
 
     @Override
-    public <U extends Date> Sort<NEXT> orderBy(ComparableAttribute<T, U> attribute) {
+    public <U extends Comparable<?>> Sort<NEXT> orderBy(ComparableAttribute<T, U> attribute) {
         return orderBy((Attribute<?, ?>) attribute);
     }
 

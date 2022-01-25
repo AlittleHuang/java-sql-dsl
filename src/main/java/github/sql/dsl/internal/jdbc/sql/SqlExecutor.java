@@ -6,12 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-@FunctionalInterface
 public interface SqlExecutor {
 
     <T> T execute(ConnectionCallback<T> connectionCallback) throws SQLException;
@@ -135,13 +133,6 @@ public interface SqlExecutor {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        HashMap<Object, Object> map = new HashMap<>();
-        map.put("abc", "{abc=fff, xxx=fff}");
-        map.put("xxx", "fff");
-        System.out.println(map);
     }
 
 }

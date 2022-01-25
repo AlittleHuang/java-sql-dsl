@@ -10,7 +10,6 @@ import github.sql.dsl.criteria.query.expression.path.Entity;
 import github.sql.dsl.criteria.query.expression.path.PathBuilder;
 import github.sql.dsl.criteria.query.expression.path.attribute.*;
 
-import java.util.Date;
 import java.util.function.Function;
 
 public class PathBuilderImpl<T, U, NEXT> implements PathBuilder<T, U, NEXT> {
@@ -37,20 +36,20 @@ public class PathBuilderImpl<T, U, NEXT> implements PathBuilder<T, U, NEXT> {
     }
 
     @Override
-    public <R extends Number> NumberPredicateTester<T, R, NEXT> map(NumberAttribute<U, R> attribute) {
+    public <R extends Number & Comparable<?>> NumberPredicateTester<T, R, NEXT> map(NumberAttribute<U, R> attribute) {
         AttributePath<T, R> strings = path.mapTo(attribute);
         return new NumberPredicateTesterImpl<>(strings, combined, negate, mapper);
     }
 
     @Override
-    public <R extends Date> ComparablePredicateTester<T, R, NEXT> map(ComparableAttribute<U, R> attribute) {
+    public <R extends Comparable<?>> ComparablePredicateTester<T, R, NEXT> map(ComparableAttribute<U, R> attribute) {
         AttributePath<T, R> strings = path.mapTo(attribute);
         return new ComparablePredicateTesterImpl<>(strings, combined, negate, mapper);
 
     }
 
     @Override
-    public <R extends Date> PredicateTester<T, R, NEXT> map(Attribute<U, R> attribute) {
+    public <R extends Comparable<?>> PredicateTester<T, R, NEXT> map(Attribute<U, R> attribute) {
         AttributePath<T, R> strings = path.mapTo(attribute);
         return new PredicateTesterImpl<>(strings, combined, negate, mapper);
     }

@@ -7,7 +7,6 @@ import github.sql.dsl.criteria.query.expression.path.attribute.*;
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.Objects;
 
 public class AttributePath<T, R>
@@ -36,7 +35,7 @@ public class AttributePath<T, R>
         return new AttributePath<>(getAttributeName(attribute));
     }
 
-    public static <R extends Number, T> NumberAttribute<T, R>
+    public static <R extends Number & Comparable<?>, T> NumberAttribute<T, R>
     fromNumberAttributeBridge(NumberAttribute<T, R> attribute) {
         if (attribute instanceof AttributePath) {
             return attribute;
@@ -52,7 +51,7 @@ public class AttributePath<T, R>
         return new StringPath<>(getAttributeName(attribute));
     }
 
-    public static <R extends Date, T> ComparableAttribute<T, R>
+    public static <R extends Comparable<?>, T> ComparableAttribute<T, R>
     fromComparableAttributeBridge(ComparableAttribute<T, R> attribute) {
         if (attribute instanceof AttributePath) {
             return attribute;
@@ -113,11 +112,11 @@ public class AttributePath<T, R>
         return new EntityPath<>(pathTo(attribute));
     }
 
-    public <V extends Number> NumberPath<T, V> map(NumberAttribute<R, V> attribute) {
+    public <V extends Number & Comparable<?>> NumberPath<T, V> map(NumberAttribute<R, V> attribute) {
         return new NumberPath<>(pathTo(attribute));
     }
 
-    public <V extends Date> ComparablePath<T, V> map(ComparableAttribute<R, V> attribute) {
+    public <V extends Comparable<?>> ComparablePath<T, V> map(ComparableAttribute<R, V> attribute) {
         return new ComparablePath<>(pathTo(attribute));
     }
 

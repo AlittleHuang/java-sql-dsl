@@ -4,7 +4,6 @@ import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @FunctionalInterface
 public interface Attribute<T, R> extends Serializable {
@@ -16,7 +15,7 @@ public interface Attribute<T, R> extends Serializable {
     }
 
 
-    static <T, R extends Number> NumberAttribute<T, R> of(NumberAttribute<T, R> attribute) {
+    static <T, R extends Number & Comparable<?>> NumberAttribute<T, R> of(NumberAttribute<T, R> attribute) {
         return AttributePath.fromNumberAttributeBridge(attribute);
     }
 
@@ -26,7 +25,7 @@ public interface Attribute<T, R> extends Serializable {
     }
 
 
-    static <T, R extends Date> ComparableAttribute<T, R> of(ComparableAttribute<T, R> attribute) {
+    static <T, R extends Comparable<?>> ComparableAttribute<T, R> of(ComparableAttribute<T, R> attribute) {
         return AttributePath.fromComparableAttributeBridge(attribute);
     }
 

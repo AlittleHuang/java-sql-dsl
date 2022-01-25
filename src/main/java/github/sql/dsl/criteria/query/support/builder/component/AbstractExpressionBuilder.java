@@ -40,7 +40,7 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
         return next(Operator.EQ, value);
     }
 
-    public NEXT diff(U value) {
+    public NEXT ne(U value) {
         return next(Operator.DIFF, value);
     }
 

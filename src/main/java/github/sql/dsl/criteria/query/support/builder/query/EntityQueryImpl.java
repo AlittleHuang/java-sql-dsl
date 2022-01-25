@@ -28,7 +28,6 @@ public class EntityQueryImpl<T> extends AbstractResult<T> implements EntityQuery
         return super.getFetchable();
     }
 
-    //        Sortable<T, EntityQuery<T>>,
     @Delegate
     protected @NotNull Sortable<T, EntityQuery<T>> getEntityQuerySortable() {
         return super.getEntityQuerySortable();

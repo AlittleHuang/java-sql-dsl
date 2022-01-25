@@ -1,7 +1,10 @@
 package github.sql.dsl.criteria.query.support.builder.criteria;
 
 import github.sql.dsl.criteria.query.builder.PredicateAssembler;
-import github.sql.dsl.criteria.query.builder.combination.*;
+import github.sql.dsl.criteria.query.builder.combination.ComparablePredicateTester;
+import github.sql.dsl.criteria.query.builder.combination.NumberPredicateTester;
+import github.sql.dsl.criteria.query.builder.combination.PredicateTester;
+import github.sql.dsl.criteria.query.builder.combination.StringPredicateTester;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.Predicate;
@@ -10,9 +13,7 @@ import github.sql.dsl.criteria.query.expression.path.Entity;
 import github.sql.dsl.criteria.query.expression.path.PathBuilder;
 import github.sql.dsl.criteria.query.expression.path.attribute.*;
 import github.sql.dsl.criteria.query.support.builder.component.*;
-import github.sql.dsl.criteria.query.support.builder.query.SubPredicateHeaderCombinableImpl;
 
-import java.util.Date;
 import java.util.function.Function;
 
 public class PredicateAssemblerImpl<T, NEXT> implements PredicateAssembler<T, NEXT> {
@@ -67,42 +68,42 @@ public class PredicateAssemblerImpl<T, NEXT> implements PredicateAssembler<T, NE
     }
 
     @Override
-    public <R extends Number> NumberPredicateTester<T, R, NEXT> and(NumberAttribute<T, R> attribute) {
+    public <R extends Number & Comparable<?>> NumberPredicateTester<T, R, NEXT> and(NumberAttribute<T, R> attribute) {
         return new NumberPredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberPredicateTester<T, R, NEXT> or(NumberAttribute<T, R> attribute) {
+    public <R extends Number & Comparable<?>> NumberPredicateTester<T, R, NEXT> or(NumberAttribute<T, R> attribute) {
         return new NumberPredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberPredicateTester<T, R, NEXT> andNot(NumberAttribute<T, R> attribute) {
+    public <R extends Number & Comparable<?>> NumberPredicateTester<T, R, NEXT> andNot(NumberAttribute<T, R> attribute) {
         return new NumberPredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Number> NumberPredicateTester<T, R, NEXT> orNot(NumberAttribute<T, R> attribute) {
+    public <R extends Number & Comparable<?>> NumberPredicateTester<T, R, NEXT> orNot(NumberAttribute<T, R> attribute) {
         return new NumberPredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparablePredicateTester<T, R, NEXT> and(ComparableAttribute<T, R> attribute) {
+    public <R extends Comparable<?>> ComparablePredicateTester<T, R, NEXT> and(ComparableAttribute<T, R> attribute) {
         return new ComparablePredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.AND, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparablePredicateTester<T, R, NEXT> or(ComparableAttribute<T, R> attribute) {
+    public <R extends Comparable<?>> ComparablePredicateTester<T, R, NEXT> or(ComparableAttribute<T, R> attribute) {
         return new ComparablePredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.OR, false, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparablePredicateTester<T, R, NEXT> andNot(ComparableAttribute<T, R> attribute) {
+    public <R extends Comparable<?>> ComparablePredicateTester<T, R, NEXT> andNot(ComparableAttribute<T, R> attribute) {
         return new ComparablePredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.AND, true, this::mapperNext);
     }
 
     @Override
-    public <R extends Date> ComparablePredicateTester<T, R, NEXT> orNot(ComparableAttribute<T, R> attribute) {
+    public <R extends Comparable<?>> ComparablePredicateTester<T, R, NEXT> orNot(ComparableAttribute<T, R> attribute) {
         return new ComparablePredicateTesterImpl<>(AttributePath.exchange(attribute), Operator.OR, true, this::mapperNext);
     }
 
@@ -136,28 +137,6 @@ public class PredicateAssemblerImpl<T, NEXT> implements PredicateAssembler<T, NE
     public NEXT or(Predicate<T> predicate) {
         SubPredicate subPredicate = new SubPredicate(predicate, Operator.OR, false);
         return mapperNext(subPredicate);
-    }
-
-    @Override
-    public NEXT andAppend(Builder<T, NEXT> builder) {
-        SubPredicateHeaderCombinableImpl<T, SubPredicateAssembler<T, NEXT>> r =
-                new SubPredicateHeaderCombinableImpl<>(SubPredicateAssemblerImpl::new);
-        Expression<Boolean> then = builder.build(r);
-        then = expression == null
-                ? then
-                : expression.then(Operator.AND, then);
-        return this.mapper.apply(then);
-    }
-
-    @Override
-    public NEXT orAppend(Builder<T, NEXT> builder) {
-        SubPredicateHeaderCombinableImpl<T, SubPredicateAssembler<T, NEXT>> r =
-                new SubPredicateHeaderCombinableImpl<>(SubPredicateAssemblerImpl::new);
-        Expression<Boolean> then = builder.build(r);
-        then = expression == null
-                ? then
-                : expression.then(Operator.OR, then);
-        return mapper.apply(then);
     }
 
     protected NEXT mapperNext(SubPredicate subPredicate) {

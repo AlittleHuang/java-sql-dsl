@@ -2,8 +2,6 @@ package github.sql.dsl.criteria.query.expression.path.attribute;
 
 import github.sql.dsl.criteria.query.expression.path.*;
 
-import java.util.Date;
-
 @FunctionalInterface
 public interface EntityAttribute<T, R extends Entity> extends Attribute<T, R> {
 
@@ -15,11 +13,11 @@ public interface EntityAttribute<T, R extends Entity> extends Attribute<T, R> {
         throw new UnsupportedOperationException();
     }
 
-    default <V extends Number> NumberPath<T, V> map(NumberAttribute<R, V> attribute) {
+    default <V extends Number & Comparable<?>> NumberPath<T, V> map(NumberAttribute<R, V> attribute) {
         throw new UnsupportedOperationException();
     }
 
-    default <V extends Date> ComparablePath<T, V> map(ComparableAttribute<R, V> attribute) {
+    default <V extends Comparable<?>> ComparablePath<T, V> map(ComparableAttribute<R, V> attribute) {
         throw new UnsupportedOperationException();
     }
 

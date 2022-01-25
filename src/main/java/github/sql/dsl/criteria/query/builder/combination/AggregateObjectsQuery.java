@@ -8,7 +8,7 @@ import github.sql.dsl.criteria.query.builder.TypeResultQuery;
 public interface AggregateObjectsQuery<T> extends
         Whereable<T, ArrayQuery<T>>,
         Sortable<T, ArrayQuery<T>>,
-        Groupable<T, ArrayQuery<T>>,
+        Groupable<T, GroupByBuilder<T>>,
         AggregateSelectable<T, AggregateObjectsQuery<T>>,
         TypeResultQuery<Object[]> {
 

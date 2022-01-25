@@ -3,6 +3,7 @@ package github.sql.dsl.criteria.query.support.builder.query;
 import github.sql.dsl.criteria.query.builder.*;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
 import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
+import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
 import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
@@ -33,7 +34,7 @@ public class WhereAssemblerImpl<T> extends AbstractResult<T> implements WhereAss
 
     @Delegate
     @Override
-    protected @NotNull Groupable<T, ArrayQuery<T>> getGroupable() {
+    protected @NotNull Groupable<T, GroupByBuilder<T>> getGroupable() {
         return super.getGroupable();
     }
 
