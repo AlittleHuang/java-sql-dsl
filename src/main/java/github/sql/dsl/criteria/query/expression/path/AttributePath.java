@@ -17,10 +17,6 @@ public class AttributePath<T, R>
         super(path);
     }
 
-    public static Expression<?> asExpression(Attribute<?, ?> attribute) {
-        return exchange(attribute);
-    }
-
     public static <T, R extends Entity> EntityPath<T, R> exchange(EntityAttribute<T, R> attribute) {
         if (attribute instanceof EntityPath) {
             return (EntityPath<T, R>) attribute;
@@ -129,10 +125,6 @@ public class AttributePath<T, R>
     }
 
     public <V> AttributePath<T, V> map(Attribute<R, V> attribute) {
-        return new AttributePath<>(pathTo(attribute));
-    }
-
-    public <V> AttributePath<T, V> mapTo(Attribute<?, ?> attribute) {
         return new AttributePath<>(pathTo(attribute));
     }
 

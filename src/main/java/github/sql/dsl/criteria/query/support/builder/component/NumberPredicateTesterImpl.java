@@ -3,6 +3,7 @@ package github.sql.dsl.criteria.query.support.builder.component;
 import github.sql.dsl.criteria.query.builder.combination.NumberPredicateTester;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
+import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.expression.path.attribute.NumberAttribute;
 
 import java.util.function.Function;
@@ -58,52 +59,28 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
 
     @Override
     public NumberPredicateTester<T, U, NEXT> add(NumberAttribute<T, U> v) {
-        return new NumberPredicateTesterImpl<>(
-                expression.then(Operator.ADD, v),
-                combined,
-                negate,
-                mapper
-        );
+        return add(AttributePath.exchange(v));
     }
 
     @Override
     public NumberPredicateTester<T, U, NEXT> subtract(NumberAttribute<T, U> v) {
-        return new NumberPredicateTesterImpl<>(
-                expression.then(Operator.SUBTRACT, v),
-                combined,
-                negate,
-                mapper
-        );
+        return subtract(AttributePath.exchange(v));
+
     }
 
     @Override
     public NumberPredicateTester<T, U, NEXT> multiply(NumberAttribute<T, U> v) {
-        return new NumberPredicateTesterImpl<>(
-                expression.then(Operator.MULTIPLY, v),
-                combined,
-                negate,
-                mapper
-        );
+        return multiply(AttributePath.exchange(v));
     }
 
     @Override
     public NumberPredicateTester<T, U, NEXT> divide(NumberAttribute<T, U> v) {
-        return new NumberPredicateTesterImpl<>(
-                expression.then(Operator.DIVIDE, v),
-                combined,
-                negate,
-                mapper
-        );
+        return divide(AttributePath.exchange(v));
     }
 
     @Override
     public NumberPredicateTester<T, U, NEXT> mod(NumberAttribute<T, U> v) {
-        return new NumberPredicateTesterImpl<>(
-                expression.then(Operator.MOD, v),
-                combined,
-                negate,
-                mapper
-        );
+        return mod(AttributePath.exchange(v));
     }
 
     @Override

@@ -31,32 +31,32 @@ public class PathBuilderImpl<T, U, NEXT> implements PathBuilder<T, U, NEXT> {
 
     @Override
     public <R extends Entity> PathBuilderImpl<T, R, NEXT> map(EntityAttribute<U, R> attribute) {
-        AttributePath<T, R> strings = path.mapTo(attribute);
+        AttributePath<T, R> strings = path.map(attribute);
         return new PathBuilderImpl<>(strings, combined, negate, mapper);
     }
 
     @Override
     public <R extends Number & Comparable<?>> NumberPredicateTester<T, R, NEXT> map(NumberAttribute<U, R> attribute) {
-        AttributePath<T, R> strings = path.mapTo(attribute);
+        AttributePath<T, R> strings = path.map(attribute);
         return new NumberPredicateTesterImpl<>(strings, combined, negate, mapper);
     }
 
     @Override
     public <R extends Comparable<?>> ComparablePredicateTester<T, R, NEXT> map(ComparableAttribute<U, R> attribute) {
-        AttributePath<T, R> strings = path.mapTo(attribute);
+        AttributePath<T, R> strings = path.map(attribute);
         return new ComparablePredicateTesterImpl<>(strings, combined, negate, mapper);
 
     }
 
     @Override
     public <R extends Comparable<?>> PredicateTester<T, R, NEXT> map(Attribute<U, R> attribute) {
-        AttributePath<T, R> strings = path.mapTo(attribute);
+        AttributePath<T, R> strings = path.map(attribute);
         return new PredicateTesterImpl<>(strings, combined, negate, mapper);
     }
 
     @Override
     public StringPredicateTester<T, NEXT> map(StringAttribute<U> attribute) {
-        AttributePath<T, String> strings = path.mapTo(attribute);
+        AttributePath<T, String> strings = path.map(attribute);
         return new StringPredicateTesterImpl<>(strings, combined, negate, mapper);
     }
 }

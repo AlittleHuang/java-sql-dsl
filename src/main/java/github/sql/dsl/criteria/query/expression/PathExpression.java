@@ -2,11 +2,11 @@ package github.sql.dsl.criteria.query.expression;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class PathExpression<T> implements Expression<T>, Iterable<String> {
 
@@ -50,6 +50,9 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
         };
     }
 
+    public Stream<String> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
 
     public int size() {
         return length;
@@ -111,12 +114,6 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
             result = 31 * result + (s == null ? 0 : s.hashCode());
         }
         return result;
-    }
-
-    public PathExpression<?> to(String path) {
-        String[] values = Stream.concat(Arrays.stream(this.path), Stream.of(path))
-                .toArray(String[]::new);
-        return new PathExpression<>(values);
     }
 
     @Override

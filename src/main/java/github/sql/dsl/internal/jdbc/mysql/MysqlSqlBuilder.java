@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
@@ -120,7 +121,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                     EntityInformation<?> entityInfo = getEntityInformation(attribute);
                     for (Attribute basicAttribute : entityInfo.getBasicAttributes()) {
                         sql.append(",");
-                        PathExpression<?> path = fetch.to(basicAttribute.getFieldName());
+                        PathExpression<?> path = to(fetch, basicAttribute.getFieldName());
                         appendPath(path);
                         selectedPath.add(path);
                     }
@@ -400,7 +401,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                     }
                 }
                 type = attribute.getJavaType();
-                join = join.to(path);
+                join = to(join, path);
             }
         }
 
@@ -533,6 +534,12 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         EntityInformation<?> info = EntityInformation.getInstance(clazz);
         Assert.notNull(info, "the type " + clazz + " is not an entity type");
         return info;
+    }
+
+    public static PathExpression<?> to(PathExpression<?> expression, String path) {
+        String[] values = Stream.concat(expression.stream(), Stream.of(path))
+                .toArray(String[]::new);
+        return new PathExpression<>(values);
     }
 
 }

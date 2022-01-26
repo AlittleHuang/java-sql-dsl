@@ -5,6 +5,7 @@ import github.sql.dsl.criteria.query.builder.Query;
 import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.expression.Predicate;
 import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
+import github.sql.dsl.criteria.query.expression.path.attribute.ComparableAttribute;
 import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
 import github.sql.dsl.entity.User;
 import github.sql.dsl.internal.QueryBuilders;
@@ -193,7 +194,7 @@ public class StandardTest {
     }
 
     @Test
-    public void testPredicateNot() {
+    public void testPredicate() {
         List<User> qList = userQuery.where(Predicate
                         .get(User::getRandomNumber).ge(10)
                         .or(User::getRandomNumber).lt(5)
@@ -205,6 +206,48 @@ public class StandardTest {
                 .collect(Collectors.toList());
 
 
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(Predicate
+                        .get(User::getUsername).eq("Jeremy Keynes")
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getUsername().equalsIgnoreCase("Jeremy Keynes")))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(Predicate
+                        .get((ComparableAttribute<User, String>) User::getUsername).eq("Jeremy Keynes")
+                        .not()
+                )
+                .getResultList();
+        assertEquals(qList, fList);
+
+
+        Predicate<User> jeremy_keynes = Predicate
+                .get((Attribute<User, String>) User::getUsername).eq("Jeremy Keynes");
+        qList = userQuery.where(jeremy_keynes
+                        .or(Predicate.get(User::getId).eq(3))
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getUsername().equalsIgnoreCase("Jeremy Keynes")
+                        || it.getId() == 3))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(jeremy_keynes
+                        .and(Predicate.get(User::getId).eq(3))
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getUsername().equalsIgnoreCase("Jeremy Keynes")
+                        && it.getId() == 3))
+                .collect(Collectors.toList());
         assertEquals(qList, fList);
 
     }
@@ -503,6 +546,182 @@ public class StandardTest {
                 .collect(Collectors.toList());
 
         assertEquals((qList), (fList));
+
+
+        qList = userQuery.where(Predicate
+                        .get(User::getRandomNumber).ge(10)
+                        .or((ComparableAttribute<User, Integer>) User::getRandomNumber).lt(5)
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getRandomNumber() >= 10 || it.getRandomNumber() < 5))
+                .collect(Collectors.toList());
+
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(Predicate
+                        .get(User::getRandomNumber).ge(10)
+                        .andNot((ComparableAttribute<User, Integer>) User::getRandomNumber).lt(5)
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getRandomNumber() >= 10 && it.getRandomNumber() >= 5))
+                .collect(Collectors.toList());
+
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(Predicate
+                        .get(User::getRandomNumber).ge(10)
+                        .and(User::getUsername).eq(username)
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getRandomNumber() >= 10 && it.getUsername().equals(username)))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+
+        qList = userQuery.where(Predicate
+                        .get(User::getRandomNumber).ge(10)
+                        .or(User::getUsername).eq(username)
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getRandomNumber() >= 10 || it.getUsername().equals(username)))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+
+        qList = userQuery.where(Predicate
+                        .get(User::getRandomNumber).ge(10)
+                        .andNot(User::getUsername).eq(username)
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getRandomNumber() >= 10 && !it.getUsername().equals(username)))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(Predicate
+                        .get(User::getRandomNumber).ge(10)
+                        .orNot(User::getUsername).eq(username)
+                        .not()
+                )
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(it -> !(it.getRandomNumber() >= 10 || !it.getUsername().equals(username)))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+
+    }
+
+    @Test
+    public void testNumberPredicateTester() {
+        List<User> list = userQuery
+                .where(User::getRandomNumber).add(2).ge(4)
+                .getResultList();
+        List<User> fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() + 2 >= 4)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+        list = userQuery
+                .where(User::getRandomNumber).subtract(2).ge(4)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() - 2 >= 4)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        list = userQuery
+                .where(User::getRandomNumber).multiply(2).ge(4)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() * 2 >= 4)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        list = userQuery
+                .where(User::getRandomNumber).divide(2).ge(4)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() / 2 >= 4)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        list = userQuery
+                .where(User::getRandomNumber).mod(2).ge(1)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() % 2 >= 1)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        ///
+        list = userQuery
+                .where(User::getRandomNumber).add(User::getId).ge(40)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() + user.getId() >= 40)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+        list = userQuery
+                .where(User::getRandomNumber).subtract(User::getId).ge(40)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() - user.getId() >= 40)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        list = userQuery
+                .where(User::getRandomNumber).multiply(User::getId).ge(40)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() * user.getId() >= 40)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        list = userQuery
+                .where(User::getRandomNumber).divide(User::getId).ge(40)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getId() != 0 && user.getRandomNumber() / user.getId() >= 40)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
+
+
+        list = userQuery
+                .where(User::getRandomNumber).mod(User::getId).ge(10)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getId() != 0 && user.getRandomNumber() % user.getId() >= 10)
+                .collect(Collectors.toList());
+
+        assertEquals(list, fList);
 
     }
 
