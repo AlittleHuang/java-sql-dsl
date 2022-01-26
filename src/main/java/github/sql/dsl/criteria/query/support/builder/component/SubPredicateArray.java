@@ -128,7 +128,7 @@ public class SubPredicateArray implements Expression<Boolean> {
             //noinspection unchecked
             return (Expression<X>) new SubPredicateArray(values.concat(new SubPredicate(of, operator, false)));
         }
-        return Expression.super.then(operator, args);
+        return value().then(operator, args);
     }
 
 

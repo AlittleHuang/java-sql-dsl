@@ -30,9 +30,4 @@ public interface Attribute<T, R> extends Serializable {
     }
 
 
-    static <T> BooleanAttribute<T> of(BooleanAttribute<T> attribute) {
-        return AttributePath.fromBooleanAttributeBridge(attribute);
-    }
-
-
 }

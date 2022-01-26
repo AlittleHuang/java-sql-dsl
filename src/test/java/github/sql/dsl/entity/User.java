@@ -32,6 +32,7 @@ public class User implements Entity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pid", insertable = false, updatable = false)
+    @ToString.Exclude
     private User parentUser;
 
     private boolean valid;

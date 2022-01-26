@@ -20,7 +20,8 @@ public class PredicateBuilder<T> extends PredicateAssemblerImpl<T, Predicate.Bui
 
     @Override
     public Predicate<T> not() {
-        return new PredicateBuilder<>(then(Operator.NOT));
+        Expression<Boolean> then = then(Operator.NOT);
+        return new PredicateBuilder<>(then);
     }
 
 }

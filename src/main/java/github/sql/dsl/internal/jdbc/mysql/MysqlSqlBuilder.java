@@ -33,6 +33,12 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         this.rootEntityInfo = getEntityInformation(javaType);
     }
 
+    public static PathExpression<?> to(PathExpression<?> expression, String path) {
+        String[] values = Stream.concat(expression.stream(), Stream.of(path))
+                .toArray(String[]::new);
+        return new PathExpression<>(values);
+    }
+
     @Override
     public SelectedPreparedSql getEntityList(int offset, int maxResultant) {
         return new EntityBuilder().getEntityList(offset, maxResultant);
@@ -56,6 +62,16 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
     @Override
     public SelectedPreparedSql getProjectionList(int offset, int maxResult, Class<?> projectionType) {
         return new ProjectionBuilder(projectionType).getProjectionList(offset, maxResult);
+    }
+
+    public EntityInformation<?> getEntityInformation(Attribute attribute) {
+        return getEntityInformation(attribute.getJavaType());
+    }
+
+    public EntityInformation<?> getEntityInformation(Class<?> clazz) {
+        EntityInformation<?> info = EntityInformation.getInstance(clazz);
+        Assert.notNull(info, "the type " + clazz + " is not an entity type");
+        return info;
     }
 
     private class ProjectionBuilder extends Builder implements SelectedPreparedSql {
@@ -152,8 +168,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
             appendWhere();
             appendGroupBy();
             appendOrderBy();
-            offset(offset);
-            maxResult(maxResult);
+            limit(offset, maxResult);
             insertJoin(sqlIndex);
             return this;
         }
@@ -167,8 +182,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
             int sqlIndex = sql.length();
             appendWhere();
             appendOrderBy();
-            offset(offset);
-            maxResult(maxResult);
+            limit(offset, maxResult);
             insertJoin(sqlIndex);
         }
 
@@ -184,7 +198,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
             appendRootTableAlias();
             int sqlIndex = sql.length();
             appendWhere();
-            offset(offset);
+            limit(offset, -1);
             insertJoin(sqlIndex);
             return this;
         }
@@ -341,18 +355,22 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                         break;
                     }
                     case IN: {
-                        appendBlank();
-                        appendExpression(e0);
+                        if (list.size() == 1) {
+                            appendBlank().append(0);
+                        } else {
+                            appendBlank();
+                            appendExpression(e0);
 
-                        appendBlank().append(operator);
-                        char join = '(';
-                        for (int i = 1; i < list.size(); i++) {
-                            Expression<?> expression = list.get(i);
-                            sql.append(join);
-                            appendExpressions(args, expression);
-                            join = ',';
+                            appendBlank().append(operator);
+                            char join = '(';
+                            for (int i = 1; i < list.size(); i++) {
+                                Expression<?> expression = list.get(i);
+                                sql.append(join);
+                                appendExpressions(args, expression);
+                                join = ',';
+                            }
+                            sql.append(")");
                         }
-                        sql.append(")");
                         break;
                     }
                     case BETWEEN:
@@ -458,15 +476,12 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
             return attribute;
         }
 
-        protected void offset(int offset) {
-            if (offset > 0) {
-                sql.append(" offset ").append(offset);
-            }
-        }
-
-        protected void maxResult(int maxResult) {
-            if (maxResult > 0) {
-                sql.append(" limit ").append(maxResult);
+        protected void limit(int offset, int maxResults) {
+            if (offset >= 0 || maxResults >= 0) {
+                sql.append(" LIMIT ")
+                        .append(Math.max(offset, 0))
+                        .append(',')
+                        .append(maxResults < 0 ? Long.MAX_VALUE : maxResults);
             }
         }
 
@@ -524,22 +539,6 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
             }
         }
-    }
-
-    public EntityInformation<?> getEntityInformation(Attribute attribute) {
-        return getEntityInformation(attribute.getJavaType());
-    }
-
-    public EntityInformation<?> getEntityInformation(Class<?> clazz) {
-        EntityInformation<?> info = EntityInformation.getInstance(clazz);
-        Assert.notNull(info, "the type " + clazz + " is not an entity type");
-        return info;
-    }
-
-    public static PathExpression<?> to(PathExpression<?> expression, String path) {
-        String[] values = Stream.concat(expression.stream(), Stream.of(path))
-                .toArray(String[]::new);
-        return new PathExpression<>(values);
     }
 
 }

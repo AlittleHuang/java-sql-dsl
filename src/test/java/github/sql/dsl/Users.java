@@ -2,8 +2,12 @@ package github.sql.dsl;
 
 import github.sql.dsl.entity.User;
 
+import java.sql.Timestamp;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,7 +41,7 @@ public class Users {
             User user = new User();
             user.setId(i);
             user.setUsername(name);
-            user.setTime(new Date(System.currentTimeMillis() - random.nextInt((int) l)));
+            user.setTime(new Timestamp(System.currentTimeMillis() - random.nextInt((int) l)));
             user.setRandomNumber(random.nextInt(10));
             int pid = i / 10;
             user.setPid(pid == 0 ? null : pid);

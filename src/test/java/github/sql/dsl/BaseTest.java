@@ -1,5 +1,6 @@
 package github.sql.dsl;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import github.sql.dsl.criteria.query.QueryBuilder;
 import github.sql.dsl.criteria.query.builder.Query;
 import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
@@ -10,12 +11,14 @@ import github.sql.dsl.criteria.query.expression.path.attribute.EntityAttribute;
 import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
 import github.sql.dsl.entity.User;
 import github.sql.dsl.internal.QueryBuilders;
+import github.sql.dsl.internal.jdbc.sql.SqlExecutor;
+import github.sql.dsl.projection.UserInterface;
+import github.sql.dsl.projection.UserModel;
 import lombok.Lombok;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
@@ -26,30 +29,11 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @Slf4j
-public class StandardTest {
+public class BaseTest {
 
-    private static List<User> allUsers;
-    private static Query<User> userQuery;
-
-    @BeforeAll
-    public static void initAll() {
-        EntityManager manager = EntityManagers.getEntityManager();
-        QueryBuilder queryBuilder = QueryBuilders.jpa(manager);
-        allUsers = Users.getUsers();
-        userQuery = queryBuilder.query(User.class);
-
-        doInTransaction(() -> {
-            manager.createQuery("update User set pid = null").executeUpdate();
-            manager.createQuery("delete from User").executeUpdate();
-            for (User user : allUsers) {
-                manager.persist(user);
-            }
-        });
-
-        manager.clear();
-    }
+    protected static Query<User> userQuery;
+    protected static List<User> allUsers;
 
     public static void doInTransaction(Runnable action) {
         Object o = doInTransaction(() -> {
@@ -75,6 +59,45 @@ public class StandardTest {
         }
 
         return result;
+    }
+
+    public static void initByJdbc() {
+        MysqlDataSource source = new MysqlDataSource();
+        source.setUrl("jdbc:mysql:///sql-dsl");
+        source.setUser("root");
+        source.setPassword("root");
+        QueryBuilder queryBuilder = QueryBuilders.mysql(SqlExecutor.fromDatasource(source));
+
+        EntityManager manager = EntityManagers.getEntityManager();
+        allUsers = Users.getUsers();
+        userQuery = queryBuilder.query(User.class);
+
+        doInTransaction(() -> {
+            manager.createQuery("update User set pid = null").executeUpdate();
+            manager.createQuery("delete from User").executeUpdate();
+            for (User user : allUsers) {
+                manager.persist(user);
+            }
+        });
+
+        manager.clear();
+    }
+
+    public static void initByJpa() {
+        EntityManager manager = EntityManagers.getEntityManager();
+        QueryBuilder queryBuilder = QueryBuilders.jpa(manager);
+        allUsers = Users.getUsers();
+        userQuery = queryBuilder.query(User.class);
+
+        doInTransaction(() -> {
+            manager.createQuery("update User set pid = null").executeUpdate();
+            manager.createQuery("delete from User").executeUpdate();
+            for (User user : allUsers) {
+                manager.persist(user);
+            }
+        });
+
+        manager.clear();
     }
 
     @Test
@@ -123,8 +146,9 @@ public class StandardTest {
         assertEquals(getUserIdStream().min().orElse(0), aggregated[0]);
         assertEquals(getUserIdStream().max().orElse(0), aggregated[1]);
         assertEquals(getUserIdStream().count(), aggregated[2]);
-        assertEquals(getUserIdStream().average().orElse(0), (Double) aggregated[3], 0.0001);
-        assertEquals((long) getUserIdStream().sum(), aggregated[4]);
+        OptionalDouble average = getUserIdStream().average();
+        assertEquals(average.orElse(0), ((Number) aggregated[3]).doubleValue(), 0.0001);
+        assertEquals((long) getUserIdStream().sum(), ((Number) aggregated[4]).intValue());
     }
 
     @Test
@@ -726,7 +750,6 @@ public class StandardTest {
 
     }
 
-
     @Test
     public void testStringPredicateTester() {
         String username = "Roy Sawyer";
@@ -791,11 +814,14 @@ public class StandardTest {
         assertEquals(qList, fList);
     }
 
-
     @Test
-    public void testOffsetMaxResult() {
+    public void testResultBuilder() {
         List<User> resultList = userQuery.getResultList(5, 10);
         List<User> subList = allUsers.subList(5, 5 + 10);
+        assertEquals(resultList, subList);
+
+        resultList = userQuery.getResultList(20);
+        subList = allUsers.subList(20, allUsers.size());
         assertEquals(resultList, subList);
 
         List<Object[]> userIds = userQuery.select(User::getId)
@@ -809,6 +835,77 @@ public class StandardTest {
         resultList = userQuery.where(User::getId).in().getResultList();
         assertEquals(resultList.size(), 0);
 
+        int count = userQuery.count();
+        assertEquals(count, allUsers.size());
+
+        User first = userQuery.getFirst();
+        assertEquals(first, allUsers.get(0));
+
+        first = userQuery.where(User::getId).eq(0).getOne();
+        assertEquals(first, allUsers.get(0));
+
+        first = userQuery.getFirst(10);
+        assertEquals(first, allUsers.get(10));
+
+        assertThrowsExactly(IllegalStateException.class, () -> userQuery.getOne());
+        assertThrowsExactly(NullPointerException.class, () -> userQuery.where(User::getId).eq(-1).getOne());
+
+        assertTrue(userQuery.exist());
+        assertTrue(userQuery.exist(allUsers.size() - 1));
+        assertFalse(userQuery.exist(allUsers.size()));
+
+        List<UserInterface> userInterfaces = userQuery.projected(UserInterface.class)
+                .getResultList();
+        List<UserModel> userModels = userQuery.projected(UserModel.class)
+                .getResultList();
+
+        List<Map<String, Object>> l0 = allUsers.stream().map(UserModel::new)
+                .map(UserInterface::asMap)
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> l1 = userInterfaces.stream()
+                .map(UserInterface::asMap)
+                .collect(Collectors.toList());
+        List<Map<String, Object>> l2 = userModels.stream()
+                .map(UserInterface::asMap)
+                .collect(Collectors.toList());
+
+        assertEquals(l0, l1);
+        assertEquals(l0, l2);
+
+    }
+
+    @Test
+    public void testAttr() {
+        User first = userQuery.orderBy(Attribute.of(User::getId)).desc().getFirst();
+        ArrayList<User> users = new ArrayList<>(allUsers);
+        users.sort((a, b) -> Integer.compare(b.getId(), a.getId()));
+        User f = users.stream().findFirst().orElse(null);
+        assertEquals(first, f);
+
+        first = userQuery.orderBy(Attribute.of(User::getUsername)).desc().getFirst();
+
+        users = new ArrayList<>(allUsers);
+        users.sort((a, b) -> b.getUsername().compareTo(a.getUsername()));
+        f = users.stream().findFirst().orElse(null);
+        assertEquals(first, f);
+
+        first = userQuery.orderBy(Attribute.of(User::isValid)).desc().getFirst();
+        users = new ArrayList<>(allUsers);
+        users.sort((a, b) -> Boolean.compare(b.isValid(), a.isValid()));
+        f = users.stream().findFirst().orElse(null);
+        assertEquals(first, f);
+
+        first = userQuery
+                .where(Attribute.of((Attribute<User, Boolean>) User::isValid)).eq(true)
+                .getFirst();
+
+        f = allUsers.stream()
+                .filter(User::isValid)
+                .findFirst()
+                .orElse(null);
+        assertEquals(first, f);
+
     }
 
     private List<Integer> ids(List<User> users) {
@@ -819,6 +916,10 @@ public class StandardTest {
     @NotNull
     private IntStream getUserIdStream() {
         return allUsers.stream().mapToInt(User::getRandomNumber);
+    }
+
+    public void init() {
+        initByJpa();
     }
 
 }
