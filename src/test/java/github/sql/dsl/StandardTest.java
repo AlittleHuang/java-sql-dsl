@@ -6,6 +6,7 @@ import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.expression.Predicate;
 import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import github.sql.dsl.criteria.query.expression.path.attribute.ComparableAttribute;
+import github.sql.dsl.criteria.query.expression.path.attribute.EntityAttribute;
 import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
 import github.sql.dsl.entity.User;
 import github.sql.dsl.internal.QueryBuilders;
@@ -96,7 +97,7 @@ public class StandardTest {
         User user = userQuery
                 .where(User::getId).eq(userId)
                 .fetch(User::getParentUser)
-                .fetch(User::getParentUser)
+                .fetch(EntityAttribute.of(User::getParentUser).map(User::getParentUser))
                 .getSingleResult();
         assertNotNull(user);
         assertEquals(user.getId(), userId);
@@ -722,6 +723,91 @@ public class StandardTest {
                 .collect(Collectors.toList());
 
         assertEquals(list, fList);
+
+    }
+
+
+    @Test
+    public void testStringPredicateTester() {
+        String username = "Roy Sawyer";
+
+        List<User> qList = userQuery.where(User::getUsername).substring(2).eq("eremy Keynes")
+                .getResultList();
+        List<User> fList = allUsers.stream()
+                .filter(user -> user.getUsername().substring(1).equals("eremy Keynes"))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::getUsername).substring(1, 1).eq("M")
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().charAt(0) == 'M')
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::getUsername).trim().like(username)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().trim().startsWith(username))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::getUsername).length().eq(username.length())
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().length() == username.length())
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+
+        qList = userQuery.where(User::getUsername).startWith("M")
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().startsWith("M"))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::getUsername).endsWith("s")
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().endsWith("s"))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::getUsername).lower().contains("s")
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().toLowerCase().contains("s"))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::getUsername).upper().contains("S")
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getUsername().toUpperCase().contains("S"))
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+    }
+
+
+    @Test
+    public void testOffsetMaxResult() {
+        List<User> resultList = userQuery.getResultList(5, 10);
+        List<User> subList = allUsers.subList(5, 5 + 10);
+        assertEquals(resultList, subList);
+
+        List<Object[]> userIds = userQuery.select(User::getId)
+                .getResultList(5, 10);
+        List<Object[]> subUserIds = allUsers.subList(5, 5 + 10)
+                .stream().map(it -> new Object[]{it.getId()})
+                .collect(Collectors.toList());
+
+        assertEqualsArrayList(userIds, subUserIds);
+
+        resultList = userQuery.where(User::getId).in().getResultList();
+        assertEquals(resultList.size(), 0);
 
     }
 

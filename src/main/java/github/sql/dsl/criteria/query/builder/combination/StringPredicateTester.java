@@ -4,11 +4,17 @@ public interface StringPredicateTester<T, NEXT> extends ComparablePredicateTeste
 
     NEXT like(String value);
 
-    NEXT startWith(String value);
+    default NEXT startWith(String value) {
+        return like(value + "%");
+    }
 
-    NEXT startEndWith(String value);
+    default NEXT endsWith(String value) {
+        return like("%" + value);
+    }
 
-    NEXT contains(String value);
+    default NEXT contains(String value) {
+        return like("%" + value + "%");
+    }
 
     StringPredicateTester<T, NEXT> lower();
 

@@ -26,7 +26,7 @@ public class Users {
                 "Taylor Croft", "Vera Isabel", "Cleveland Lindberg(h)", "Neil Spenser", "Odelette Richardson",
                 "Lester Margery", "Josephine Child", "Ralap Zechariah", "Lucien Paul", "Max Leopold", "Jane Lamb",
                 "Boris Kell(e)y", "Emma Amelia", "Monroe Carllyle", "Truda Alerander", "Zara Abraham", "Zero Tours",
-                "Julie Swift", "Archer London", "Kennedy Arnold", "Abner Lyly", "Carr Bach", "Roy Sawyer",
+                "Julie Swift", "Archer London", "Kennedy Arnold", "Abner Lyly", "Carr Bach", " Roy Sawyer  ",
                 "Nicholas Carroll", "Booth Longfellow", "Payne Webster", "Tony Darwin"};
 
         List<User> result = new ArrayList<>(names.length);

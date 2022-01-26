@@ -91,13 +91,16 @@ public class JpaResultQuery<T> {
                     Fetch<?, ?> fetch = null;
                     PathExpression<?> path = expression.asPathExpression();
                     for (int i = 0; i < path.size(); i++) {
+                        Fetch<?, ?> cur = fetch;
                         String stringPath = path.get(i);
-                        if (fetch == null) {
-                            fetch = root.fetch(stringPath, JoinType.LEFT);
-                        } else {
-                            fetch = fetch.fetch(stringPath, JoinType.LEFT);
-                        }
-                        fetched.put(path.offset(i + 1), fetch);
+                        fetch = (Fetch<?, ?>) fetched.computeIfAbsent(path.offset(i + 1), k -> {
+                            if (cur == null) {
+                                return root.fetch(stringPath, JoinType.LEFT);
+                            } else {
+                                return cur.fetch(stringPath, JoinType.LEFT);
+                            }
+                        });
+
                     }
                 }
             }
@@ -151,9 +154,6 @@ public class JpaResultQuery<T> {
 
 
         public Predicate toPredicate(Expression<?> expression) {
-            if (expression == null) {
-                return cb.conjunction();
-            }
             return cb.isTrue(toExpression(expression).as(Boolean.class));
         }
 
@@ -268,10 +268,6 @@ public class JpaResultQuery<T> {
         asComparable(javax.persistence.criteria.Expression<?> e0) {
             //noinspection unchecked
             return (javax.persistence.criteria.Expression<? extends Comparable<Object>>) e0;
-        }
-
-        private boolean isComparableType(Class<?> javaType) {
-            return javaType.isPrimitive() || Comparable.class.isAssignableFrom(javaType);
         }
 
         protected Path<?> getPath(PathExpression<?> expression) {

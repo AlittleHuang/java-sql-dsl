@@ -24,21 +24,6 @@ public class StringPredicateTesterImpl<T, NEXT>
     }
 
     @Override
-    public NEXT startWith(String value) {
-        return like("%" + value);
-    }
-
-    @Override
-    public NEXT startEndWith(String value) {
-        return like(value + "%");
-    }
-
-    @Override
-    public NEXT contains(String value) {
-        return like("%" + value + "%");
-    }
-
-    @Override
     public StringPredicateTester<T, NEXT> lower() {
         return new StringPredicateTesterImpl<>(
                 expression.then(Operator.LOWER),
