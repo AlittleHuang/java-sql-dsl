@@ -177,7 +177,7 @@ public class JpaResultQuery<T> {
                         return cb.gt(asNumber(e0), asNumber(list.get(1)));
                     case EQ:
                         return cb.equal(e0, list.get(1));
-                    case DIFF:
+                    case NE:
                         return cb.notEqual(e0, list.get(1));
                     case GE:
                         return cb.ge(asNumber(e0), asNumber(list.get(1)));
@@ -216,6 +216,8 @@ public class JpaResultQuery<T> {
                         return cb.mod(e0.as(Integer.class), list.get(1).as(Integer.class));
                     case NULLIF:
                         return cb.nullif(e0, list.get(1));
+                    case IF_NULL:
+                        return cb.coalesce(e0, list.get(1));
                     case ISNULL:
                         return cb.isNull(e0);
                     case IN:
@@ -259,6 +261,15 @@ public class JpaResultQuery<T> {
                 return (javax.persistence.criteria.Expression<Number>) e0;
             }
             return e0.as(Number.class);
+        }
+
+        protected javax.persistence.criteria.Expression<Boolean> asBoolean(javax.persistence.criteria.Expression<?> e0) {
+            Class<?> javaType = e0.getJavaType();
+            if (javaType == boolean.class || javaType == Boolean.class) {
+                //noinspection unchecked
+                return (javax.persistence.criteria.Expression<Boolean>) e0;
+            }
+            return e0.as(Boolean.class);
         }
 
         protected Path<?> getPath(PathExpression<?> expression) {

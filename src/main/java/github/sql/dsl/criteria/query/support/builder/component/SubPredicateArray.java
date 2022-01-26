@@ -90,11 +90,6 @@ public class SubPredicateArray implements Expression<Boolean> {
     }
 
     @Override
-    public Expression<Boolean> unwrap() {
-        return value();
-    }
-
-    @Override
     public PathExpression<Boolean> asPathExpression() {
         return value().asPathExpression();
     }

@@ -56,10 +56,6 @@ public interface Expression<T> {
         return thenOperator(e, operator, args == null ? new Expression[0] : args.toArray(new Expression[0]));
     }
 
-    default Expression<T> unwrap() {
-        return this;
-    }
-
     PathExpression<T> asPathExpression();
 
     Type getType();

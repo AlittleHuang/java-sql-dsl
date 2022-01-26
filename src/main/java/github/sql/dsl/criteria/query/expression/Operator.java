@@ -10,7 +10,7 @@ public enum Operator {
     OR("or", 13),
     GT(">", 8),
     EQ("=", 8),
-    DIFF("<>", 8),
+    NE("<>", 8),
     GE(">=", 8),
     LT("<", 8),
     LE("<=", 8),
@@ -30,6 +30,7 @@ public enum Operator {
     MOD("mod", 3),
 
     NULLIF("nullif", 0),
+    IF_NULL("ifnull", 0),
     ISNULL("isnull", 0),
     IN("in", 0),
     BETWEEN("between", 8),

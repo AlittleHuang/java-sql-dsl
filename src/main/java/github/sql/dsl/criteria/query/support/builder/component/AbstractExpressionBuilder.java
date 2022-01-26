@@ -1,5 +1,7 @@
 package github.sql.dsl.criteria.query.support.builder.component;
 
+import github.sql.dsl.criteria.query.builder.combination.PredicateTester;
+import github.sql.dsl.criteria.query.expression.ConstantExpression;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
@@ -26,10 +28,8 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
         return mapper.apply(new SubPredicate(then, combined, negate));
     }
 
-    @SuppressWarnings("SameParameterValue")
     protected NEXT next(Operator operator, Collection<?> values) {
-        Expression<Boolean> then = expression.then(operator, values);
-        return mapper.apply(new SubPredicate(then, combined, negate));
+        return next(operator, values.toArray());
     }
 
     public NEXT isNull() {
@@ -41,12 +41,11 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
     }
 
     public NEXT ne(U value) {
-        return next(Operator.DIFF, value);
+        return next(Operator.NE, value);
     }
 
     public NEXT in(Collection<U> values) {
         return next(Operator.IN, values);
-
     }
 
     public NEXT ge(Expression<U> value) {
@@ -108,6 +107,16 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
 
     public NEXT lt(Attribute<T, U> value) {
         return next(Operator.LT, value);
+    }
+
+    public PredicateTester<T, U, NEXT> nullIf(U value) {
+        Expression<U> expression = this.expression.then(Operator.NULLIF, new ConstantExpression<>(value));
+        return new PredicateTesterImpl<>(expression, combined, negate, mapper);
+    }
+
+    public PredicateTester<T, U, NEXT> ifNull(U value) {
+        Expression<U> expression = this.expression.then(Operator.IF_NULL, new ConstantExpression<>(value));
+        return new PredicateTesterImpl<>(expression, combined, negate, mapper);
     }
 
 }

@@ -20,7 +20,7 @@ public class PredicateBuilder<T> extends PredicateAssemblerImpl<T, Predicate.Bui
 
     @Override
     public Predicate<T> not() {
-        return new PredicateBuilder<>(unwrap().then(Operator.NOT));
+        return new PredicateBuilder<>(then(Operator.NOT));
     }
 
 }

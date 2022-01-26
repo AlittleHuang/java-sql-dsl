@@ -1,5 +1,6 @@
 package github.sql.dsl.criteria.query.support.meta;
 
+import lombok.Lombok;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.BeanInfo;
@@ -40,8 +41,7 @@ public class ProjectionInformation implements Iterable<ProjectionAttribute> {
                             information.nameMap.put(name, attribute);
                         }
                     } catch (Exception e) {
-                        //noinspection ConstantConditions
-                        throw (RuntimeException) e;
+                        throw Lombok.sneakyThrow(e);
                     }
                     return information;
                 });

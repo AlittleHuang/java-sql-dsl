@@ -1,7 +1,6 @@
 package github.sql.dsl.criteria.query.support.builder.component;
 
 import github.sql.dsl.criteria.query.builder.combination.PredicateTester;
-import github.sql.dsl.criteria.query.expression.ConstantExpression;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 
@@ -18,9 +17,5 @@ public class PredicateTesterImpl<T, U, NEXT>
         super(expression, combined, negate, mapper);
     }
 
-    @Override
-    public PredicateTester<T, U, NEXT> nullIf(U value) {
-        Expression<U> expression = this.expression.then(Operator.NULLIF, new ConstantExpression<>(value));
-        return new PredicateTesterImpl<>(expression, combined, negate, mapper);
-    }
+
 }

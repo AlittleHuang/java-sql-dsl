@@ -49,7 +49,7 @@ public interface Predicate<T> extends Expression<Boolean> {
     }
 
     static <T> Predicate.Builder<T> get(BooleanAttribute<T> attribute) {
-        return new PredicateBuilder<>(AttributePath.exchange(attribute));
+        return new PredicateBuilder<>(AttributePath.exchange(attribute).then(Operator.EQ, true));
     }
 
 

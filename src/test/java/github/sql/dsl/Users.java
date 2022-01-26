@@ -2,9 +2,11 @@ package github.sql.dsl;
 
 import github.sql.dsl.entity.User;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class Users {
 
@@ -29,12 +31,14 @@ public class Users {
                 "Nicholas Carroll", "Booth Longfellow", "Payne Webster", "Tony Darwin"};
 
         List<User> result = new ArrayList<>(names.length);
+        Random random = new Random();
+        long l = Duration.ofDays(5).toMillis();
         for (int i = 0; i < names.length; i++) {
             String name = names[i];
             User user = new User();
             user.setId(i);
             user.setUsername(name);
-            user.setTime(new Date());
+            user.setTime(new Date(random.nextInt((int) l)));
             int pid = i / 10;
             user.setPid(pid == 0 ? null : pid);
             user.setValid(i % 2 == 0);

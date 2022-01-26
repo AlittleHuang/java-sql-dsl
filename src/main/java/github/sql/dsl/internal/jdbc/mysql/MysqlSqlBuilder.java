@@ -285,7 +285,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
                     case GT:
                     case EQ:
-                    case DIFF:
+                    case NE:
                     case GE:
                     case LT:
                     case LE:
@@ -321,6 +321,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                     case TRIM:
                     case LENGTH:
                     case NULLIF:
+                    case IF_NULL:
                     case ISNULL:
 
                     case MIN:

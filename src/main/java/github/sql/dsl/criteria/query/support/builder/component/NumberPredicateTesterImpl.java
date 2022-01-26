@@ -57,16 +57,6 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
     }
 
     @Override
-    public NumberPredicateTester<T, U, NEXT> nullIf(U value) {
-        return new NumberPredicateTesterImpl<>(
-                expression.then(Operator.NULLIF, value),
-                combined,
-                negate,
-                mapper
-        );
-    }
-
-    @Override
     public NumberPredicateTester<T, U, NEXT> add(NumberAttribute<T, U> v) {
         return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.ADD, v),

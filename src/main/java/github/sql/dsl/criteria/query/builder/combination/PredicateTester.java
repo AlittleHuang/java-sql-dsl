@@ -26,5 +26,7 @@ public interface PredicateTester<T, U, NEXT> {
 
     PredicateTester<T, U, NEXT> nullIf(U value);
 
+    PredicateTester<T, U, NEXT> ifNull(U value);
+
 
 }

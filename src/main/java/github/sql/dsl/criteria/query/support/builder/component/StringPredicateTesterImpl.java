@@ -38,15 +38,15 @@ public class StringPredicateTesterImpl<T, NEXT>
         return like("%" + value + "%");
     }
 
-    @Override
-    public StringPredicateTester<T, NEXT> nullIf(String value) {
-        return new StringPredicateTesterImpl<>(
-                expression.then(Operator.NULLIF, value),
-                combined,
-                negate,
-                mapper
-        );
-    }
+    // @Override
+    // public StringPredicateTester<T, NEXT> nullIf(String value) {
+    //     return new StringPredicateTesterImpl<>(
+    //             expression.then(Operator.NULLIF, value),
+    //             combined,
+    //             negate,
+    //             mapper
+    //     );
+    // }
 
     @Override
     public StringPredicateTester<T, NEXT> lower() {
