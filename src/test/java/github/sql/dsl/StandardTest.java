@@ -4,6 +4,7 @@ import github.sql.dsl.criteria.query.QueryBuilder;
 import github.sql.dsl.criteria.query.builder.Query;
 import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.expression.Predicate;
+import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import github.sql.dsl.criteria.query.support.builder.component.AggregateFunction;
 import github.sql.dsl.entity.User;
 import github.sql.dsl.internal.QueryBuilders;
@@ -16,10 +17,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -51,15 +49,41 @@ public class StandardTest {
         manager.clear();
     }
 
+    public static void doInTransaction(Runnable action) {
+        Object o = doInTransaction(() -> {
+            action.run();
+            return null;
+        });
+        log.trace("{}", o);
+    }
+
+    public static <T> T doInTransaction(Callable<T> action) {
+        EntityManager manager = EntityManagers.getEntityManager();
+
+        Session session = manager.unwrap(Session.class);
+        Transaction transaction = session.getTransaction();
+        T result;
+        try {
+            transaction.begin();
+            result = action.call();
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw Lombok.sneakyThrow(e);
+        }
+
+        return result;
+    }
+
     @Test
     public void testComparablePredicateTesterGt() {
 
         List<User> qgt80 = userQuery
-                .where(User::getId).gt(80)
+                .where(User::getRandomNumber).gt(80)
                 .orderBy(User::getId).asc()
                 .getResultList();
         List<User> fgt80 = allUsers.stream()
-                .filter(it -> it.getId() > 80)
+                .filter(it -> it.getRandomNumber() > 80)
                 .collect(Collectors.toList());
         assertEquals(qgt80, fgt80);
 
@@ -87,51 +111,50 @@ public class StandardTest {
     @Test
     public void testAggregateFunction() {
         Object[] aggregated = userQuery
-                .select(User::getId, AggregateFunction.MIN)
-                .select(User::getId, AggregateFunction.MAX)
-                .select(User::getId, AggregateFunction.COUNT)
-                .select(User::getId, AggregateFunction.AVG)
-                .select(User::getId, AggregateFunction.SUM)
+                .select(User::getRandomNumber, AggregateFunction.MIN)
+                .select(User::getRandomNumber, AggregateFunction.MAX)
+                .select(User::getRandomNumber, AggregateFunction.COUNT)
+                .select(User::getRandomNumber, AggregateFunction.AVG)
+                .select(User::getRandomNumber, AggregateFunction.SUM)
                 .getOne();
         assertNotNull(aggregated);
         assertEquals(getUserIdStream().min().orElse(0), aggregated[0]);
         assertEquals(getUserIdStream().max().orElse(0), aggregated[1]);
         assertEquals(getUserIdStream().count(), aggregated[2]);
-        assertEquals(getUserIdStream().average().orElse(0), aggregated[3]);
+        assertEquals(getUserIdStream().average().orElse(0), (Double) aggregated[3], 0.0001);
         assertEquals((long) getUserIdStream().sum(), aggregated[4]);
     }
 
     @Test
     public void testSelect() {
         List<Object[]> qList = userQuery
-                .select(User::getId)
+                .select(User::getRandomNumber)
                 .select(User::getUsername)
                 .getResultList();
 
         List<Object[]> fList = allUsers.stream()
-                .map(it -> new Object[]{it.getId(), it.getUsername()})
+                .map(it -> new Object[]{it.getRandomNumber(), it.getUsername()})
                 .collect(Collectors.toList());
 
         assertEqualsArrayList(qList, fList);
 
     }
 
-
     @Test
     public void testGroupBy() {
         List<Object[]> resultList = userQuery
-                .groupBy(User::getId)
+                .groupBy(User::getRandomNumber)
                 .groupBy(Arrays.asList(User::getPid, User::isValid))
                 .select(User::isValid)
-                .select(User::getId)
+                .select(User::getRandomNumber)
                 .select(User::getPid)
                 .getResultList();
 
         List<Object[]> resultList2 = userQuery
-                .groupBy(User::getId)
+                .groupBy(User::getRandomNumber)
                 .groupBy(Arrays.asList(User::getPid, User::isValid))
                 .select(User::isValid)
-                .select(Arrays.asList(User::getId, User::getPid))
+                .select(Arrays.asList(User::getRandomNumber, User::getPid))
                 .getResultList();
         assertEqualsArrayList(resultList, resultList2);
     }
@@ -146,18 +169,18 @@ public class StandardTest {
     @Test
     public void testOrderBy() {
         List<User> list = userQuery
-                .orderBy(User::getId).desc()
+                .orderBy(User::getRandomNumber).desc()
                 .getResultList();
         ArrayList<User> sorted = new ArrayList<>(allUsers);
-        sorted.sort((a, b) -> Integer.compare(b.getId(), a.getId()));
+        sorted.sort((a, b) -> Integer.compare(b.getRandomNumber(), a.getRandomNumber()));
         assertEquals(list, sorted);
 
         list = userQuery
                 .orderBy(User::getUsername).asc()
-                .orderBy(User::getId).desc()
+                .orderBy(User::getRandomNumber).desc()
                 .getResultList();
 
-        sorted.sort((a, b) -> Integer.compare(b.getId(), a.getId()));
+        sorted.sort((a, b) -> Integer.compare(b.getRandomNumber(), a.getRandomNumber()));
         sorted.sort(Comparator.comparing(User::getUsername));
         assertEquals(list, sorted);
 
@@ -172,14 +195,13 @@ public class StandardTest {
     @Test
     public void testPredicateNot() {
         List<User> qList = userQuery.where(Predicate
-                        .get(User::getId).ge(10)
-                        .or(User::getId).lt(5)
+                        .get(User::getRandomNumber).ge(10)
+                        .or(User::getRandomNumber).lt(5)
                         .not()
                 )
-                .orderBy(User::getId).asc()
                 .getResultList();
         List<User> fList = allUsers.stream()
-                .filter(it -> !(it.getId() >= 10 || it.getId() < 5))
+                .filter(it -> !(it.getRandomNumber() >= 10 || it.getRandomNumber() < 5))
                 .collect(Collectors.toList());
 
 
@@ -191,7 +213,6 @@ public class StandardTest {
     public void testIsNull() {
 
         List<User> qList = userQuery.whereNot(User::getPid).isNull()
-                .orderBy(User::getId).asc()
                 .getResultList();
 
         List<User> fList = allUsers.stream()
@@ -200,7 +221,6 @@ public class StandardTest {
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getPid).isNull()
-                .orderBy(User::getId).asc()
                 .getResultList();
 
         fList = allUsers.stream()
@@ -221,9 +241,9 @@ public class StandardTest {
         List<User> fList = validUsers;
         assertEquals(qList, fList);
 
-        qList = isValid.and(User::getId).eq(2)
+        qList = isValid.and(User::getRandomNumber).eq(2)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getId() == 2)
+        fList = validUsers.stream().filter(user -> user.getRandomNumber() == 2)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
@@ -233,11 +253,11 @@ public class StandardTest {
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
-        qList = isValid.and(User::getId).in(1, 2, 3)
+        qList = isValid.and(User::getRandomNumber).in(1, 2, 3)
                 .getResultList();
-        List<User> qList2 = isValid.and(User::getId).in(Arrays.asList(1, 2, 3))
+        List<User> qList2 = isValid.and(User::getRandomNumber).in(Arrays.asList(1, 2, 3))
                 .getResultList();
-        fList = validUsers.stream().filter(user -> Arrays.asList(1, 2, 3).contains(user.getId()))
+        fList = validUsers.stream().filter(user -> Arrays.asList(1, 2, 3).contains(user.getRandomNumber()))
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
         assertEquals(qList2, fList);
@@ -274,103 +294,226 @@ public class StandardTest {
         assertEquals(qList, fList);
 
 
-        qList = isValid.and(User::getId).ge(10)
+        qList = isValid.and(User::getRandomNumber).ge(10)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getId() >= 10)
+        fList = validUsers.stream().filter(user -> user.getRandomNumber() >= 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
-        qList = isValid.and(User::getId).gt(10)
+        qList = isValid.and(User::getRandomNumber).gt(10)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getId() > 10)
+        fList = validUsers.stream().filter(user -> user.getRandomNumber() > 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
-        qList = isValid.and(User::getId).le(10)
+        qList = isValid.and(User::getRandomNumber).le(10)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getId() <= 10)
-                .collect(Collectors.toList());
-        assertEquals(qList, fList);
-
-
-        qList = isValid.and(User::getId).lt(10)
-                .getResultList();
-        fList = validUsers.stream().filter(user -> user.getId() < 10)
-                .collect(Collectors.toList());
-        assertEquals(qList, fList);
-
-        qList = isValid.and(User::getId).between(10, 15)
-                .getResultList();
-        fList = validUsers.stream().filter(user -> user.getId() >= 10 && user.getId() <= 15)
+        fList = validUsers.stream().filter(user -> user.getRandomNumber() <= 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
 
-        qList = isValid.and(User::getId).ge(User::getPid)
+        qList = isValid.and(User::getRandomNumber).lt(10)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getId() >= user.getPid())
+        fList = validUsers.stream().filter(user -> user.getRandomNumber() < 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
-        qList = isValid.and(User::getId).gt(User::getPid)
+        qList = isValid.and(User::getRandomNumber).between(10, 15)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getId() > user.getPid())
-                .collect(Collectors.toList());
-        assertEquals(qList, fList);
-
-        qList = isValid.and(User::getId).le(User::getPid)
-                .getResultList();
-        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getId() <= user.getPid())
+        fList = validUsers.stream().filter(user -> user.getRandomNumber() >= 10 && user.getRandomNumber() <= 15)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
 
-        qList = isValid.and(User::getId).lt(User::getPid)
+        qList = isValid.and(User::getRandomNumber).ge(User::getPid)
                 .getResultList();
-        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getId() < user.getPid())
+        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() >= user.getPid())
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
-        qList = isValid.and(User::getId)
-                .between(User::getId, User::getPid)
+        qList = isValid.and(User::getRandomNumber).gt(User::getPid)
+                .getResultList();
+        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() > user.getPid())
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = isValid.and(User::getRandomNumber).le(User::getPid)
+                .getResultList();
+        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() <= user.getPid())
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+
+        qList = isValid.and(User::getRandomNumber).lt(User::getPid)
+                .getResultList();
+        fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() < user.getPid())
+                .collect(Collectors.toList());
+        assertEquals(qList, fList);
+
+        qList = isValid.and(User::getRandomNumber)
+                .between(User::getRandomNumber, User::getPid)
                 .getResultList();
         fList = validUsers.stream()
-                .filter(user -> user.getPid() != null && user.getId() >= user.getId() && user.getId() <= user.getPid())
+                .filter(user -> user.getPid() != null && user.getRandomNumber() >= user.getRandomNumber() && user.getRandomNumber() <= user.getPid())
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
+    }
+
+    @Test
+    public void testPredicateAssembler() {
+
+
+        String username = "Jeremy Keynes";
+        List<User> qList = userQuery.where(User::isValid).eq(true)
+                .and(User::getParentUser).map(User::getUsername).eq(username)
+                .getResultList();
+        List<User> fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        && user.getParentUser() != null
+                        && Objects.equals(user.getParentUser().getUsername(), username))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        Attribute<User, Number> getUsername = User::getRandomNumber;
+        qList = userQuery.where(User::isValid).eq(true)
+                .and(getUsername).eq(10)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        && Objects.equals(user.getRandomNumber(), 10))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::isValid).eq(true)
+                .or(getUsername).eq(10)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        || Objects.equals(user.getRandomNumber(), 10))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+
+        qList = userQuery.where(User::isValid).eq(true)
+                .andNot(getUsername).eq(10)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        && !Objects.equals(user.getRandomNumber(), 10))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::isValid).eq(true)
+                .orNot(getUsername).eq(10)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        || !Objects.equals(user.getRandomNumber(), 10))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+
+        Date time = allUsers.get(20).getTime();
+
+        qList = userQuery.where(User::isValid).eq(true)
+                .or(User::getParentUser).map(User::getUsername).eq(username)
+                .and(User::getTime).ge(time)
+                .getResultList();
+
+        List<User> jeremy_keynes = userQuery.where(User::isValid).eq(true)
+                .or(User::getParentUser).map(User::getUsername).eq(username)
+                .fetch(User::getParentUser)
+                .and(User::getTime).ge(time)
+                .getResultList();
+
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        || (user.getParentUser() != null
+                        && Objects.equals(user.getParentUser().getUsername(), username)
+                        && user.getTime().getTime() >= time.getTime()))
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+        assertEquals(qList, jeremy_keynes);
+
+
+        qList = userQuery.where(User::isValid).eq(true)
+                .andNot(User::getRandomNumber).eq(5)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        && user.getRandomNumber() != 5)
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.where(User::isValid).eq(true)
+                .orNot(User::getRandomNumber).ne(5)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.isValid()
+                        || user.getRandomNumber() == 5)
+                .collect(Collectors.toList());
+
+        assertEquals(qList, fList);
+
+        qList = userQuery.whereNot(User::getRandomNumber).eq(6)
+                .orNot(User::isValid).ne(false)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() != 6
+                        || !user.isValid())
+                .collect(Collectors.toList());
+
+        assertEquals((qList), (fList));
+
+        qList = userQuery.whereNot(User::getRandomNumber).eq(6)
+                .and(User::getParentUser).map(User::isValid).eq(true)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() != 6
+                        && (user.getParentUser() != null && user.getParentUser().isValid()))
+                .collect(Collectors.toList());
+
+        assertEquals((qList), (fList));
+
+        qList = userQuery.whereNot(User::getRandomNumber).eq(6)
+                .andNot(User::getParentUser).map(User::isValid).eq(true)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() != 6
+                        && (user.getParentUser() != null && !user.getParentUser().isValid()))
+                .collect(Collectors.toList());
+
+        assertEquals((qList), (fList));
+
+        qList = userQuery.whereNot(User::getRandomNumber).eq(6)
+                .orNot(User::getParentUser).map(User::isValid).eq(true)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getRandomNumber() != 6
+                        || (user.getParentUser() != null && !user.getParentUser().isValid()))
+                .collect(Collectors.toList());
+
+        assertEquals((qList), (fList));
+
+    }
+
+    private List<Integer> ids(List<User> users) {
+        return users.stream().map(User::getId).collect(Collectors.toList());
     }
 
     // ----
     @NotNull
     private IntStream getUserIdStream() {
-        return allUsers.stream().mapToInt(User::getId);
-    }
-
-    public static void doInTransaction(Runnable action) {
-        Object o = doInTransaction(() -> {
-            action.run();
-            return null;
-        });
-        log.trace("{}", o);
-    }
-
-    public static <T> T doInTransaction(Callable<T> action) {
-        EntityManager manager = EntityManagers.getEntityManager();
-
-        Session session = manager.unwrap(Session.class);
-        Transaction transaction = session.getTransaction();
-        T result;
-        try {
-            transaction.begin();
-            result = action.call();
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            throw Lombok.sneakyThrow(e);
-        }
-
-        return result;
+        return allUsers.stream().mapToInt(User::getRandomNumber);
     }
 
 }

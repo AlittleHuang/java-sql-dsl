@@ -10,18 +10,6 @@ import java.util.stream.Collectors;
 
 public interface Expression<T> {
 
-    // Predicate isNull();
-    //
-    // Predicate isNotNull();
-    //
-    // Predicate in(Object... values);
-    //
-    // Predicate in(Expression<?>... values);
-    //
-    // Predicate in(Collection<?> values);
-    //
-    // Predicate in(Expression<Collection<?>> values);
-
     static Expression<?> of(Object value) {
         if (value instanceof Expression) {
             return (Expression<?>) value;

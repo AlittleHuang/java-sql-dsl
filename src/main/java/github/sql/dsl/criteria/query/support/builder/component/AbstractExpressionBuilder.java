@@ -4,7 +4,6 @@ import github.sql.dsl.criteria.query.builder.combination.PredicateTester;
 import github.sql.dsl.criteria.query.expression.ConstantExpression;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
-import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import lombok.Getter;
 
 import java.util.Collection;
@@ -86,26 +85,6 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
     }
 
     public NEXT lt(U value) {
-        return next(Operator.LT, value);
-    }
-
-    public NEXT ge(Attribute<T, U> value) {
-        return next(Operator.GE, value);
-    }
-
-    public NEXT gt(Attribute<T, U> value) {
-        return next(Operator.GT, value);
-    }
-
-    public NEXT le(Attribute<T, U> value) {
-        return next(Operator.LE, value);
-    }
-
-    public NEXT between(Attribute<T, U> a, Attribute<T, U> b) {
-        return next(Operator.BETWEEN, a, b);
-    }
-
-    public NEXT lt(Attribute<T, U> value) {
         return next(Operator.LT, value);
     }
 

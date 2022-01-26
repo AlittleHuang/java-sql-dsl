@@ -21,11 +21,14 @@ public class User implements Entity {
     @Id
     private int id;
 
+    private int randomNumber;
+
     private String username;
 
     private Date time;
 
     private Integer pid;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pid", insertable = false, updatable = false)
@@ -40,7 +43,7 @@ public class User implements Entity {
 
         User user = (User) o;
 
-        if (id != user.id) return false;
+        if (randomNumber != user.randomNumber) return false;
         if (valid != user.valid) return false;
         if (!Objects.equals(username, user.username)) return false;
         // if (!Objects.equals(time, user.time)) return false;
@@ -49,7 +52,7 @@ public class User implements Entity {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = randomNumber;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + (pid != null ? pid.hashCode() : 0);

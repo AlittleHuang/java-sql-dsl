@@ -27,8 +27,6 @@ public interface Whereable<T, NEXT> {
 
     StringPredicateTester<T, NEXT> whereNot(StringAttribute<T> column);
 
-    // NEXT Where(PredicateAssembler.Builder<T, NEXT> builder);
-
     NEXT where(Predicate<T> predicate);
 
 }

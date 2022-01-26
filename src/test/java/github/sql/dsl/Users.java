@@ -3,10 +3,9 @@ package github.sql.dsl;
 import github.sql.dsl.entity.User;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Users {
 
@@ -38,12 +37,20 @@ public class Users {
             User user = new User();
             user.setId(i);
             user.setUsername(name);
-            user.setTime(new Date(random.nextInt((int) l)));
+            user.setTime(new Date(System.currentTimeMillis() - random.nextInt((int) l)));
+            user.setRandomNumber(random.nextInt(10));
             int pid = i / 10;
             user.setPid(pid == 0 ? null : pid);
             user.setValid(i % 2 == 0);
             result.add(user);
         }
+        Map<Integer, User> userMap = result.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        for (User user : result) {
+            user.setParentUser(userMap.get(user.getPid()));
+        }
+
         return result;
 
     }

@@ -78,4 +78,16 @@ public final class ConstantArray<T> implements Array<T> {
         return Arrays.toString(values);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConstantArray<?> that = (ConstantArray<?>) o;
+        return Arrays.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(values);
+    }
 }

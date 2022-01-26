@@ -11,7 +11,9 @@ import lombok.var;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JpaResultQuery<T> {
@@ -73,6 +75,7 @@ public class JpaResultQuery<T> {
         protected final CriteriaBuilder cb;
         protected final javax.persistence.criteria.CriteriaQuery<R> query;
         protected final Root<T> root;
+        protected final Map<PathExpression<?>, FetchParent<?, ?>> fetched = new HashMap<>();
 
         public Builder(Class<R> resultType) {
             this.resultType = resultType;
@@ -82,23 +85,25 @@ public class JpaResultQuery<T> {
         }
 
         public List<R> getResultList(int offset, int maxResult) {
-            buildWhere();
-            builderOrderBy();
-
             Array<PathExpression<?>> list = criteria.getFetchList();
             if (list != null) {
                 for (PathExpression<?> expression : list) {
                     Fetch<?, ?> fetch = null;
                     PathExpression<?> path = expression.asPathExpression();
-                    for (String stringPath : path) {
+                    for (int i = 0; i < path.size(); i++) {
+                        String stringPath = path.get(i);
                         if (fetch == null) {
                             fetch = root.fetch(stringPath, JoinType.LEFT);
                         } else {
                             fetch = fetch.fetch(stringPath, JoinType.LEFT);
                         }
+                        fetched.put(path.offset(i + 1), fetch);
                     }
                 }
             }
+
+            buildWhere();
+            builderOrderBy();
 
             TypedQuery<R> typedQuery = entityManager.createQuery(query);
             if (offset > 0) {
@@ -174,17 +179,17 @@ public class JpaResultQuery<T> {
                     case OR:
                         return cb.or(e0.as(Boolean.class), list.get(1).as(Boolean.class));
                     case GT:
-                        return cb.gt(asNumber(e0), asNumber(list.get(1)));
+                        return cb.greaterThan(asComparable(e0), asComparable(list.get(1)));
                     case EQ:
                         return cb.equal(e0, list.get(1));
                     case NE:
                         return cb.notEqual(e0, list.get(1));
                     case GE:
-                        return cb.ge(asNumber(e0), asNumber(list.get(1)));
+                        return cb.greaterThanOrEqualTo(asComparable(e0), asComparable(list.get(1)));
                     case LT:
-                        return cb.lt(asNumber(e0), asNumber(list.get(1)));
+                        return cb.lessThan(asComparable(e0), asComparable(list.get(1)));
                     case LE:
-                        return cb.le(asNumber(e0), asNumber(list.get(1)));
+                        return cb.lessThanOrEqualTo(asComparable(e0), asComparable(list.get(1)));
                     case LIKE:
                         return cb.like(e0.as(String.class), list.get(1).as(String.class));
                     case LOWER:
@@ -255,29 +260,42 @@ public class JpaResultQuery<T> {
         }
 
         protected javax.persistence.criteria.Expression<Number> asNumber(javax.persistence.criteria.Expression<?> e0) {
-            Class<?> javaType = e0.getJavaType();
-            if (javaType.isPrimitive() || Number.class.isAssignableFrom(javaType)) {
-                //noinspection unchecked
-                return (javax.persistence.criteria.Expression<Number>) e0;
-            }
-            return e0.as(Number.class);
+            //noinspection unchecked
+            return (javax.persistence.criteria.Expression<Number>) e0;
         }
 
-        protected javax.persistence.criteria.Expression<Boolean> asBoolean(javax.persistence.criteria.Expression<?> e0) {
-            Class<?> javaType = e0.getJavaType();
-            if (javaType == boolean.class || javaType == Boolean.class) {
-                //noinspection unchecked
-                return (javax.persistence.criteria.Expression<Boolean>) e0;
-            }
-            return e0.as(Boolean.class);
+        protected javax.persistence.criteria.Expression<? extends Comparable<Object>>
+        asComparable(javax.persistence.criteria.Expression<?> e0) {
+            //noinspection unchecked
+            return (javax.persistence.criteria.Expression<? extends Comparable<Object>>) e0;
+        }
+
+        private boolean isComparableType(Class<?> javaType) {
+            return javaType.isPrimitive() || Comparable.class.isAssignableFrom(javaType);
         }
 
         protected Path<?> getPath(PathExpression<?> expression) {
             Path<?> r = root;
-            for (String s : expression) {
+            int iMax = expression.size() - 1;
+            for (int i = 0; i < expression.size(); i++) {
+                String s = expression.get(i);
+                if (i != iMax) {
+                    join(expression.offset(i + 1));
+                }
                 r = r.get(s);
             }
+
             return r;
+        }
+
+        private void join(PathExpression<?> offset) {
+            fetched.computeIfAbsent(offset, k -> {
+                From<?, ?> r = root;
+                for (String s : offset) {
+                    r = r.join(s, JoinType.LEFT);
+                }
+                return r;
+            });
         }
 
         protected void builderOrderBy() {

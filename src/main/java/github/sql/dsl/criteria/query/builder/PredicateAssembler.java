@@ -51,16 +51,8 @@ public interface PredicateAssembler<T, NEXT> {
 
     StringPredicateTester<T, NEXT> orNot(StringAttribute<T> attribute);
 
-    // NEXT andAppend(Builder<T, NEXT> builder);
-    //
-    // NEXT orAppend(Builder<T, NEXT> builder);
-
     NEXT and(Predicate<T> predicate);
 
     NEXT or(Predicate<T> predicate);
-
-    // interface Builder<T, NEXT> {
-    //     BooleanExpression build(SubPredicateHeaderCombinable<T, SubPredicateAssembler<T, NEXT>> builder);
-    // }
 
 }

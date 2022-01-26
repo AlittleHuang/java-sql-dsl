@@ -52,7 +52,7 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
 
 
     public int size() {
-        return path.length;
+        return length;
     }
 
     public String get(int index) {
@@ -67,6 +67,16 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
         return new PathExpression<>(path, length);
     }
 
+    public PathExpression<?> offset(int length) {
+        if (length < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (length > this.length) {
+            throw new IndexOutOfBoundsException(Integer.toString(length));
+        }
+        return new PathExpression<>(path, length);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -77,8 +87,7 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
         }
         PathExpression<?> that = (PathExpression<?>) o;
 
-        int length = this.size();
-        if (that.size() != length) {
+        if (that.length != this.length) {
             return false;
         }
         Iterator<String> ia = this.iterator();
@@ -96,21 +105,18 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(path);
+        int result = 1;
+        for (int i = 0; i < length; i++) {
+            String s = path[i];
+            result = 31 * result + (s == null ? 0 : s.hashCode());
+        }
+        return result;
     }
 
     public PathExpression<?> to(String path) {
         String[] values = Stream.concat(Arrays.stream(this.path), Stream.of(path))
                 .toArray(String[]::new);
         return new PathExpression<>(values);
-    }
-
-    public static <T> PathExpression<T> fromPath(Expression<T> path) {
-        if (path instanceof PathExpression) {
-            return (PathExpression<T>) path;
-        }
-        PathExpression<T> pathExpression = path.asPathExpression();
-        return new PathExpression<>(pathExpression.path, pathExpression.length);
     }
 
     @Override
