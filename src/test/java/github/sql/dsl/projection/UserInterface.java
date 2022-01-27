@@ -5,16 +5,6 @@ import java.util.Map;
 
 public interface UserInterface {
 
-    static Map<String, Object> asMap(UserInterface userInterface) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("id", userInterface.getId());
-        map.put("randomNumber", userInterface.getRandomNumber());
-        map.put("username", userInterface.getUsername());
-        map.put("pid", userInterface.getPid());
-        map.put("valid", userInterface.isValid());
-        return map;
-    }
-
     int getId();
 
     int getRandomNumber();
@@ -24,4 +14,14 @@ public interface UserInterface {
     Integer getPid();
 
     boolean isValid();
+
+    default Map<String, Object> asMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id", getId());
+        map.put("randomNumber", getRandomNumber());
+        map.put("username", getUsername());
+        map.put("pid", getPid());
+        map.put("valid", isValid());
+        return map;
+    }
 }
