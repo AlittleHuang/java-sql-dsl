@@ -1,6 +1,6 @@
 package github.sql.dsl.internal.jpa;
 
-import github.sql.dsl.criteria.query.builder.TypeResultQuery;
+import github.sql.dsl.criteria.query.builder.ResultBuilder;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 
@@ -16,13 +16,13 @@ public class JpaTypeQueryFactory implements TypeQueryFactory {
 
 
     @Override
-    public <T> TypeResultQuery<T> getEntityResultQuery(CriteriaQuery criteriaQuery, Class<T> type) {
-        return new JpaEntityResultQuery<>(entityManager, type, criteriaQuery);
+    public <T> ResultBuilder<T> getEntityResultQuery(CriteriaQuery criteriaQuery, Class<T> type) {
+        return new JpaEntityResultBuilder<>(entityManager, type, criteriaQuery);
     }
 
     @Override
-    public TypeResultQuery<Object[]> getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type) {
-        return new JpaObjectResultQuery<>(entityManager, type, criteriaQuery);
+    public ResultBuilder<Object[]> getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type) {
+        return new JpaObjectsResultBuilder<>(entityManager, type, criteriaQuery);
     }
 
 

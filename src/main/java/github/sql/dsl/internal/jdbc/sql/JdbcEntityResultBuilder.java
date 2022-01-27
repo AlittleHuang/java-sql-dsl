@@ -1,16 +1,16 @@
 package github.sql.dsl.internal.jdbc.sql;
 
-import github.sql.dsl.criteria.query.builder.TypeResultQuery;
+import github.sql.dsl.criteria.query.builder.ResultBuilder;
 
 import java.util.List;
 
-public class JdbcEntityEntityResultQuery<T> implements TypeResultQuery<T> {
+public class JdbcEntityResultBuilder<T> implements ResultBuilder<T> {
 
     private final PreparedSqlExecutor executor;
     private final PreparedSqlBuilder builder;
     private final Class<T> entityType;
 
-    public JdbcEntityEntityResultQuery(PreparedSqlExecutor executor, PreparedSqlBuilder builder, Class<T> entityType) {
+    public JdbcEntityResultBuilder(PreparedSqlExecutor executor, PreparedSqlBuilder builder, Class<T> entityType) {
         this.executor = executor;
         this.builder = builder;
         this.entityType = entityType;
@@ -22,7 +22,7 @@ public class JdbcEntityEntityResultQuery<T> implements TypeResultQuery<T> {
     }
 
     @Override
-    public List<T> getResultList(int offset, int maxResult) {
+    public List<T> getList(int offset, int maxResult) {
         return executor.getEntityList(builder.getEntityList(offset, maxResult), entityType);
     }
 

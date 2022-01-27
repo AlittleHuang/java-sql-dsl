@@ -2,25 +2,25 @@ package github.sql.dsl.criteria.query.support.builder.query;
 
 import github.sql.dsl.criteria.query.builder.AggregateSelectable;
 import github.sql.dsl.criteria.query.builder.Groupable;
-import github.sql.dsl.criteria.query.builder.TypeResultQuery;
-import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsQuery;
-import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
+import github.sql.dsl.criteria.query.builder.ResultBuilder;
+import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
+import github.sql.dsl.criteria.query.builder.combination.ObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.Whereable;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
-public class AggregateObjectsQueryImpl<T> extends AbstractResult<T> implements AggregateObjectsQuery<T> {
+public class AggregateObjectsResultBuilderImpl<T> extends AbstractResult<T> implements AggregateObjectsResultBuilder<T> {
 
-    public AggregateObjectsQueryImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+    public AggregateObjectsResultBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate
     @Override
-    protected @NotNull Whereable<T, ArrayQuery<T>> getObjectsWhereable() {
+    protected @NotNull Whereable<T, ObjectsResultBuilder<T>> getObjectsWhereable() {
         return super.getObjectsWhereable();
     }
 
@@ -32,13 +32,13 @@ public class AggregateObjectsQueryImpl<T> extends AbstractResult<T> implements A
 
     @Delegate
     @Override
-    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+    protected @NotNull AggregateSelectable<T, AggregateObjectsResultBuilder<T>> getAggregateSelectable() {
         return super.getAggregateSelectable();
     }
 
     @Delegate
     @Override
-    protected TypeResultQuery<Object[]> getObjectsTypeQuery() {
+    protected ResultBuilder<Object[]> getObjectsTypeQuery() {
         return super.getObjectsTypeQuery();
     }
 }

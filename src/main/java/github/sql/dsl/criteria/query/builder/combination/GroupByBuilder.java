@@ -6,8 +6,8 @@ import github.sql.dsl.criteria.query.builder.Selectable;
 
 public interface GroupByBuilder<T> extends
         Groupable<T, GroupByBuilder<T>>,
-        Selectable<T, ArrayQuery<T>>,
-        AggregateSelectable<T, AggregateObjectsQuery<T>> {
+        Selectable<T, ObjectsResultBuilder<T>>,
+        AggregateSelectable<T, AggregateObjectsResultBuilder<T>> {
 
 
 }

@@ -21,7 +21,7 @@ public class QueryImpl<T> extends AbstractResult<T> implements Query<T> {
 
     @Delegate
     @Override
-    protected @NotNull Fetchable<T, EntityQuery<T>> getFetchable() {
+    protected @NotNull Fetchable<T, EntityResultBuilder<T>> getFetchable() {
         return super.getFetchable();
     }
 
@@ -39,19 +39,19 @@ public class QueryImpl<T> extends AbstractResult<T> implements Query<T> {
 
     @Delegate
     @Override
-    protected @NotNull Selectable<T, ArrayQuery<T>> getSelectable() {
+    protected @NotNull Selectable<T, ObjectsResultBuilder<T>> getSelectable() {
         return super.getSelectable();
     }
 
     @Delegate
     @Override
-    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+    protected @NotNull AggregateSelectable<T, AggregateObjectsResultBuilder<T>> getAggregateSelectable() {
         return super.getAggregateSelectable();
     }
 
     @Delegate
     @Override
-    protected TypeResultQuery<T> getTypeQuery() {
+    protected ResultBuilder<T> getTypeQuery() {
         return super.getTypeQuery();
     }
 

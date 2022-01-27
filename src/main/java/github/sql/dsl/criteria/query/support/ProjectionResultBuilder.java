@@ -1,13 +1,12 @@
 package github.sql.dsl.criteria.query.support;
 
-import github.sql.dsl.criteria.query.builder.TypeResultQuery;
+import github.sql.dsl.criteria.query.builder.ResultBuilder;
 import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
 import github.sql.dsl.criteria.query.support.builder.query.CriteriaQueryImpl;
 import github.sql.dsl.criteria.query.support.meta.ProjectionAttribute;
 import github.sql.dsl.criteria.query.support.meta.ProjectionInformation;
-import github.sql.dsl.criteria.query.support.meta.ProjectionProxyInstance;
 import lombok.SneakyThrows;
 
 import java.lang.invoke.MethodHandles;
@@ -19,21 +18,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static java.lang.invoke.MethodHandles.lookup;
 
-class DefaultTypeResultQuery<T, R> implements TypeResultQuery<R> {
+class ProjectionResultBuilder<T, R> implements ResultBuilder<R> {
 
     private final TypeQueryFactory typeQueryFactory;
     private final CriteriaQuery criteriaQuery;
     private final Class<T> type;
     private final Class<R> projectionType;
 
-    DefaultTypeResultQuery(TypeQueryFactory typeQueryFactory,
-                           CriteriaQuery criteriaQuery,
-                           Class<T> type,
-                           Class<R> projectionType) {
+    ProjectionResultBuilder(TypeQueryFactory typeQueryFactory,
+                            CriteriaQuery criteriaQuery,
+                            Class<T> type,
+                            Class<R> projectionType) {
         this.typeQueryFactory = typeQueryFactory;
         this.criteriaQuery = criteriaQuery;
         this.type = type;
@@ -46,7 +46,7 @@ class DefaultTypeResultQuery<T, R> implements TypeResultQuery<R> {
     }
 
     @Override
-    public List<R> getResultList(int offset, int maxResult) {
+    public List<R> getList(int offset, int maxResult) {
         ProjectionInformation info = ProjectionInformation.get(type, projectionType);
         ArrayList<String> paths = new ArrayList<>();
         for (ProjectionAttribute attribute : info) {
@@ -59,7 +59,7 @@ class DefaultTypeResultQuery<T, R> implements TypeResultQuery<R> {
         CriteriaQueryImpl cq = CriteriaQueryImpl.from(criteriaQuery)
                 .updateSelection(array);
         List<Object[]> objects = typeQueryFactory.getObjectsTypeQuery(cq, type)
-                .getResultList(offset, maxResult);
+                .getList(offset, maxResult);
         return objects.stream()
                 .map(os -> mapToRejection(info, paths, os, projectionType))
                 .collect(Collectors.toList());
@@ -90,19 +90,22 @@ class DefaultTypeResultQuery<T, R> implements TypeResultQuery<R> {
                     return projectionType.getSimpleName() + stringMap;
                 }
 
-                if (ProjectionProxyInstance.GET_RESULT_MAP_METHOD.equals(method)) {
+                if (ProjectionProxyInstance.MAP_METHOD.equals(method)) {
                     return map;
                 }
 
-                if (ProjectionProxyInstance.GET_PROJECTION_CLASS_METHOD.equals(method)) {
+                if (ProjectionProxyInstance.CLASS_METHOD.equals(method)) {
                     return projectionType;
                 }
 
                 if (ProjectionProxyInstance.EQUALS_METHOD.equals(method)) {
+                    if (proxy == args[0]) {
+                        return true;
+                    }
                     if (args[0] instanceof ProjectionProxyInstance) {
                         ProjectionProxyInstance instance = (ProjectionProxyInstance) args[0];
-                        if (instance.$getProjectionClass$() == projectionType) {
-                            return map.equals(instance.$getResultMap$());
+                        if (instance.__projectionClassOfProjectionProxyInstance__() == projectionType) {
+                            return map.equals(instance.__dataMapOfProjectionProxyInstance__());
                         }
                     }
                     return false;
@@ -156,5 +159,25 @@ class DefaultTypeResultQuery<T, R> implements TypeResultQuery<R> {
     @Override
     public boolean exist(int offset) {
         return typeQueryFactory.getEntityResultQuery(criteriaQuery, type).exist(offset);
+    }
+
+    private interface ProjectionProxyInstance {
+
+        Method TO_STRING_METHOD = getMethod(() -> Object.class.getMethod("toString"));
+        Method EQUALS_METHOD = getMethod(() -> Object.class.getMethod("equals", Object.class));
+        Method MAP_METHOD = getMethod(() ->
+                ProjectionProxyInstance.class.getMethod("__dataMapOfProjectionProxyInstance__"));
+        Method CLASS_METHOD = getMethod(() ->
+                ProjectionProxyInstance.class.getMethod("__projectionClassOfProjectionProxyInstance__"));
+
+        @SneakyThrows
+        static Method getMethod(Callable<Method> method) {
+            return method.call();
+        }
+
+        Map<Method, Object> __dataMapOfProjectionProxyInstance__();
+
+        Class<?> __projectionClassOfProjectionProxyInstance__();
+
     }
 }

@@ -1,17 +1,17 @@
 package github.sql.dsl.criteria.query.support;
 
-import github.sql.dsl.criteria.query.builder.TypeResultQuery;
+import github.sql.dsl.criteria.query.builder.ResultBuilder;
 
 public interface TypeQueryFactory {
 
-    <T> TypeResultQuery<T> getEntityResultQuery(CriteriaQuery criteriaQuery, Class<T> type);
+    <T> ResultBuilder<T> getEntityResultQuery(CriteriaQuery criteriaQuery, Class<T> type);
 
-    default <T, R> TypeResultQuery<R> getProjectionQuery(CriteriaQuery criteriaQuery,
-                                                         Class<T> type,
-                                                         Class<R> projectionType) {
-        return new DefaultTypeResultQuery<>(this, criteriaQuery, type, projectionType);
+    default <T, R> ResultBuilder<R> getProjectionQuery(CriteriaQuery criteriaQuery,
+                                                       Class<T> type,
+                                                       Class<R> projectionType) {
+        return new ProjectionResultBuilder<>(this, criteriaQuery, type, projectionType);
     }
 
-    TypeResultQuery<Object[]> getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type);
+    ResultBuilder<Object[]> getObjectsTypeQuery(CriteriaQuery criteriaQuery, Class<?> type);
 
 }

@@ -1,9 +1,9 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
 import github.sql.dsl.criteria.query.builder.*;
-import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
-import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
+import github.sql.dsl.criteria.query.builder.combination.EntityResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
+import github.sql.dsl.criteria.query.builder.combination.ObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
@@ -22,7 +22,7 @@ public class WhereAssemblerImpl<T> extends AbstractResult<T> implements WhereAss
 
     @Delegate
     @Override
-    protected @NotNull Fetchable<T, EntityQuery<T>> getFetchable() {
+    protected @NotNull Fetchable<T, EntityResultBuilder<T>> getFetchable() {
         return super.getFetchable();
     }
 
@@ -40,13 +40,13 @@ public class WhereAssemblerImpl<T> extends AbstractResult<T> implements WhereAss
 
     @Delegate
     @Override
-    protected @NotNull Selectable<T, ArrayQuery<T>> getSelectable() {
+    protected @NotNull Selectable<T, ObjectsResultBuilder<T>> getSelectable() {
         return super.getSelectable();
     }
 
     @Delegate
     @Override
-    protected TypeResultQuery<T> getTypeQuery() {
+    protected ResultBuilder<T> getTypeQuery() {
         return super.getTypeQuery();
     }
 

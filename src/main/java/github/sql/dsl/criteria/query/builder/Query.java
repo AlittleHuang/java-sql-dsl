@@ -4,13 +4,13 @@ import github.sql.dsl.criteria.query.builder.combination.*;
 
 public interface Query<T> extends
         Whereable<T, WhereAssembler<T>>,
-        Fetchable<T, EntityQuery<T>>,
+        Fetchable<T, EntityResultBuilder<T>>,
         Sortable<T, WhereAssembler<T>>,
         Groupable<T, GroupByBuilder<T>>,
-        Selectable<T, ArrayQuery<T>>,
-        AggregateSelectable<T, AggregateObjectsQuery<T>>,
+        Selectable<T, ObjectsResultBuilder<T>>,
+        AggregateSelectable<T, AggregateObjectsResultBuilder<T>>,
         Projectable<T>,
-        TypeResultQuery<T> {
+        ResultBuilder<T> {
 
 
 }

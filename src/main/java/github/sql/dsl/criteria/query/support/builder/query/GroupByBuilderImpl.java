@@ -3,9 +3,9 @@ package github.sql.dsl.criteria.query.support.builder.query;
 import github.sql.dsl.criteria.query.builder.AggregateSelectable;
 import github.sql.dsl.criteria.query.builder.Groupable;
 import github.sql.dsl.criteria.query.builder.Selectable;
-import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsQuery;
-import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
+import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
+import github.sql.dsl.criteria.query.builder.combination.ObjectsResultBuilder;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
@@ -21,7 +21,7 @@ public class GroupByBuilderImpl<T> extends AbstractResult<T> implements GroupByB
 
     @Delegate
     @Override
-    protected @NotNull Selectable<T, ArrayQuery<T>> getSelectable() {
+    protected @NotNull Selectable<T, ObjectsResultBuilder<T>> getSelectable() {
         return super.getSelectable();
     }
 
@@ -33,7 +33,7 @@ public class GroupByBuilderImpl<T> extends AbstractResult<T> implements GroupByB
 
     @Delegate
     @Override
-    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+    protected @NotNull AggregateSelectable<T, AggregateObjectsResultBuilder<T>> getAggregateSelectable() {
         return super.getAggregateSelectable();
     }
 }

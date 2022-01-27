@@ -2,41 +2,41 @@ package github.sql.dsl.criteria.query.support.builder.query;
 
 import github.sql.dsl.criteria.query.builder.Fetchable;
 import github.sql.dsl.criteria.query.builder.PredicateAssembler;
+import github.sql.dsl.criteria.query.builder.ResultBuilder;
 import github.sql.dsl.criteria.query.builder.Sortable;
-import github.sql.dsl.criteria.query.builder.TypeResultQuery;
-import github.sql.dsl.criteria.query.builder.combination.EntityQuery;
+import github.sql.dsl.criteria.query.builder.combination.EntityResultBuilder;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityQueryImpl<T> extends AbstractResult<T> implements EntityQuery<T> {
+public class EntityResultBuilderImpl<T> extends AbstractResult<T> implements EntityResultBuilder<T> {
 
-    public EntityQueryImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+    public EntityResultBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 
     @Delegate
     @Override
-    protected @NotNull PredicateAssembler<T, EntityQuery<T>> getRestrictionBuilder() {
+    protected @NotNull PredicateAssembler<T, EntityResultBuilder<T>> getRestrictionBuilder() {
         return super.getRestrictionBuilder();
     }
 
     @Delegate
     @Override
-    protected @NotNull Fetchable<T, EntityQuery<T>> getFetchable() {
+    protected @NotNull Fetchable<T, EntityResultBuilder<T>> getFetchable() {
         return super.getFetchable();
     }
 
     @Delegate
-    protected @NotNull Sortable<T, EntityQuery<T>> getEntityQuerySortable() {
+    protected @NotNull Sortable<T, EntityResultBuilder<T>> getEntityQuerySortable() {
         return super.getEntityQuerySortable();
     }
 
 
     @Delegate
     @Override
-    protected TypeResultQuery<T> getTypeQuery() {
+    protected ResultBuilder<T> getTypeQuery() {
         return super.getTypeQuery();
     }
 }

@@ -98,7 +98,7 @@ public class JpaTest {
         List<User> qgt80 = userQuery
                 .where(User::getRandomNumber).gt(80)
                 .orderBy(User::getId).asc()
-                .getResultList();
+                .getList();
         List<User> fgt80 = allUsers.stream()
                 .filter(it -> it.getRandomNumber() > 80)
                 .collect(Collectors.toList());
@@ -113,14 +113,14 @@ public class JpaTest {
                 .where(User::getId).eq(userId)
                 .fetch(User::getParentUser)
                 .fetch(EntityAttribute.of(User::getParentUser).map(User::getParentUser))
-                .getSingleResult();
+                .getSingle();
         assertNotNull(user);
         assertEquals(user.getId(), userId);
         if (user.getPid() != null) {
             User parentUser = user.getParentUser();
             assertNotNull(parentUser);
             assertEquals(user.getPid(), parentUser.getId());
-            assertEquals(parentUser, userQuery.where(User::getId).eq(parentUser.getId()).getOne());
+            assertEquals(parentUser, userQuery.where(User::getId).eq(parentUser.getId()));
         }
 
     }
@@ -133,7 +133,7 @@ public class JpaTest {
                 .select(User::getRandomNumber, AggregateFunction.COUNT)
                 .select(User::getRandomNumber, AggregateFunction.AVG)
                 .select(User::getRandomNumber, AggregateFunction.SUM)
-                .getOne();
+                .requireSingle();
         assertNotNull(aggregated);
         assertEquals(getUserIdStream().min().orElse(0), aggregated[0]);
         assertEquals(getUserIdStream().max().orElse(0), aggregated[1]);
@@ -147,7 +147,7 @@ public class JpaTest {
                 .groupBy(User::getRandomNumber)
                 .select(User::getRandomNumber)
                 .where(User::isValid).eq(true)
-                .getResultList();
+                .getList();
 
         Map<Integer, Optional<User>> map = allUsers.stream()
                 .filter(User::isValid)
@@ -166,7 +166,7 @@ public class JpaTest {
         Object[] one = userQuery
                 .select(User::getId, AggregateFunction.SUM)
                 .where(User::isValid).eq(true)
-                .getOne();
+                .requireSingle();
 
         int userId = allUsers.stream()
                 .filter(User::isValid)
@@ -186,7 +186,7 @@ public class JpaTest {
         List<Object[]> qList = userQuery
                 .select(User::getRandomNumber)
                 .select(User::getUsername)
-                .getResultList();
+                .getList();
 
         List<Object[]> fList = allUsers.stream()
                 .map(it -> new Object[]{it.getRandomNumber(), it.getUsername()})
@@ -204,14 +204,14 @@ public class JpaTest {
                 .select(User::isValid)
                 .select(User::getRandomNumber)
                 .select(User::getPid)
-                .getResultList();
+                .getList();
 
         List<Object[]> resultList2 = userQuery
                 .groupBy(User::getRandomNumber)
                 .groupBy(Arrays.asList(User::getPid, User::isValid))
                 .select(User::isValid)
                 .select(Arrays.asList(User::getRandomNumber, User::getPid))
-                .getResultList();
+                .getList();
         assertEqualsArrayList(resultList, resultList2);
     }
 
@@ -226,7 +226,7 @@ public class JpaTest {
     public void testOrderBy() {
         List<User> list = userQuery
                 .orderBy(User::getRandomNumber).desc()
-                .getResultList();
+                .getList();
         ArrayList<User> sorted = new ArrayList<>(allUsers);
         sorted.sort((a, b) -> Integer.compare(b.getRandomNumber(), a.getRandomNumber()));
         assertEquals(list, sorted);
@@ -235,7 +235,7 @@ public class JpaTest {
                 .orderBy(User::getUsername).asc()
                 .orderBy(User::getRandomNumber).desc()
                 .orderBy(User::getId).asc()
-                .getResultList();
+                .getList();
 
         sorted.sort((a, b) -> Integer.compare(b.getRandomNumber(), a.getRandomNumber()));
         sorted.sort(Comparator.comparing(User::getUsername));
@@ -243,7 +243,7 @@ public class JpaTest {
 
         list = userQuery
                 .orderBy(User::getTime).asc()
-                .getResultList();
+                .getList();
         sorted = new ArrayList<>(allUsers);
         sorted.sort(Comparator.comparing(User::getTime));
         assertEquals(list, sorted);
@@ -256,7 +256,7 @@ public class JpaTest {
                         .or(User::getRandomNumber).lt(5)
                         .not()
                 )
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 || it.getRandomNumber() < 5))
                 .collect(Collectors.toList());
@@ -268,7 +268,7 @@ public class JpaTest {
                         .get(User::getUsername).eq("Jeremy Keynes")
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getUsername().equalsIgnoreCase("Jeremy Keynes")))
                 .collect(Collectors.toList());
@@ -278,7 +278,7 @@ public class JpaTest {
                         .get((ComparableAttribute<User, String>) User::getUsername).eq("Jeremy Keynes")
                         .not()
                 )
-                .getResultList();
+                .getList();
         assertEquals(qList, fList);
 
 
@@ -288,7 +288,7 @@ public class JpaTest {
                         .or(Predicate.get(User::getId).eq(3))
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getUsername().equalsIgnoreCase("Jeremy Keynes")
                         || it.getId() == 3))
@@ -299,7 +299,7 @@ public class JpaTest {
                         .and(Predicate.get(User::getId).eq(3))
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getUsername().equalsIgnoreCase("Jeremy Keynes")
                         && it.getId() == 3))
@@ -312,7 +312,7 @@ public class JpaTest {
     public void testIsNull() {
 
         List<User> qList = userQuery.whereNot(User::getPid).isNull()
-                .getResultList();
+                .getList();
 
         List<User> fList = allUsers.stream()
                 .filter(it -> it.getPid() != null)
@@ -320,7 +320,7 @@ public class JpaTest {
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getPid).isNull()
-                .getResultList();
+                .getList();
 
         fList = allUsers.stream()
                 .filter(it -> it.getPid() == null)
@@ -334,28 +334,28 @@ public class JpaTest {
 
         WhereAssembler<User> isValid = userQuery.where(Predicate.get(User::isValid));
         List<User> qList = isValid
-                .getResultList();
+                .getList();
         List<User> validUsers = allUsers.stream().filter(User::isValid)
                 .collect(Collectors.toList());
         List<User> fList = validUsers;
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).eq(2)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getRandomNumber() == 2)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getPid).ne(2)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getPid() != null && user.getPid() != 2)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).in(1, 2, 3)
-                .getResultList();
+                .getList();
         List<User> qList2 = isValid.and(User::getRandomNumber).in(Arrays.asList(1, 2, 3))
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> Arrays.asList(1, 2, 3).contains(user.getRandomNumber()))
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
@@ -363,13 +363,13 @@ public class JpaTest {
 
 
         qList = isValid.and(User::getPid).isNull()
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getPid() == null)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getPid).nullIf(4).eq(2)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> {
                     Integer pid = user.getPid();
                     if (pid != null && pid == 4) {
@@ -381,7 +381,7 @@ public class JpaTest {
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getPid).ifNull(2).eq(2)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> {
                     Integer pid = user.getPid();
                     if (pid == null) {
@@ -394,65 +394,65 @@ public class JpaTest {
 
 
         qList = isValid.and(User::getRandomNumber).ge(10)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getRandomNumber() >= 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).gt(10)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getRandomNumber() > 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).le(10)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getRandomNumber() <= 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
 
         qList = isValid.and(User::getRandomNumber).lt(10)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getRandomNumber() < 10)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).between(10, 15)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getRandomNumber() >= 10 && user.getRandomNumber() <= 15)
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
 
         qList = isValid.and(User::getRandomNumber).ge(User::getPid)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() >= user.getPid())
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).gt(User::getPid)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() > user.getPid())
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber).le(User::getPid)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() <= user.getPid())
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
 
         qList = isValid.and(User::getRandomNumber).lt(User::getPid)
-                .getResultList();
+                .getList();
         fList = validUsers.stream().filter(user -> user.getPid() != null && user.getRandomNumber() < user.getPid())
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = isValid.and(User::getRandomNumber)
                 .between(User::getRandomNumber, User::getPid)
-                .getResultList();
+                .getList();
         fList = validUsers.stream()
                 .filter(user -> user.getPid() != null && user.getRandomNumber() >= user.getRandomNumber() && user.getRandomNumber() <= user.getPid())
                 .collect(Collectors.toList());
@@ -465,7 +465,7 @@ public class JpaTest {
 
         List<User> qList = userQuery.where(User::isValid).eq(true)
                 .and(User::getParentUser).map(User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         && user.getParentUser() != null
@@ -477,7 +477,7 @@ public class JpaTest {
         Attribute<User, Number> getUsername = User::getRandomNumber;
         qList = userQuery.where(User::isValid).eq(true)
                 .and(getUsername).eq(10)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         && Objects.equals(user.getRandomNumber(), 10))
@@ -487,7 +487,7 @@ public class JpaTest {
 
         qList = userQuery.where(User::isValid).eq(true)
                 .or(getUsername).eq(10)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         || Objects.equals(user.getRandomNumber(), 10))
@@ -498,7 +498,7 @@ public class JpaTest {
 
         qList = userQuery.where(User::isValid).eq(true)
                 .andNot(getUsername).eq(10)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         && !Objects.equals(user.getRandomNumber(), 10))
@@ -508,7 +508,7 @@ public class JpaTest {
 
         qList = userQuery.where(User::isValid).eq(true)
                 .orNot(getUsername).eq(10)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         || !Objects.equals(user.getRandomNumber(), 10))
@@ -522,13 +522,13 @@ public class JpaTest {
         qList = userQuery.where(User::isValid).eq(true)
                 .or(User::getParentUser).map(User::getUsername).eq(username)
                 .and(User::getTime).ge(time)
-                .getResultList();
+                .getList();
 
         List<User> jeremy_keynes = userQuery.where(User::isValid).eq(true)
                 .or(User::getParentUser).map(User::getUsername).eq(username)
                 .fetch(User::getParentUser)
                 .and(User::getTime).ge(time)
-                .getResultList();
+                .getList();
 
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
@@ -543,7 +543,7 @@ public class JpaTest {
 
         qList = userQuery.where(User::isValid).eq(true)
                 .andNot(User::getRandomNumber).eq(5)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         && user.getRandomNumber() != 5)
@@ -553,7 +553,7 @@ public class JpaTest {
 
         qList = userQuery.where(User::isValid).eq(true)
                 .orNot(User::getRandomNumber).ne(5)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.isValid()
                         || user.getRandomNumber() == 5)
@@ -563,7 +563,7 @@ public class JpaTest {
 
         qList = userQuery.whereNot(User::getRandomNumber).eq(6)
                 .orNot(User::isValid).ne(false)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() != 6
                         || !user.isValid())
@@ -573,7 +573,7 @@ public class JpaTest {
 
         qList = userQuery.whereNot(User::getRandomNumber).eq(6)
                 .and(User::getParentUser).map(User::isValid).eq(true)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() != 6
                         && (user.getParentUser() != null && user.getParentUser().isValid()))
@@ -583,7 +583,7 @@ public class JpaTest {
 
         qList = userQuery.whereNot(User::getRandomNumber).eq(6)
                 .andNot(User::getParentUser).map(User::isValid).eq(true)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() != 6
                         && (user.getParentUser() != null && !user.getParentUser().isValid()))
@@ -593,7 +593,7 @@ public class JpaTest {
 
         qList = userQuery.whereNot(User::getRandomNumber).eq(6)
                 .orNot(User::getParentUser).map(User::isValid).eq(true)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() != 6
                         || (user.getParentUser() != null && !user.getParentUser().isValid()))
@@ -607,7 +607,7 @@ public class JpaTest {
                         .or((ComparableAttribute<User, Integer>) User::getRandomNumber).lt(5)
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 || it.getRandomNumber() < 5))
                 .collect(Collectors.toList());
@@ -620,7 +620,7 @@ public class JpaTest {
                         .andNot((ComparableAttribute<User, Integer>) User::getRandomNumber).lt(5)
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 && it.getRandomNumber() >= 5))
                 .collect(Collectors.toList());
@@ -633,7 +633,7 @@ public class JpaTest {
                         .and(User::getUsername).eq(username)
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 && it.getUsername().equals(username)))
                 .collect(Collectors.toList());
@@ -645,7 +645,7 @@ public class JpaTest {
                         .or(User::getUsername).eq(username)
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 || it.getUsername().equals(username)))
                 .collect(Collectors.toList());
@@ -657,7 +657,7 @@ public class JpaTest {
                         .andNot(User::getUsername).eq(username)
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 && !it.getUsername().equals(username)))
                 .collect(Collectors.toList());
@@ -668,7 +668,7 @@ public class JpaTest {
                         .orNot(User::getUsername).eq(username)
                         .not()
                 )
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(it -> !(it.getRandomNumber() >= 10 || !it.getUsername().equals(username)))
                 .collect(Collectors.toList());
@@ -681,7 +681,7 @@ public class JpaTest {
     public void testNumberPredicateTester() {
         List<User> list = userQuery
                 .where(User::getRandomNumber).add(2).ge(4)
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() + 2 >= 4)
                 .collect(Collectors.toList());
@@ -690,7 +690,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).subtract(2).ge(4)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() - 2 >= 4)
                 .collect(Collectors.toList());
@@ -700,7 +700,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).multiply(2).ge(4)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() * 2 >= 4)
                 .collect(Collectors.toList());
@@ -710,7 +710,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).divide(2).ge(4)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() / 2 >= 4)
                 .collect(Collectors.toList());
@@ -720,7 +720,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).mod(2).ge(1)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() % 2 >= 1)
                 .collect(Collectors.toList());
@@ -731,7 +731,7 @@ public class JpaTest {
         ///
         list = userQuery
                 .where(User::getRandomNumber).add(User::getId).ge(40)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() + user.getId() >= 40)
                 .collect(Collectors.toList());
@@ -740,7 +740,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).subtract(User::getId).ge(40)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() - user.getId() >= 40)
                 .collect(Collectors.toList());
@@ -750,7 +750,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).multiply(User::getId).ge(40)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getRandomNumber() * user.getId() >= 40)
                 .collect(Collectors.toList());
@@ -760,7 +760,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).divide(User::getId).ge(40)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getId() != 0 && user.getRandomNumber() / user.getId() >= 40)
                 .collect(Collectors.toList());
@@ -770,7 +770,7 @@ public class JpaTest {
 
         list = userQuery
                 .where(User::getRandomNumber).mod(User::getId).ge(10)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getId() != 0 && user.getRandomNumber() % user.getId() >= 10)
                 .collect(Collectors.toList());
@@ -784,7 +784,7 @@ public class JpaTest {
         String username = "Roy Sawyer";
 
         List<User> qList = userQuery.where(User::getUsername).substring(2).eq("eremy Keynes")
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(user -> user.getUsername().substring(1).equals("eremy Keynes"))
                 .collect(Collectors.toList());
@@ -792,7 +792,7 @@ public class JpaTest {
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getUsername).substring(1, 1).eq("M")
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().charAt(0) == 'M')
                 .collect(Collectors.toList());
@@ -800,14 +800,14 @@ public class JpaTest {
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getUsername).trim().like(username)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().trim().startsWith(username))
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getUsername).length().eq(username.length())
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().length() == username.length())
                 .collect(Collectors.toList());
@@ -815,28 +815,28 @@ public class JpaTest {
 
 
         qList = userQuery.where(User::getUsername).startWith("M")
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().startsWith("M"))
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getUsername).endsWith("s")
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().endsWith("s"))
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getUsername).lower().contains("s")
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().toLowerCase().contains("s"))
                 .collect(Collectors.toList());
         assertEquals(qList, fList);
 
         qList = userQuery.where(User::getUsername).upper().contains("S")
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getUsername().toUpperCase().contains("S"))
                 .collect(Collectors.toList());
@@ -845,23 +845,23 @@ public class JpaTest {
 
     @Test
     public void testResultBuilder() {
-        List<User> resultList = userQuery.getResultList(5, 10);
+        List<User> resultList = userQuery.getList(5, 10);
         List<User> subList = allUsers.subList(5, 5 + 10);
         assertEquals(resultList, subList);
 
-        resultList = userQuery.getResultList(20);
+        resultList = userQuery.getList(20);
         subList = allUsers.subList(20, allUsers.size());
         assertEquals(resultList, subList);
 
         List<Object[]> userIds = userQuery.select(User::getId)
-                .getResultList(5, 10);
+                .getList(5, 10);
         List<Object[]> subUserIds = allUsers.subList(5, 5 + 10)
                 .stream().map(it -> new Object[]{it.getId()})
                 .collect(Collectors.toList());
 
         assertEqualsArrayList(userIds, subUserIds);
 
-        resultList = userQuery.where(User::getId).in().getResultList();
+        resultList = userQuery.where(User::getId).in().getList();
         assertEquals(resultList.size(), 0);
 
         int count = userQuery.count();
@@ -870,23 +870,26 @@ public class JpaTest {
         User first = userQuery.getFirst();
         assertEquals(first, allUsers.get(0));
 
-        first = userQuery.where(User::getId).eq(0).getOne();
+        first = userQuery.where(User::getId).eq(0).requireSingle();
         assertEquals(first, allUsers.get(0));
 
         first = userQuery.getFirst(10);
         assertEquals(first, allUsers.get(10));
 
-        assertThrowsExactly(IllegalStateException.class, () -> userQuery.getOne());
-        assertThrowsExactly(NullPointerException.class, () -> userQuery.where(User::getId).eq(-1).getOne());
+        assertThrowsExactly(IllegalStateException.class, () -> userQuery.requireSingle());
+        assertThrowsExactly(NullPointerException.class, () -> userQuery.where(User::getId).eq(-1).requireSingle());
 
         assertTrue(userQuery.exist());
         assertTrue(userQuery.exist(allUsers.size() - 1));
         assertFalse(userQuery.exist(allUsers.size()));
 
         List<UserInterface> userInterfaces = userQuery.projected(UserInterface.class)
-                .getResultList();
+                .getList();
+        assertEquals(userInterfaces.get(0), userInterfaces.get(0));
+
         List<UserModel> userModels = userQuery.projected(UserModel.class)
-                .getResultList();
+                .getList();
+
 
         List<Map<String, Object>> l0 = allUsers.stream().map(UserModel::new)
                 .map(UserInterface::asMap)
@@ -938,7 +941,7 @@ public class JpaTest {
         List<User> resultList = userQuery
                 .where(EntityAttribute.of(User::getParentUser).map(User::isValid))
                 .eq(true)
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(user -> user.getParentUser() != null && user.getParentUser().isValid())
                 .collect(Collectors.toList());
@@ -950,7 +953,7 @@ public class JpaTest {
     public void testWhereable() {
         List<User> resultList = userQuery
                 .where(User::getParentUser).map(User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(user -> user.getParentUser() != null && username.equals(user.getParentUser().getUsername()))
                 .collect(Collectors.toList());
@@ -958,7 +961,7 @@ public class JpaTest {
 
         resultList = userQuery
                 .whereNot(User::getParentUser).map(User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> user.getParentUser() != null && !username.equals(user.getParentUser().getUsername()))
                 .collect(Collectors.toList());
@@ -967,7 +970,7 @@ public class JpaTest {
 
         resultList = userQuery
                 .whereNot((Attribute<User, String>) User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> !username.equals(user.getUsername()))
                 .collect(Collectors.toList());
@@ -976,7 +979,7 @@ public class JpaTest {
 
         resultList = userQuery
                 .whereNot((ComparableAttribute<User, String>) User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> !username.equals(user.getUsername()))
                 .collect(Collectors.toList());
@@ -985,7 +988,7 @@ public class JpaTest {
 
         resultList = userQuery
                 .whereNot(User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> !username.equals(user.getUsername()))
                 .collect(Collectors.toList());
@@ -996,7 +999,7 @@ public class JpaTest {
     public void testPathBuilder() {
         List<User> resultList = userQuery.where(User::getParentUser)
                 .map(User::getParentUser).map(User::getUsername).eq(username)
-                .getResultList();
+                .getList();
         List<User> fList = allUsers.stream()
                 .filter(user -> {
                     User p = user.getParentUser();
@@ -1007,7 +1010,7 @@ public class JpaTest {
 
         resultList = userQuery.where(User::getParentUser)
                 .map(User::getRandomNumber).eq(5)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> {
                     User p = user.getParentUser();
@@ -1018,7 +1021,7 @@ public class JpaTest {
 
         resultList = userQuery.where(User::getParentUser)
                 .map((Attribute<User, Integer>) User::getRandomNumber).eq(5)
-                .getResultList();
+                .getList();
         fList = allUsers.stream()
                 .filter(user -> {
                     User p = user.getParentUser();

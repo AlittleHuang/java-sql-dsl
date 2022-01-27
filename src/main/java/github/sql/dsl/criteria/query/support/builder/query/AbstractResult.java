@@ -20,18 +20,18 @@ public abstract class AbstractResult<T> {
         this.criteriaQuery = CriteriaQueryImpl.from(criteriaQuery);
     }
 
-    protected TypeResultQuery<Object[]> getObjectsTypeQuery() {
+    protected ResultBuilder<Object[]> getObjectsTypeQuery() {
         return typeQueryFactory.getObjectsTypeQuery(criteriaQuery, entityType);
     }
 
-    protected TypeResultQuery<T> getTypeQuery() {
+    protected ResultBuilder<T> getTypeQuery() {
         return typeQueryFactory.getEntityResultQuery(criteriaQuery, entityType);
     }
 
     @NotNull
-    protected Selectable<T, ArrayQuery<T>> getSelectable() {
+    protected Selectable<T, ObjectsResultBuilder<T>> getSelectable() {
         return new SelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
-                new ArrayQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
+                new ObjectsResultBuilderImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
     @NotNull
@@ -49,9 +49,9 @@ public abstract class AbstractResult<T> {
     }
 
     @NotNull
-    protected Fetchable<T, EntityQuery<T>> getFetchable() {
+    protected Fetchable<T, EntityResultBuilder<T>> getFetchable() {
         return new FetchableImpl<>(criteriaQuery.getFetchList(),
-                next -> new EntityQueryImpl<>(typeQueryFactory, entityType, criteriaQuery.updateFetch(next)));
+                next -> new EntityResultBuilderImpl<>(typeQueryFactory, entityType, criteriaQuery.updateFetch(next)));
     }
 
     @NotNull
@@ -60,9 +60,9 @@ public abstract class AbstractResult<T> {
     }
 
     @NotNull
-    protected PredicateAssembler<T, EntityQuery<T>> getRestrictionBuilder() {
+    protected PredicateAssembler<T, EntityResultBuilder<T>> getRestrictionBuilder() {
         return new PredicateAssemblerImpl<>(criteriaQuery.getRestriction(),
-                next -> new EntityQueryImpl<>(typeQueryFactory, entityType, criteriaQuery.updateRestriction(next)));
+                next -> new EntityResultBuilderImpl<>(typeQueryFactory, entityType, criteriaQuery.updateRestriction(next)));
     }
 
 
@@ -71,18 +71,18 @@ public abstract class AbstractResult<T> {
     }
 
     @NotNull
-    protected Whereable<T, ArrayQuery<T>> getObjectsWhereable() {
+    protected Whereable<T, ObjectsResultBuilder<T>> getObjectsWhereable() {
         return new WhereableImpl<>(next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
-            return new ArrayQueryImpl<>(typeQueryFactory, entityType, updated);
+            return new ObjectsResultBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
     @NotNull
-    protected Sortable<T, ArrayQuery<T>> getObjectsSortable() {
+    protected Sortable<T, ObjectsResultBuilder<T>> getObjectsSortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
-            return new ArrayQueryImpl<>(typeQueryFactory, entityType, updated);
+            return new ObjectsResultBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
@@ -93,19 +93,19 @@ public abstract class AbstractResult<T> {
         });
     }
 
-    protected @NotNull Sortable<T, EntityQuery<T>> getEntityQuerySortable() {
+    protected @NotNull Sortable<T, EntityResultBuilder<T>> getEntityQuerySortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
-            return new EntityQueryImpl<>(typeQueryFactory, entityType, updated);
+            return new EntityResultBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
-    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+    protected @NotNull AggregateSelectable<T, AggregateObjectsResultBuilder<T>> getAggregateSelectable() {
         return new AggregateSelectableImpl<>(this.criteriaQuery.getSelectionList(), next ->
-                new AggregateObjectsQueryImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
+                new AggregateObjectsResultBuilderImpl<>(this.typeQueryFactory, this.entityType, this.criteriaQuery.updateSelection(next)));
     }
 
-    public <R> TypeResultQuery<R> projected(Class<R> projectionType) {
+    public <R> ResultBuilder<R> projected(Class<R> projectionType) {
         return typeQueryFactory.getProjectionQuery(this.criteriaQuery, entityType, projectionType);
     }
 
