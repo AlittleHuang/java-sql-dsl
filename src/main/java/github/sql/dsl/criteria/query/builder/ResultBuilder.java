@@ -14,6 +14,8 @@ public interface ResultBuilder<T> {
 
     List<T> getList(int offset, int maxResult);
 
+    boolean exist(int offset);
+
     default Optional<T> first() {
         return Optional.ofNullable(getFirst());
     }
@@ -64,7 +66,5 @@ public interface ResultBuilder<T> {
     default boolean exist() {
         return exist(IGNORED);
     }
-
-    boolean exist(int offset);
 
 }
