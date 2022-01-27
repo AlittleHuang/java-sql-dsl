@@ -76,7 +76,6 @@ public abstract class AbstractResult<T> {
             CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
             return new ArrayQueryImpl<>(typeQueryFactory, entityType, updated);
         });
-
     }
 
     @NotNull

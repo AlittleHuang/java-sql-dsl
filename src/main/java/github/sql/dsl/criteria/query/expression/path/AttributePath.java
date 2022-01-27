@@ -55,14 +55,6 @@ public class AttributePath<T, R>
         return new ComparablePath<>(getAttributeName(attribute));
     }
 
-
-    public static <T> BooleanAttribute<T> fromBooleanAttributeBridge(BooleanAttribute<T> attribute) {
-        if (attribute instanceof AttributePath) {
-            return attribute;
-        }
-        return new BooleanPath<>(getAttributeName(attribute));
-    }
-
     public static String toAttrName(String getterName) {
         StringBuilder builder = null;
         if (getterName != null) {

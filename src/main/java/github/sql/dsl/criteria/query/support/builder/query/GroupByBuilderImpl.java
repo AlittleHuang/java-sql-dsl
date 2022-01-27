@@ -1,7 +1,9 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
+import github.sql.dsl.criteria.query.builder.AggregateSelectable;
 import github.sql.dsl.criteria.query.builder.Groupable;
 import github.sql.dsl.criteria.query.builder.Selectable;
+import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsQuery;
 import github.sql.dsl.criteria.query.builder.combination.ArrayQuery;
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
 import github.sql.dsl.criteria.query.support.CriteriaQuery;
@@ -27,5 +29,11 @@ public class GroupByBuilderImpl<T> extends AbstractResult<T> implements GroupByB
     @Override
     protected @NotNull Groupable<T, GroupByBuilder<T>> getGroupable() {
         return super.getGroupable();
+    }
+
+    @Delegate
+    @Override
+    protected @NotNull AggregateSelectable<T, AggregateObjectsQuery<T>> getAggregateSelectable() {
+        return super.getAggregateSelectable();
     }
 }

@@ -31,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class JpaTest {
+    private static final String username = "Jeremy Keynes";
+
     protected static Query<User> userQuery;
     protected static List<User> allUsers;
 
@@ -139,6 +141,44 @@ public class JpaTest {
         OptionalDouble average = getUserIdStream().average();
         assertEquals(average.orElse(0), ((Number) aggregated[3]).doubleValue(), 0.0001);
         assertEquals((long) getUserIdStream().sum(), ((Number) aggregated[4]).intValue());
+
+        List<Object[]> resultList = userQuery
+                .select(User::getId, AggregateFunction.MIN)
+                .groupBy(User::getRandomNumber)
+                .select(User::getRandomNumber)
+                .where(User::isValid).eq(true)
+                .getResultList();
+
+        Map<Integer, Optional<User>> map = allUsers.stream()
+                .filter(User::isValid)
+                .collect(Collectors.groupingBy(User::getRandomNumber, Collectors.minBy(Comparator.comparingInt(User::getId))));
+
+        List<Object[]> fObjects = map.values().stream()
+                .map(user -> {
+                    Integer userId = user.map(User::getId).orElse(null);
+                    Integer randomNumber = user.map(User::getRandomNumber).orElse(null);
+                    return new Object[]{userId, randomNumber};
+                })
+                .sorted(Comparator.comparing(a -> ((Integer) a[0])))
+                .collect(Collectors.toList());
+        assertEqualsArrayList(resultList, fObjects);
+
+        Object[] one = userQuery
+                .select(User::getId, AggregateFunction.SUM)
+                .where(User::isValid).eq(true)
+                .getOne();
+
+        int userId = allUsers.stream()
+                .filter(User::isValid)
+                .mapToInt(User::getId)
+                .sum();
+        assertEquals(((Number) one[0]).intValue(), userId);
+
+        Object[] first = userQuery
+                .select(User::getId)
+                .orderBy(User::getId).desc()
+                .getFirst();
+        assertEquals(first[0], allUsers.get(allUsers.size() - 1).getId());
     }
 
     @Test
@@ -194,6 +234,7 @@ public class JpaTest {
         list = userQuery
                 .orderBy(User::getUsername).asc()
                 .orderBy(User::getRandomNumber).desc()
+                .orderBy(User::getId).asc()
                 .getResultList();
 
         sorted.sort((a, b) -> Integer.compare(b.getRandomNumber(), a.getRandomNumber()));
@@ -422,8 +463,6 @@ public class JpaTest {
     @Test
     public void testPredicateAssembler() {
 
-
-        String username = "Jeremy Keynes";
         List<User> qList = userQuery.where(User::isValid).eq(true)
                 .and(User::getParentUser).map(User::getUsername).eq(username)
                 .getResultList();
@@ -896,6 +935,97 @@ public class JpaTest {
                 .orElse(null);
         assertEquals(first, f);
 
+        List<User> resultList = userQuery
+                .where(EntityAttribute.of(User::getParentUser).map(User::isValid))
+                .eq(true)
+                .getResultList();
+        List<User> fList = allUsers.stream()
+                .filter(user -> user.getParentUser() != null && user.getParentUser().isValid())
+                .collect(Collectors.toList());
+
+        assertEquals(resultList, fList);
+    }
+
+    @Test
+    public void testWhereable() {
+        List<User> resultList = userQuery
+                .where(User::getParentUser).map(User::getUsername).eq(username)
+                .getResultList();
+        List<User> fList = allUsers.stream()
+                .filter(user -> user.getParentUser() != null && username.equals(user.getParentUser().getUsername()))
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+
+        resultList = userQuery
+                .whereNot(User::getParentUser).map(User::getUsername).eq(username)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> user.getParentUser() != null && !username.equals(user.getParentUser().getUsername()))
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+
+
+        resultList = userQuery
+                .whereNot((Attribute<User, String>) User::getUsername).eq(username)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> !username.equals(user.getUsername()))
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+
+
+        resultList = userQuery
+                .whereNot((ComparableAttribute<User, String>) User::getUsername).eq(username)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> !username.equals(user.getUsername()))
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+
+
+        resultList = userQuery
+                .whereNot(User::getUsername).eq(username)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> !username.equals(user.getUsername()))
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+    }
+
+    @Test
+    public void testPathBuilder() {
+        List<User> resultList = userQuery.where(User::getParentUser)
+                .map(User::getParentUser).map(User::getUsername).eq(username)
+                .getResultList();
+        List<User> fList = allUsers.stream()
+                .filter(user -> {
+                    User p = user.getParentUser();
+                    return p != null && p.getParentUser() != null && username.equals(p.getParentUser().getUsername());
+                })
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+
+        resultList = userQuery.where(User::getParentUser)
+                .map(User::getRandomNumber).eq(5)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> {
+                    User p = user.getParentUser();
+                    return p != null && p.getRandomNumber() == 5;
+                })
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
+
+        resultList = userQuery.where(User::getParentUser)
+                .map((Attribute<User, Integer>) User::getRandomNumber).eq(5)
+                .getResultList();
+        fList = allUsers.stream()
+                .filter(user -> {
+                    User p = user.getParentUser();
+                    return p != null && p.getRandomNumber() == 5;
+                })
+                .collect(Collectors.toList());
+        assertEquals(resultList, fList);
     }
 
     private List<Integer> ids(List<User> users) {

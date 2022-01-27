@@ -36,13 +36,13 @@ public class Users {
         List<User> result = new ArrayList<>(names.length);
         Random random = new Random();
         long l = Duration.ofDays(5).toMillis();
-        for (int i = 0; i < names.length; i++) {
-            String name = names[i];
+        for (int i = 0; i < names.length * 10; i++) {
+            String name = names[i % names.length];
             User user = new User();
             user.setId(i);
             user.setUsername(name);
             user.setTime(new Timestamp(System.currentTimeMillis() - random.nextInt((int) l)));
-            user.setRandomNumber(random.nextInt(10));
+            user.setRandomNumber(random.nextInt(100));
             int pid = i / 10;
             user.setPid(pid == 0 ? null : pid);
             user.setValid(i % 2 == 0);
