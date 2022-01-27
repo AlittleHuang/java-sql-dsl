@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ResultBuilder<T> {
 
-    int IGNORED = Integer.MIN_VALUE / 2;
+    int IGNORED = -1;
 
     int count();
 
@@ -56,7 +56,7 @@ public interface ResultBuilder<T> {
     }
 
     default List<T> getList(int offset) {
-        return getList(offset, IGNORED);
+        return getList(offset, Integer.MAX_VALUE);
     }
 
     default List<T> getList() {

@@ -120,7 +120,7 @@ public class JpaTest {
             User parentUser = user.getParentUser();
             assertNotNull(parentUser);
             assertEquals(user.getPid(), parentUser.getId());
-            assertEquals(parentUser, userQuery.where(User::getId).eq(parentUser.getId()));
+            assertEquals(parentUser, userQuery.where(User::getId).eq(parentUser.getId()).getSingle());
         }
 
     }
@@ -844,6 +844,11 @@ public class JpaTest {
     }
 
     @Test
+    public void testOffset() {
+        userQuery.getList(100);
+    }
+
+    @Test
     public void testResultBuilder() {
         List<User> resultList = userQuery.getList(5, 10);
         List<User> subList = allUsers.subList(5, 5 + 10);
@@ -883,7 +888,8 @@ public class JpaTest {
         assertTrue(userQuery.exist(allUsers.size() - 1));
         assertFalse(userQuery.exist(allUsers.size()));
 
-        List<UserInterface> userInterfaces = userQuery.projected(UserInterface.class)
+        List<UserInterface> userInterfaces = userQuery
+                .projected(UserInterface.class)
                 .getList();
         assertEquals(userInterfaces.get(0), userInterfaces.get(0));
 
@@ -891,7 +897,8 @@ public class JpaTest {
                 .getList();
 
 
-        List<Map<String, Object>> l0 = allUsers.stream().map(UserModel::new)
+        List<Map<String, Object>> l0 = allUsers.stream()
+                .map(UserModel::new)
                 .map(UserInterface::asMap)
                 .collect(Collectors.toList());
 
@@ -1031,11 +1038,6 @@ public class JpaTest {
         assertEquals(resultList, fList);
     }
 
-    private List<Integer> ids(List<User> users) {
-        return users.stream().map(User::getId).collect(Collectors.toList());
-    }
-
-    // ----
     @NotNull
     private IntStream getUserIdStream() {
         return allUsers.stream().mapToInt(User::getRandomNumber);
