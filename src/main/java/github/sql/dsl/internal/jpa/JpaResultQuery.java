@@ -169,7 +169,7 @@ public class JpaResultQuery<T> {
                         .stream()
                         .map(this::toExpression)
                         .collect(Collectors.toList());
-                Operator<?> operator = expression.getOperator();
+                Operator operator = expression.getOperator();
                 return operator.operate(cb, list);
             } else {
                 throw new UnsupportedOperationException("unknown expression type " + expression.getClass());

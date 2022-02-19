@@ -279,10 +279,10 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                 appendBlank();
                 appendPath(e);
             } else if (e.getType() == Expression.Type.OPERATOR) {
-                Operator<?> operator = e.getOperator();
+                Operator operator = e.getOperator();
                 List<? extends Expression<?>> list = e.getExpressions();
                 Expression<?> e0 = list.get(0);
-                Operator<?> operator0 = getOperator(e0);
+                Operator operator0 = getOperator(e0);
                 if (NOT.equals(operator)) {
                     appendBlank().append(operator);
                     sql.append(' ');
@@ -306,7 +306,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                     appendBlank();
                     sql.append(operator);
                     Expression<?> e1 = list.get(1);
-                    Operator<?> operator1 = getOperator(e1);
+                    Operator operator1 = getOperator(e1);
                     if (operator1 != null && operator1.getPrecedence() >= operator.getPrecedence()) {
                         sql.append('(');
                         appendExpressions(args, e1);
@@ -419,7 +419,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
         }
 
-        Operator<?> getOperator(Expression<?> e) {
+        Operator getOperator(Expression<?> e) {
             if (e instanceof OperatorExpression) {
                 return e.getOperator();
             }
