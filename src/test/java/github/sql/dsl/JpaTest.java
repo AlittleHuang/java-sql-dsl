@@ -1038,6 +1038,15 @@ public class JpaTest {
         assertEquals(resultList, fList);
     }
 
+    @Test
+    public void testJoin() {
+        userQuery
+                // .where(User::getParentUser).map(User::isValid).eq(true)
+                // .and(User::getParentUser).map(User::getRandomNumber).eq(10)
+                .fetch(User::getParentUser)
+                .getList();
+    }
+
     @NotNull
     private IntStream getUserIdStream() {
         return allUsers.stream().mapToInt(User::getRandomNumber);

@@ -154,7 +154,11 @@ public class JpaResultQuery<T> {
 
 
         public Predicate toPredicate(Expression<?> expression) {
-            return cb.isTrue(toExpression(expression).as(Boolean.class));
+            javax.persistence.criteria.Expression<?> result = toExpression(expression);
+            if (result instanceof Predicate) {
+                return (Predicate) result;
+            }
+            return cb.isTrue(Operator.cast(toExpression(expression)));
         }
 
         public javax.persistence.criteria.Expression<?> toExpression(Expression<?> expression) {
@@ -176,38 +180,32 @@ public class JpaResultQuery<T> {
             }
         }
 
-        protected javax.persistence.criteria.Expression<Number> asNumber(javax.persistence.criteria.Expression<?> e0) {
-            //noinspection unchecked
-            return (javax.persistence.criteria.Expression<Number>) e0;
-        }
-
-        protected javax.persistence.criteria.Expression<? extends Comparable<Object>>
-        asComparable(javax.persistence.criteria.Expression<?> e0) {
-            //noinspection unchecked
-            return (javax.persistence.criteria.Expression<? extends Comparable<Object>>) e0;
-        }
-
         protected Path<?> getPath(PathExpression<?> expression) {
-            Path<?> r = root;
-            int iMax = expression.size() - 1;
-            for (int i = 0; i < expression.size(); i++) {
+            From<?, ?> r = root;
+            int size = expression.size();
+            for (int i = 0; i < size; i++) {
                 String s = expression.get(i);
-                if (i != iMax) {
-                    join(expression.offset(i + 1));
+                if (i != size - 1) {
+                    r = join(expression.offset(i + 1));
+                } else {
+                    return r.get(s);
                 }
-                r = r.get(s);
             }
 
             return r;
         }
 
-        private void join(PathExpression<?> offset) {
-            fetched.computeIfAbsent(offset, k -> {
-                From<?, ?> r = root;
-                for (String s : offset) {
-                    r = r.join(s, JoinType.LEFT);
+        private Join<?, ?> join(PathExpression<?> offset) {
+            return (Join<?, ?>) fetched.compute(offset, (k, v) -> {
+                if (v instanceof Join<?, ?>) {
+                    return v;
+                } else {
+                    From<?, ?> r = root;
+                    for (String s : offset) {
+                        r = r.join(s, JoinType.LEFT);
+                    }
+                    return r;
                 }
-                return r;
             });
         }
 
