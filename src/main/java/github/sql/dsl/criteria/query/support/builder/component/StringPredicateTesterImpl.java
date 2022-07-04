@@ -2,7 +2,7 @@ package github.sql.dsl.criteria.query.support.builder.component;
 
 import github.sql.dsl.criteria.query.builder.combination.NumberPredicateTester;
 import github.sql.dsl.criteria.query.builder.combination.StringPredicateTester;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.Operator;
 
 import java.util.function.Function;
@@ -11,7 +11,7 @@ public class StringPredicateTesterImpl<T, NEXT>
         extends ComparablePredicateTesterImpl<T, String, NEXT>
         implements StringPredicateTester<T, NEXT> {
 
-    public StringPredicateTesterImpl(Expression<String> exchange,
+    public StringPredicateTesterImpl(SqlExpression<String> exchange,
                                      Operator combined,
                                      boolean negate,
                                      Function<SubPredicate, NEXT> mapper) {

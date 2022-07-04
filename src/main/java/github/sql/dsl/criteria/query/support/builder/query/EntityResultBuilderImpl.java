@@ -5,14 +5,14 @@ import github.sql.dsl.criteria.query.builder.PredicateAssembler;
 import github.sql.dsl.criteria.query.builder.ResultBuilder;
 import github.sql.dsl.criteria.query.builder.Sortable;
 import github.sql.dsl.criteria.query.builder.combination.EntityResultBuilder;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityResultBuilderImpl<T> extends AbstractResult<T> implements EntityResultBuilder<T> {
 
-    public EntityResultBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+    public EntityResultBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, SqlCriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 

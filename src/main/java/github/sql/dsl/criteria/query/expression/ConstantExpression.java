@@ -3,7 +3,7 @@ package github.sql.dsl.criteria.query.expression;
 
 import java.util.List;
 
-public class ConstantExpression<T> implements Expression<T> {
+public class ConstantExpression<T> implements SqlExpression<T> {
 
     private final T value;
 
@@ -32,7 +32,7 @@ public class ConstantExpression<T> implements Expression<T> {
     }
 
     @Override
-    public List<? extends Expression<?>> getExpressions() {
+    public List<? extends SqlExpression<?>> getExpressions() {
         throw new UnsupportedOperationException();
     }
 }

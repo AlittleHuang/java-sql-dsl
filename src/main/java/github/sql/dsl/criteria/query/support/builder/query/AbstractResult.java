@@ -2,7 +2,7 @@ package github.sql.dsl.criteria.query.support.builder.query;
 
 import github.sql.dsl.criteria.query.builder.*;
 import github.sql.dsl.criteria.query.builder.combination.*;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import github.sql.dsl.criteria.query.support.builder.criteria.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,12 +12,12 @@ public abstract class AbstractResult<T> {
 
     protected final TypeQueryFactory typeQueryFactory;
     protected final Class<T> entityType;
-    protected final CriteriaQueryImpl criteriaQuery;
+    protected final SqlCriteriaQueryImpl criteriaQuery;
 
-    public AbstractResult(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+    public AbstractResult(TypeQueryFactory typeQueryFactory, Class<T> entityType, SqlCriteriaQuery criteriaQuery) {
         this.typeQueryFactory = typeQueryFactory;
         this.entityType = entityType;
-        this.criteriaQuery = CriteriaQueryImpl.from(criteriaQuery);
+        this.criteriaQuery = SqlCriteriaQueryImpl.from(criteriaQuery);
     }
 
     protected ResultBuilder<Object[]> getObjectsTypeQuery() {
@@ -66,14 +66,14 @@ public abstract class AbstractResult<T> {
     }
 
 
-    protected WhereAssembler<T> whereBuilder(CriteriaQuery criteriaQuery) {
+    protected WhereAssembler<T> whereBuilder(SqlCriteriaQuery criteriaQuery) {
         return new WhereAssemblerImpl<>(this.typeQueryFactory, this.entityType, criteriaQuery);
     }
 
     @NotNull
     protected Whereable<T, ObjectsResultBuilder<T>> getObjectsWhereable() {
         return new WhereableImpl<>(next -> {
-            CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
+            SqlCriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
             return new ObjectsResultBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }
@@ -81,21 +81,21 @@ public abstract class AbstractResult<T> {
     @NotNull
     protected Sortable<T, ObjectsResultBuilder<T>> getObjectsSortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
-            CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
+            SqlCriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
             return new ObjectsResultBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
     protected @NotNull PredicateAssembler<T, WhereAssembler<T>> getWereBuilderRestrictionBuilder() {
         return new PredicateAssemblerImpl<>(criteriaQuery.getRestriction(), next -> {
-            CriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
+            SqlCriteriaQueryImpl updated = this.criteriaQuery.updateRestriction(next);
             return new WhereAssemblerImpl<>(typeQueryFactory, entityType, updated);
         });
     }
 
     protected @NotNull Sortable<T, EntityResultBuilder<T>> getEntityQuerySortable() {
         return new SortableImpl<>(criteriaQuery.getOrderList(), next -> {
-            CriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
+            SqlCriteriaQueryImpl updated = this.criteriaQuery.updateOrderList(next);
             return new EntityResultBuilderImpl<>(typeQueryFactory, entityType, updated);
         });
     }

@@ -7,14 +7,14 @@ import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsResultB
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
 import github.sql.dsl.criteria.query.builder.combination.ObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.Whereable;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class AggregateObjectsResultBuilderImpl<T> extends AbstractResult<T> implements AggregateObjectsResultBuilder<T> {
 
-    public AggregateObjectsResultBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+    public AggregateObjectsResultBuilderImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, SqlCriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 

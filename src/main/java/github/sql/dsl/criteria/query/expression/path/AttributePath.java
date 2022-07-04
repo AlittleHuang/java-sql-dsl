@@ -1,6 +1,6 @@
 package github.sql.dsl.criteria.query.expression.path;
 
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.expression.path.attribute.*;
 
@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class AttributePath<T, R>
         extends PathExpression<R>
-        implements Attribute<T, R>, Expression<R> {
+        implements Attribute<T, R>, SqlExpression<R> {
 
     public AttributePath(String... path) {
         super(path);

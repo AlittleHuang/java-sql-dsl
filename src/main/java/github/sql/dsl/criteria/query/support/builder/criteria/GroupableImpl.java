@@ -1,7 +1,7 @@
 package github.sql.dsl.criteria.query.support.builder.criteria;
 
 import github.sql.dsl.criteria.query.builder.Groupable;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class GroupableImpl<T, NEXT> implements Groupable<T, NEXT> {
 
-    private Array<Expression<?>> values;
-    private final Function<Array<Expression<?>>, NEXT> mapper;
+    private Array<SqlExpression<?>> values;
+    private final Function<Array<SqlExpression<?>>, NEXT> mapper;
 
-    public GroupableImpl(Array<Expression<?>> values, Function<Array<Expression<?>>, NEXT> mapper) {
+    public GroupableImpl(Array<SqlExpression<?>> values, Function<Array<SqlExpression<?>>, NEXT> mapper) {
         this.values = values == null ? new ConstantArray<>() : values;
         this.mapper = mapper;
     }

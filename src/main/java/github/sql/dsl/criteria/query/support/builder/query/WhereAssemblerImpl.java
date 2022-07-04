@@ -5,13 +5,13 @@ import github.sql.dsl.criteria.query.builder.combination.EntityResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
 import github.sql.dsl.criteria.query.builder.combination.ObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.WhereAssembler;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class WhereAssemblerImpl<T> extends AbstractResult<T> implements WhereAssembler<T> {
-    public WhereAssemblerImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, CriteriaQuery criteriaQuery) {
+    public WhereAssemblerImpl(TypeQueryFactory typeQueryFactory, Class<T> entityType, SqlCriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 

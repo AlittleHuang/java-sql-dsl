@@ -1,9 +1,9 @@
 package github.sql.dsl.internal.jdbc.sql;
 
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 
 public interface SqlBuilderFactory {
 
-    PreparedSqlBuilder get(CriteriaQuery criteria, Class<?> type);
+    PreparedSqlBuilder get(SqlCriteriaQuery criteria, Class<?> type);
 
 }

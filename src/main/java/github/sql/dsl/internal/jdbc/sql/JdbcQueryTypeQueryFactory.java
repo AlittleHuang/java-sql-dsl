@@ -1,7 +1,7 @@
 package github.sql.dsl.internal.jdbc.sql;
 
 import github.sql.dsl.criteria.query.builder.ResultBuilder;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 
 public class JdbcQueryTypeQueryFactory implements TypeQueryFactory {
@@ -15,12 +15,12 @@ public class JdbcQueryTypeQueryFactory implements TypeQueryFactory {
     }
 
     @Override
-    public <T> ResultBuilder<T> getEntityResultQuery(CriteriaQuery criteria, Class<T> type) {
+    public <T> ResultBuilder<T> getEntityResultQuery(SqlCriteriaQuery criteria, Class<T> type) {
         return new JdbcEntityResultBuilder<>(executor, sqlBuilder.get(criteria, type), type);
     }
 
     @Override
-    public ResultBuilder<Object[]> getObjectsTypeQuery(CriteriaQuery criteria, Class<?> type) {
+    public ResultBuilder<Object[]> getObjectsTypeQuery(SqlCriteriaQuery criteria, Class<?> type) {
         return new JdbcObjectsResultBuilder(executor, sqlBuilder.get(criteria, type), type);
     }
 

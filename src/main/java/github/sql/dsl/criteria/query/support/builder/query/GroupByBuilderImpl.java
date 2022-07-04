@@ -6,7 +6,7 @@ import github.sql.dsl.criteria.query.builder.Selectable;
 import github.sql.dsl.criteria.query.builder.combination.AggregateObjectsResultBuilder;
 import github.sql.dsl.criteria.query.builder.combination.GroupByBuilder;
 import github.sql.dsl.criteria.query.builder.combination.ObjectsResultBuilder;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.TypeQueryFactory;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ public class GroupByBuilderImpl<T> extends AbstractResult<T> implements GroupByB
 
     public GroupByBuilderImpl(TypeQueryFactory typeQueryFactory,
                               Class<T> entityType,
-                              CriteriaQuery criteriaQuery) {
+                              SqlCriteriaQuery criteriaQuery) {
         super(typeQueryFactory, entityType, criteriaQuery);
     }
 

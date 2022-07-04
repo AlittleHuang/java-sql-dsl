@@ -1,21 +1,21 @@
 package github.sql.dsl.criteria.query.support.builder.component;
 
 import github.sql.dsl.criteria.query.expression.ConstantExpression;
-import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.PathExpression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class SubPredicateArray implements Expression<Boolean> {
+public class SubPredicateArray implements SqlExpression<Boolean> {
 
     private final ConstantArray<SubPredicate> values;
-    private Expression<Boolean> value;
+    private SqlExpression<Boolean> value;
 
-    public static SubPredicateArray fromExpression(Expression<Boolean> expression) {
+    public static SubPredicateArray fromExpression(SqlExpression<Boolean> expression) {
         if (expression == null) {
             return null;
         }
@@ -31,11 +31,11 @@ public class SubPredicateArray implements Expression<Boolean> {
         this.values = values;
     }
 
-    private Expression<Boolean> value() {
+    private SqlExpression<Boolean> value() {
         return value != null ? value : (value = merge());
     }
 
-    private Expression<Boolean> merge() {
+    private SqlExpression<Boolean> merge() {
         if (values == null || values.isEmpty()) {
             return new ConstantExpression<>(false);
         }
@@ -69,7 +69,7 @@ public class SubPredicateArray implements Expression<Boolean> {
                             if (vj == null) {
                                 continue;
                             }
-                            Expression<Boolean> updated = vj.getExpression().then(combined, vi.getExpression());
+                            SqlExpression<Boolean> updated = vj.getExpression().then(combined, vi.getExpression());
                             arr[j] = new SubPredicate(updated, vj.getCombined(), vj.isNegate());
                             break;
                         }
@@ -78,7 +78,7 @@ public class SubPredicateArray implements Expression<Boolean> {
                     }
                 }
             } else {
-                Expression<Boolean> result = arr[0].getExpression();
+                SqlExpression<Boolean> result = arr[0].getExpression();
                 for (int i = 1; i < arr.length; i++) {
                     if (arr[i] != null) {
                         result = result.then(arr[i].getCombined(), arr[i].getExpression());
@@ -110,23 +110,23 @@ public class SubPredicateArray implements Expression<Boolean> {
     }
 
     @Override
-    public List<? extends Expression<?>> getExpressions() {
+    public List<? extends SqlExpression<?>> getExpressions() {
         return value().getExpressions();
     }
 
     @Override
-    public <X> Expression<X> then(Operator operator, Object... args) {
+    public <X> SqlExpression<X> then(Operator operator, Object... args) {
         return then(operator, Arrays.asList(args));
     }
 
     @Override
-    public <X> Expression<X> then(Operator operator, @NotNull Collection<?> args) {
+    public <X> SqlExpression<X> then(Operator operator, @NotNull Collection<?> args) {
         if (operator == Operator.AND || operator == Operator.OR) {
             Object next = args.iterator().next();
             //noinspection unchecked
-            Expression<Boolean> of = (Expression<Boolean>) Expression.of(next);
+            SqlExpression<Boolean> of = (SqlExpression<Boolean>) SqlExpression.of(next);
             //noinspection unchecked
-            return (Expression<X>) new SubPredicateArray(values.concat(new SubPredicate(of, operator, false)));
+            return (SqlExpression<X>) new SubPredicateArray(values.concat(new SubPredicate(of, operator, false)));
         }
         return value().then(operator, args);
     }

@@ -1,7 +1,7 @@
 package github.sql.dsl.criteria.query.support.builder.component;
 
 import github.sql.dsl.criteria.query.builder.combination.NumberPredicateTester;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.expression.path.attribute.NumberAttribute;
@@ -12,7 +12,7 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
         extends ComparablePredicateTesterImpl<T, U, NEXT>
         implements NumberPredicateTester<T, U, NEXT> {
 
-    public NumberPredicateTesterImpl(Expression<U> exchange,
+    public NumberPredicateTesterImpl(SqlExpression<U> exchange,
                                      Operator combined,
                                      boolean negate,
                                      Function<SubPredicate, NEXT> mapper) {
@@ -21,19 +21,19 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
 
     @Override
     public NumberPredicateTester<T, U, NEXT> add(U v) {
-        Expression<U> then = expression.then(Operator.ADD, v);
+        SqlExpression<U> then = expression.then(Operator.ADD, v);
         return new NumberPredicateTesterImpl<>(then, combined, negate, mapper);
     }
 
     @Override
     public NumberPredicateTester<T, U, NEXT> subtract(U v) {
-        Expression<U> then = expression.then(Operator.SUBTRACT, v);
+        SqlExpression<U> then = expression.then(Operator.SUBTRACT, v);
         return new NumberPredicateTesterImpl<>(then, combined, negate, mapper);
     }
 
     @Override
     public NumberPredicateTester<T, U, NEXT> multiply(U v) {
-        Expression<U> then = expression.then(Operator.MULTIPLY, v);
+        SqlExpression<U> then = expression.then(Operator.MULTIPLY, v);
         return new NumberPredicateTesterImpl<>(then, combined, negate, mapper);
     }
 
@@ -84,7 +84,7 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
     }
 
     @Override
-    public NumberPredicateTester<T, U, NEXT> add(Expression<U> v) {
+    public NumberPredicateTester<T, U, NEXT> add(SqlExpression<U> v) {
         return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.ADD, v),
                 combined,
@@ -94,7 +94,7 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
     }
 
     @Override
-    public NumberPredicateTester<T, U, NEXT> subtract(Expression<U> v) {
+    public NumberPredicateTester<T, U, NEXT> subtract(SqlExpression<U> v) {
         return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.SUBTRACT, v),
                 combined,
@@ -104,7 +104,7 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
     }
 
     @Override
-    public NumberPredicateTester<T, U, NEXT> multiply(Expression<U> v) {
+    public NumberPredicateTester<T, U, NEXT> multiply(SqlExpression<U> v) {
         return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.MULTIPLY, v),
                 combined,
@@ -114,7 +114,7 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
     }
 
     @Override
-    public NumberPredicateTester<T, U, NEXT> divide(Expression<U> v) {
+    public NumberPredicateTester<T, U, NEXT> divide(SqlExpression<U> v) {
         return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.DIVIDE, v),
                 combined,
@@ -124,7 +124,7 @@ public class NumberPredicateTesterImpl<T, U extends Number & Comparable<?>, NEXT
     }
 
     @Override
-    public NumberPredicateTester<T, U, NEXT> mod(Expression<U> v) {
+    public NumberPredicateTester<T, U, NEXT> mod(SqlExpression<U> v) {
         return new NumberPredicateTesterImpl<>(
                 expression.then(Operator.MOD, v),
                 combined,

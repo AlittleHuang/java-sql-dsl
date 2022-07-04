@@ -1,10 +1,10 @@
 package github.sql.dsl.criteria.query.support;
 
 import github.sql.dsl.criteria.query.builder.ResultBuilder;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.support.builder.component.ConstantArray;
-import github.sql.dsl.criteria.query.support.builder.query.CriteriaQueryImpl;
+import github.sql.dsl.criteria.query.support.builder.query.SqlCriteriaQueryImpl;
 import github.sql.dsl.criteria.query.support.meta.ProjectionAttribute;
 import github.sql.dsl.criteria.query.support.meta.ProjectionInformation;
 import lombok.SneakyThrows;
@@ -26,12 +26,12 @@ import static java.lang.invoke.MethodHandles.lookup;
 class ProjectionResultBuilder<T, R> implements ResultBuilder<R> {
 
     private final TypeQueryFactory typeQueryFactory;
-    private final CriteriaQuery criteriaQuery;
+    private final SqlCriteriaQuery criteriaQuery;
     private final Class<T> type;
     private final Class<R> projectionType;
 
     ProjectionResultBuilder(TypeQueryFactory typeQueryFactory,
-                            CriteriaQuery criteriaQuery,
+                            SqlCriteriaQuery criteriaQuery,
                             Class<T> type,
                             Class<R> projectionType) {
         this.typeQueryFactory = typeQueryFactory;
@@ -52,11 +52,11 @@ class ProjectionResultBuilder<T, R> implements ResultBuilder<R> {
         for (ProjectionAttribute attribute : info) {
             paths.add(attribute.getFieldName());
         }
-        Expression<?>[] selections = paths.stream()
+        SqlExpression<?>[] selections = paths.stream()
                 .map(AttributePath::new)
-                .toArray(Expression[]::new);
-        ConstantArray<Expression<?>> array = new ConstantArray<>(selections);
-        CriteriaQueryImpl cq = CriteriaQueryImpl.from(criteriaQuery)
+                .toArray(SqlExpression[]::new);
+        ConstantArray<SqlExpression<?>> array = new ConstantArray<>(selections);
+        SqlCriteriaQueryImpl cq = SqlCriteriaQueryImpl.from(criteriaQuery)
                 .updateSelection(array);
         List<Object[]> objects = typeQueryFactory.getObjectsTypeQuery(cq, type)
                 .getList(offset, maxResult);

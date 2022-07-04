@@ -12,7 +12,7 @@ import github.sql.dsl.criteria.query.support.builder.component.NumberPredicateTe
 import github.sql.dsl.criteria.query.support.builder.component.PredicateTesterImpl;
 import github.sql.dsl.criteria.query.support.builder.component.StringPredicateTesterImpl;
 
-public interface Predicate<T> extends Expression<Boolean> {
+public interface Predicate<T> extends SqlExpression<Boolean> {
 
     Predicate<T> not();
 

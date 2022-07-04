@@ -1,7 +1,7 @@
 package github.sql.dsl.criteria.query.support.builder.query;
 
 import github.sql.dsl.criteria.query.builder.combination.*;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.Predicate;
 import github.sql.dsl.criteria.query.expression.path.Entity;
 import github.sql.dsl.criteria.query.expression.path.PathBuilder;
@@ -13,9 +13,9 @@ import java.util.function.Function;
 
 public class WhereableImpl<T, NEXT> implements Whereable<T, NEXT> {
 
-    private final Function<Expression<Boolean>, NEXT> mapper;
+    private final Function<SqlExpression<Boolean>, NEXT> mapper;
 
-    public WhereableImpl(Function<Expression<Boolean>, NEXT> mapper) {
+    public WhereableImpl(Function<SqlExpression<Boolean>, NEXT> mapper) {
         this.mapper = mapper;
     }
 

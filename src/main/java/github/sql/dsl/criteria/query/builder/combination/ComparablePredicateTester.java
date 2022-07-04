@@ -1,6 +1,6 @@
 package github.sql.dsl.criteria.query.builder.combination;
 
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.path.attribute.ComparableAttribute;
 
 public interface ComparablePredicateTester<T, U extends Comparable<?>, NEXT> extends PredicateTester<T, U, NEXT> {
@@ -31,24 +31,24 @@ public interface ComparablePredicateTester<T, U extends Comparable<?>, NEXT> ext
     /**
      * greater than or equal to (>=)
      */
-    NEXT ge(Expression<U> value);
+    NEXT ge(SqlExpression<U> value);
 
     /**
      * greater than (>)
      */
-    NEXT gt(Expression<U> value);
+    NEXT gt(SqlExpression<U> value);
 
     /**
      * less than or equal to (<=)
      */
-    NEXT le(Expression<U> value);
+    NEXT le(SqlExpression<U> value);
 
-    NEXT between(Expression<U> a, Expression<U> b);
+    NEXT between(SqlExpression<U> a, SqlExpression<U> b);
 
     /**
      * less than (<)
      */
-    NEXT lt(Expression<U> value);
+    NEXT lt(SqlExpression<U> value);
 
     /**
      * greater than or equal to (>=)

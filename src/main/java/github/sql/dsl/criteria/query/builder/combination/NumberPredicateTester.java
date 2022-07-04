@@ -1,6 +1,6 @@
 package github.sql.dsl.criteria.query.builder.combination;
 
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.path.attribute.NumberAttribute;
 
 public interface NumberPredicateTester<T, U extends Number & Comparable<?>, NEXT> extends ComparablePredicateTester<T, U, NEXT> {
@@ -16,15 +16,15 @@ public interface NumberPredicateTester<T, U extends Number & Comparable<?>, NEXT
     NumberPredicateTester<T, U, NEXT> mod(U v);
 
 
-    NumberPredicateTester<T, U, NEXT> add(Expression<U> v);
+    NumberPredicateTester<T, U, NEXT> add(SqlExpression<U> v);
 
-    NumberPredicateTester<T, U, NEXT> subtract(Expression<U> v);
+    NumberPredicateTester<T, U, NEXT> subtract(SqlExpression<U> v);
 
-    NumberPredicateTester<T, U, NEXT> multiply(Expression<U> v);
+    NumberPredicateTester<T, U, NEXT> multiply(SqlExpression<U> v);
 
-    NumberPredicateTester<T, U, NEXT> divide(Expression<U> v);
+    NumberPredicateTester<T, U, NEXT> divide(SqlExpression<U> v);
 
-    NumberPredicateTester<T, U, NEXT> mod(Expression<U> v);
+    NumberPredicateTester<T, U, NEXT> mod(SqlExpression<U> v);
 
 
     NumberPredicateTester<T, U, NEXT> add(NumberAttribute<T, U> v);

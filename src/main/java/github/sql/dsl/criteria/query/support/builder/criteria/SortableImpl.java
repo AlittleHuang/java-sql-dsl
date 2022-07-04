@@ -1,7 +1,7 @@
 package github.sql.dsl.criteria.query.support.builder.criteria;
 
 import github.sql.dsl.criteria.query.builder.Sortable;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
 import github.sql.dsl.criteria.query.expression.path.attribute.Attribute;
 import github.sql.dsl.criteria.query.expression.path.attribute.ComparableAttribute;
@@ -50,11 +50,11 @@ public class SortableImpl<T, NEXT> implements Sortable<T, NEXT> {
 
     public static class SortImpl<T> implements Sort<T> {
 
-        private final Expression<?> expression;
-        private final BiFunction<Expression<?>, Boolean, T> mapper;
+        private final SqlExpression<?> expression;
+        private final BiFunction<SqlExpression<?>, Boolean, T> mapper;
 
-        public SortImpl(Expression<?> expression,
-                        BiFunction<Expression<?>, Boolean, T> mapper) {
+        public SortImpl(SqlExpression<?> expression,
+                        BiFunction<SqlExpression<?>, Boolean, T> mapper) {
             this.expression = expression;
             this.mapper = mapper;
         }

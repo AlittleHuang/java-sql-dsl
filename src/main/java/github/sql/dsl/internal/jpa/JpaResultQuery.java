@@ -1,12 +1,11 @@
 package github.sql.dsl.internal.jpa;
 
-import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.PathExpression;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
 import github.sql.dsl.util.Array;
-import lombok.var;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -19,10 +18,10 @@ import java.util.stream.Collectors;
 public class JpaResultQuery<T> {
     protected final EntityManager entityManager;
     protected final Class<T> entityType;
-    protected final CriteriaQuery criteria;
+    protected final SqlCriteriaQuery criteria;
 
 
-    public JpaResultQuery(EntityManager entityManager, Class<T> type, CriteriaQuery criteria) {
+    public JpaResultQuery(EntityManager entityManager, Class<T> type, SqlCriteriaQuery criteria) {
         this.entityManager = entityManager;
         this.entityType = type;
         this.criteria = criteria;
@@ -73,7 +72,7 @@ public class JpaResultQuery<T> {
     protected class Builder<R> {
         protected final Class<R> resultType;
         protected final CriteriaBuilder cb;
-        protected final javax.persistence.criteria.CriteriaQuery<R> query;
+        protected final CriteriaQuery<R> query;
         protected final Root<T> root;
         protected final Map<PathExpression<?>, FetchParent<?, ?>> fetched = new HashMap<>();
 
@@ -120,14 +119,14 @@ public class JpaResultQuery<T> {
 
         public List<Object[]> getObjectsList(int offset, int maxResult) {
             buildWhere();
-            Array<Expression<?>> groupBy = criteria.getGroupList();
+            Array<SqlExpression<?>> groupBy = criteria.getGroupList();
             if (groupBy != null && !groupBy.isEmpty()) {
                 query.groupBy(
                         groupBy.stream().map(this::toExpression).collect(Collectors.toList())
                 );
             }
             builderOrderBy();
-            javax.persistence.criteria.CriteriaQuery<R> select = query.multiselect(
+            CriteriaQuery<R> select = query.multiselect(
                     criteria.getSelectionList().stream()
                             .map(this::toExpression)
                             .collect(Collectors.toList())
@@ -153,28 +152,240 @@ public class JpaResultQuery<T> {
         }
 
 
-        public Predicate toPredicate(Expression<?> expression) {
-            javax.persistence.criteria.Expression<?> result = toExpression(expression);
+        public Predicate toPredicate(SqlExpression<?> expression) {
+            Expression<?> result = toExpression(expression);
             if (result instanceof Predicate) {
                 return (Predicate) result;
             }
-            return cb.isTrue(Operator.cast(toExpression(expression)));
+            return cb.isTrue(JpaOperator.cast(toExpression(expression)));
         }
 
-        public javax.persistence.criteria.Expression<?> toExpression(Expression<?> expression) {
-            if (expression.getType() == Expression.Type.CONSTANT) {
+        public Expression<?> toExpression(SqlExpression<?> expression) {
+            if (expression.getType() == SqlExpression.Type.CONSTANT) {
                 return cb.literal(expression.getValue());
             }
-            if (expression.getType() == Expression.Type.PATH) {
+            if (expression.getType() == SqlExpression.Type.PATH) {
                 return getPath(expression.asPathExpression());
             }
-            if (expression.getType() == Expression.Type.OPERATOR) {
-                var list = expression.getExpressions()
-                        .stream()
-                        .map(this::toExpression)
-                        .collect(Collectors.toList());
-                Operator<?> operator = expression.getOperator();
-                return operator.operate(cb, list);
+            if (expression.getType() == SqlExpression.Type.OPERATOR) {
+                List<? extends SqlExpression<?>> expressions = expression.getExpressions();
+                Operator operator = expression.getOperator();
+                Expression<?> e0 = toExpression(expressions.get(0));
+                switch (operator) {
+
+                    case NOT:
+                        return cb.not(cast(e0));
+                    case AND:
+                        return cb.and(cast(e0), cast(toExpression(expressions.get(1))));
+                    case OR:
+                        return cb.or(cast(e0), cast(toExpression(expressions.get(1))));
+                    case GT: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            if (e1.getValue() instanceof Number) {
+                                return cb.gt(cast(e0), (Number) e1.getValue());
+                            } else if (e1.getValue() instanceof Comparable) {
+                                //noinspection unchecked
+                                return cb.greaterThan(cast(e0), (Comparable<Object>) e1.getValue());
+                            }
+                        }
+                        return cb.gt(cast(e0), cast(toExpression(e1)));
+                    }
+                    case EQ: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            return cb.equal(cast(e0), e1.getValue());
+                        }
+                        return cb.equal(e0, toExpression(e1));
+                    }
+                    case NE: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            return cb.notEqual(e0, e1.getValue());
+                        }
+                        return cb.notEqual(e0, toExpression(e1));
+                    }
+                    case GE: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            if (e1.getValue() instanceof Number) {
+                                return cb.ge(cast(e0), (Number) e1.getValue());
+                            } else if (e1.getValue() instanceof Comparable) {
+                                //noinspection unchecked
+                                return cb.greaterThanOrEqualTo(cast(e0), (Comparable<Object>) e1.getValue());
+                            }
+                        }
+                        return cb.ge(cast(e0), cast(toExpression(e1)));
+                    }
+                    case LT: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            Object ve1 = e1.getValue();
+                            if (ve1 instanceof Number) {
+                                return cb.lt(cast(e0), (Number) ve1);
+                            } else if (ve1 instanceof Comparable) {
+                                //noinspection unchecked
+                                return cb.lessThan(cast(e0), (Comparable<Object>) ve1);
+                            }
+                        }
+                        return cb.lt(cast(e0), cast(toExpression(e1)));
+                    }
+                    case LE: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            Object ve1 = e1.getValue();
+                            if (ve1 instanceof Number) {
+                                return cb.le(cast(e0), (Number) ve1);
+                            } else if (ve1 instanceof Comparable) {
+                                //noinspection unchecked
+                                return cb.lessThanOrEqualTo(cast(e0), (Comparable<Object>) ve1);
+                            }
+                        }
+                        return cb.le(cast(e0), cast(toExpression(e1)));
+                    }
+                    case LIKE: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT && e1.getValue() instanceof String) {
+                            return cb.like(cast(e0), (String) e1.getValue());
+                        }
+                        return cb.like(cast(e0), cast(toExpression(e1)));
+                    }
+                    case ISNULL:
+                        return cb.isNull(e0);
+                    case IN: {
+                        if (expressions.size() > 1) {
+                            CriteriaBuilder.In<Object> in = cb.in(e0);
+                            for (int i = 1; i < expressions.size(); i++) {
+                                SqlExpression<?> e1 = expressions.get(i);
+                                if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                                    in = in.value(e1.getValue());
+                                } else {
+                                    in = in.value(toExpression(e1));
+                                }
+                            }
+                            return in;
+                        } else {
+                            return cb.literal(false);
+                        }
+                    }
+                    case BETWEEN: {
+                        SqlExpression<?> se1 = expressions.get(1);
+                        SqlExpression<?> se2 = expressions.get(2);
+                        if (se1.getType() == SqlExpression.Type.CONSTANT
+                                && se2.getType() == SqlExpression.Type.CONSTANT
+                                && se1.getValue() instanceof Comparable
+                                && se2.getValue() instanceof Comparable) {
+                            //noinspection unchecked
+                            return cb.between(cast(e0),
+                                    (Comparable<Object>) se1.getValue(),
+                                    (Comparable<Object>) se2.getValue()
+                            );
+                        }
+                        return cb.between(
+                                cast(e0),
+                                cast(toExpression(se1)),
+                                cast(toExpression(se2))
+                        );
+                    }
+                    case LOWER:
+                        return cb.lower(cast(e0));
+                    case UPPER:
+                        return cb.upper(cast(e0));
+                    case SUBSTRING: {
+                        if (expressions.size() == 2) {
+                            SqlExpression<?> se1 = expressions.get(1);
+                            if (se1.getType() == SqlExpression.Type.CONSTANT
+                                    && se1.getValue() instanceof Integer) {
+                                return cb.substring(cast(e0), (Integer) se1.getValue());
+                            }
+                            return cb.substring(cast(e0), cast(toExpression(se1)));
+                        } else if (expressions.size() == 3) {
+                            SqlExpression<?> se1 = expressions.get(1);
+                            SqlExpression<?> se2 = expressions.get(2);
+                            if (se1.getType() == SqlExpression.Type.CONSTANT
+                                    && se1.getValue() instanceof Integer
+                                    && se2.getType() == SqlExpression.Type.CONSTANT
+                                    && se2.getValue() instanceof Integer) {
+                                return cb.substring(cast(e0),
+                                        (Integer) se1.getValue(),
+                                        (Integer) se2.getValue());
+                            }
+                            return cb.substring(
+                                    cast(e0),
+                                    cast(toExpression(se1)),
+                                    cast(toExpression(se2))
+                            );
+                        } else {
+                            throw new IllegalArgumentException("argument length error");
+                        }
+                    }
+                    case TRIM:
+                        return cb.trim(cast(e0));
+                    case LENGTH:
+                        return cb.length(cast(e0));
+                    case ADD: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT && e1.getValue() instanceof Number) {
+                            return cb.sum(cast(e0), (Number) e1.getValue());
+                        }
+                        return cb.sum(cast(e0), cast(toExpression(e1)));
+                    }
+                    case SUBTRACT: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT && e1.getValue() instanceof Number) {
+                            return cb.diff(cast(e0), (Number) e1.getValue());
+                        }
+                        return cb.diff(cast(e0), cast(toExpression(e1)));
+                    }
+                    case MULTIPLY: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT && e1.getValue() instanceof Number) {
+                            return cb.prod(cast(e0), (Number) e1.getValue());
+                        }
+                        return cb.prod(cast(e0), cast(toExpression(e1)));
+                    }
+                    case DIVIDE: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT && e1.getValue() instanceof Number) {
+                            return cb.quot(cast(e0), (Number) e1.getValue());
+                        }
+                        return cb.quot(cast(e0), cast(toExpression(e1)));
+                    }
+                    case MOD: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT
+                                && e1.getValue() instanceof Integer) {
+                            return cb.mod(cast(e0), ((Integer) e1.getValue()));
+                        }
+                        return cb.mod(cast(e0), cast(toExpression(e1)));
+                    }
+                    case NULLIF: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            return cb.nullif(cast(e0), ((Integer) e1.getValue()));
+                        }
+                        return cb.nullif(e0, toExpression(e1));
+                    }
+                    case IF_NULL: {
+                        SqlExpression<?> e1 = expressions.get(1);
+                        if (e1.getType() == SqlExpression.Type.CONSTANT) {
+                            return cb.coalesce(cast(e0), ((Integer) e1.getValue()));
+                        }
+                        return cb.coalesce(e0, toExpression(e1));
+                    }
+                    case MIN:
+                        return cb.min(cast(e0));
+                    case MAX:
+                        return cb.max(cast(e0));
+                    case COUNT:
+                        return cb.count(cast(e0));
+                    case AVG:
+                        return cb.avg(cast(e0));
+                    case SUM:
+                        return cb.sum(cast(e0));
+                    default:
+                        throw new UnsupportedOperationException(operator.name());
+                }
             } else {
                 throw new UnsupportedOperationException("unknown expression type " + expression.getClass());
             }
@@ -227,11 +438,16 @@ public class JpaResultQuery<T> {
         }
 
         protected void buildWhere() {
-            Expression<Boolean> where = criteria.getRestriction();
+            SqlExpression<Boolean> where = criteria.getRestriction();
             if (where != null) {
                 query.where(toPredicate(where));
             }
         }
     }
 
+
+    public static <T> Expression<T> cast(Expression<?> expression) {
+        //noinspection unchecked
+        return (Expression<T>) expression;
+    }
 }

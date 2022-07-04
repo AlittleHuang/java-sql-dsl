@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class PathExpression<T> implements Expression<T>, Iterable<String> {
+public class PathExpression<T> implements SqlExpression<T>, Iterable<String> {
 
     protected final String[] path;
     protected int length;
@@ -144,8 +144,8 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
         }
     }
 
-    public Expression.Type getType() {
-        return Expression.Type.PATH;
+    public SqlExpression.Type getType() {
+        return SqlExpression.Type.PATH;
     }
 
     public T getValue() {
@@ -156,7 +156,7 @@ public class PathExpression<T> implements Expression<T>, Iterable<String> {
         throw new UnsupportedOperationException();
     }
 
-    public List<? extends Expression<?>> getExpressions() {
+    public List<? extends SqlExpression<?>> getExpressions() {
         throw new UnsupportedOperationException();
     }
 

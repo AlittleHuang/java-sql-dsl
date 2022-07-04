@@ -1,10 +1,10 @@
 package github.sql.dsl.internal.jdbc.mysql;
 
-import github.sql.dsl.criteria.query.expression.Expression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.OperatorExpression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
 import github.sql.dsl.criteria.query.support.meta.Attribute;
 import github.sql.dsl.criteria.query.support.meta.EntityInformation;
@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static github.sql.dsl.criteria.query.expression.Operator.*;
+import static github.sql.dsl.criteria.query.expression.Operator.AND;
 
 public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
-    protected final CriteriaQuery criteria;
+    protected final SqlCriteriaQuery criteria;
     protected final EntityInformation<?> rootEntityInfo;
 
-    public MysqlSqlBuilder(CriteriaQuery criteria, Class<?> javaType) {
+    public MysqlSqlBuilder(SqlCriteriaQuery criteria, Class<?> javaType) {
         this.criteria = criteria;
         this.rootEntityInfo = getEntityInformation(javaType);
     }
@@ -254,13 +254,13 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
             appendExpression(criteria.getRestriction());
         }
 
-        protected void appendExpression(Expression<?> e) {
+        protected void appendExpression(SqlExpression<?> e) {
             appendExpressions(args, e);
         }
 
 
-        protected void appendExpressions(List<Object> args, Expression<?> e) {
-            if (e.getType() == Expression.Type.CONSTANT) {
+        protected void appendExpressions(List<Object> args, SqlExpression<?> e) {
+            if (e.getType() == SqlExpression.Type.CONSTANT) {
                 Object value = e.getValue();
                 boolean isNumber = false;
                 if (value != null) {
@@ -275,78 +275,115 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                     appendBlank().append('?');
                     args.add(value);
                 }
-            } else if (e.getType() == Expression.Type.PATH) {
+            } else if (e.getType() == SqlExpression.Type.PATH) {
                 appendBlank();
                 appendPath(e);
-            } else if (e.getType() == Expression.Type.OPERATOR) {
-                Operator<?> operator = e.getOperator();
-                List<? extends Expression<?>> list = e.getExpressions();
-                Expression<?> e0 = list.get(0);
-                Operator<?> operator0 = getOperator(e0);
-                if (NOT.equals(operator)) {
-                    appendBlank().append(operator);
-                    sql.append(' ');
-                    if (operator0 != null && operator0.getPrecedence() > operator.getPrecedence()) {
-                        sql.append('(');
-                        appendExpressions(args, e0);
-                        sql.append(')');
-                    } else {
-                        appendExpressions(args, e0);
-                    }
-                } else if (AND.equals(operator) || OR.equals(operator) || LIKE.equals(operator) || MOD.equals(operator) || GT.equals(operator) || EQ.equals(operator) || NE.equals(operator) || GE.equals(operator) || LT.equals(operator) || LE.equals(operator) || ADD.equals(operator) || SUBTRACT.equals(operator) || MULTIPLY.equals(operator) || DIVIDE.equals(operator)) {
-                    appendBlank();
-                    if (operator0 != null && operator0.getPrecedence() > operator.getPrecedence()) {
-                        sql.append('(');
-                        appendExpressions(args, e0);
-                        sql.append(')');
-                    } else {
-                        appendExpressions(args, e0);
-                    }
-
-                    appendBlank();
-                    sql.append(operator);
-                    Expression<?> e1 = list.get(1);
-                    Operator<?> operator1 = getOperator(e1);
-                    if (operator1 != null && operator1.getPrecedence() >= operator.getPrecedence()) {
-                        sql.append('(');
-                        appendExpressions(args, e1);
-                        sql.append(')');
-                    } else {
-                        appendExpressions(args, e1);
-                    }
-                } else if (LOWER.equals(operator) || UPPER.equals(operator) || SUBSTRING.equals(operator) || TRIM.equals(operator) || LENGTH.equals(operator) || NULLIF.equals(operator) || IF_NULL.equals(operator) || ISNULL.equals(operator) || MIN.equals(operator) || MAX.equals(operator) || COUNT.equals(operator) || AVG.equals(operator) || SUM.equals(operator)) {
-                    appendBlank().append(operator);
-                    String join = "(";
-                    for (Expression<?> expression : list) {
-                        sql.append(join);
-                        appendExpressions(args, expression);
-                        join = ",";
-                    }
-                    sql.append(")");
-                } else if (IN.equals(operator)) {
-                    if (list.size() == 1) {
-                        appendBlank().append(0);
-                    } else {
+            } else if (e.getType() == SqlExpression.Type.OPERATOR) {
+                Operator operator = e.getOperator();
+                List<? extends SqlExpression<?>> list = e.getExpressions();
+                SqlExpression<?> e0 = list.get(0);
+                Operator operator0 = getOperator(e0);
+                JdbcOperator jdbcOperator = JdbcOperator.of(operator);
+                switch (operator) {
+                    case NOT:
+                        appendBlank().append(jdbcOperator);
+                        sql.append(' ');
+                        if (operator0 != null && JdbcOperator.of(operator0).getPrecedence()
+                                > jdbcOperator.getPrecedence()) {
+                            sql.append('(');
+                            appendExpressions(args, e0);
+                            sql.append(')');
+                        } else {
+                            appendExpressions(args, e0);
+                        }
+                        break;
+                    case AND:
+                    case OR:
+                    case LIKE:
+                    case MOD:
+                    case GT:
+                    case EQ:
+                    case NE:
+                    case GE:
+                    case LT:
+                    case LE:
+                    case ADD:
+                    case SUBTRACT:
+                    case MULTIPLY:
+                    case DIVIDE:
                         appendBlank();
-                        appendExpression(e0);
+                        if (operator0 != null && JdbcOperator.of(operator0).getPrecedence()
+                                > jdbcOperator.getPrecedence()) {
+                            sql.append('(');
+                            appendExpressions(args, e0);
+                            sql.append(')');
+                        } else {
+                            appendExpressions(args, e0);
+                        }
 
-                        appendBlank().append(operator);
-                        char join = '(';
-                        for (int i = 1; i < list.size(); i++) {
-                            Expression<?> expression = list.get(i);
+                        appendBlank();
+                        sql.append(jdbcOperator);
+                        SqlExpression<?> e1 = list.get(1);
+                        Operator operator1 = getOperator(e1);
+                        if (operator1 != null && JdbcOperator.of(operator1).getPrecedence()
+                                >= jdbcOperator.getPrecedence()) {
+                            sql.append('(');
+                            appendExpressions(args, e1);
+                            sql.append(')');
+                        } else {
+                            appendExpressions(args, e1);
+                        }
+                        break;
+                    case LOWER:
+                    case UPPER:
+                    case SUBSTRING:
+                    case TRIM:
+                    case LENGTH:
+                    case NULLIF:
+                    case IF_NULL:
+                    case ISNULL:
+                    case MIN:
+                    case MAX:
+                    case COUNT:
+                    case AVG:
+                    case SUM: {
+                        appendBlank().append(jdbcOperator);
+                        String join = "(";
+                        for (SqlExpression<?> expression : list) {
                             sql.append(join);
                             appendExpressions(args, expression);
-                            join = ',';
+                            join = ",";
                         }
                         sql.append(")");
+                        break;
                     }
-                } else if (BETWEEN.equals(operator)) {
-                    appendBlank();
-                    appendExpressions(args, list.get(0));
-                    appendBlank().append(operator).append(" ");
-                    appendExpressions(args, list.get(1).then(AND, list.get(2)));
-                } else {
-                    throw new UnsupportedOperationException("unknown operator " + operator);
+                    case IN: {
+                        if (list.size() == 1) {
+                            appendBlank().append(0);
+                        } else {
+                            appendBlank();
+                            appendExpression(e0);
+
+                            appendBlank().append(jdbcOperator);
+                            char join = '(';
+                            for (int i = 1; i < list.size(); i++) {
+                                SqlExpression<?> expression = list.get(i);
+                                sql.append(join);
+                                appendExpressions(args, expression);
+                                join = ',';
+                            }
+                            sql.append(")");
+                        }
+                        break;
+                    }
+                    case BETWEEN:
+                        appendBlank();
+                        appendExpressions(args, list.get(0));
+                        appendBlank().append(jdbcOperator).append(" ");
+                        appendExpressions(args, list.get(1).then(AND, list.get(2)));
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("unknown operator " + operator);
                 }
             } else {
                 throw new UnsupportedOperationException("unknown expression type " + e.getClass());
@@ -354,8 +391,8 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
 
-        protected void appendPath(Expression<?> expression) {
-            if (expression.getType() != Expression.Type.PATH) {
+        protected void appendPath(SqlExpression<?> expression) {
+            if (expression.getType() != SqlExpression.Type.PATH) {
                 throw new UnsupportedOperationException();
             }
             PathExpression<?> paths = expression.asPathExpression();
@@ -419,7 +456,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
         }
 
-        Operator<?> getOperator(Expression<?> e) {
+        Operator getOperator(SqlExpression<?> e) {
             if (e instanceof OperatorExpression) {
                 return e.getOperator();
             }
@@ -452,7 +489,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
         }
 
         protected void appendSelectedPath() {
-            Iterable<Expression<?>> select = criteria.getSelectionList();
+            Iterable<SqlExpression<?>> select = criteria.getSelectionList();
             if (select == null || !select.iterator().hasNext()) {
                 select = rootEntityInfo.getBasicAttributes()
                         .stream()
@@ -463,7 +500,7 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
                         .collect(Collectors.toList());
             }
             String join = "";
-            for (Expression<?> selection : select) {
+            for (SqlExpression<?> selection : select) {
                 sql.append(join);
                 appendExpression(selection);
                 join = ",";
@@ -472,11 +509,11 @@ public class MysqlSqlBuilder implements PreparedSqlBuilder {
 
 
         private void appendGroupBy() {
-            Array<Expression<?>> groupBy = criteria.getGroupList();
+            Array<SqlExpression<?>> groupBy = criteria.getGroupList();
             if (groupBy != null && !groupBy.isEmpty()) {
                 sql.append(" group by ");
                 boolean first = true;
-                for (Expression<?> e : groupBy) {
+                for (SqlExpression<?> e : groupBy) {
                     if (first) {
                         first = false;
                     } else {

@@ -5,7 +5,7 @@ import github.sql.dsl.criteria.query.builder.combination.ComparablePredicateTest
 import github.sql.dsl.criteria.query.builder.combination.NumberPredicateTester;
 import github.sql.dsl.criteria.query.builder.combination.PredicateTester;
 import github.sql.dsl.criteria.query.builder.combination.StringPredicateTester;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import github.sql.dsl.criteria.query.expression.Predicate;
 import github.sql.dsl.criteria.query.expression.path.AttributePath;
@@ -19,10 +19,10 @@ import java.util.function.Function;
 public class PredicateAssemblerImpl<T, NEXT> implements PredicateAssembler<T, NEXT> {
 
     protected final SubPredicateArray expression;
-    protected final Function<Expression<Boolean>, NEXT> mapper;
+    protected final Function<SqlExpression<Boolean>, NEXT> mapper;
 
-    public PredicateAssemblerImpl(Expression<Boolean> expression,
-                                  Function<Expression<Boolean>, NEXT> mapper) {
+    public PredicateAssemblerImpl(SqlExpression<Boolean> expression,
+                                  Function<SqlExpression<Boolean>, NEXT> mapper) {
         this.expression = SubPredicateArray.fromExpression(expression);
         this.mapper = mapper;
     }
@@ -140,7 +140,7 @@ public class PredicateAssemblerImpl<T, NEXT> implements PredicateAssembler<T, NE
     }
 
     protected NEXT mapperNext(SubPredicate subPredicate) {
-        Expression<Boolean> then = getBooleanExpression(subPredicate);
+        SqlExpression<Boolean> then = getBooleanExpression(subPredicate);
         return next(mapper.apply(then));
     }
 
@@ -148,8 +148,8 @@ public class PredicateAssemblerImpl<T, NEXT> implements PredicateAssembler<T, NE
         return next;
     }
 
-    private Expression<Boolean> getBooleanExpression(SubPredicate subPredicate) {
-        Expression<Boolean> expression = subPredicate.getExpression();
+    private SqlExpression<Boolean> getBooleanExpression(SubPredicate subPredicate) {
+        SqlExpression<Boolean> expression = subPredicate.getExpression();
         if (subPredicate.isNegate()) {
             expression = expression.then(Operator.NOT);
         }

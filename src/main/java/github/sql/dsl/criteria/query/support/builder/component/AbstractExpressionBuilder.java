@@ -2,7 +2,7 @@ package github.sql.dsl.criteria.query.support.builder.component;
 
 import github.sql.dsl.criteria.query.builder.combination.PredicateTester;
 import github.sql.dsl.criteria.query.expression.ConstantExpression;
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.Operator;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
 
     protected final Function<SubPredicate, NEXT> mapper;
 
-    public AbstractExpressionBuilder(Expression<U> expression,
+    public AbstractExpressionBuilder(SqlExpression<U> expression,
                                      Operator combined,
                                      boolean negate,
                                      Function<SubPredicate, NEXT> mapper) {
@@ -23,7 +23,7 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
     }
 
     protected NEXT next(Operator operator, Object... value) {
-        Expression<Boolean> then = expression.then(operator, value);
+        SqlExpression<Boolean> then = expression.then(operator, value);
         return mapper.apply(new SubPredicate(then, combined, negate));
     }
 
@@ -47,23 +47,23 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
         return next(Operator.IN, values);
     }
 
-    public NEXT ge(Expression<U> value) {
+    public NEXT ge(SqlExpression<U> value) {
         return next(Operator.GE, value);
     }
 
-    public NEXT gt(Expression<U> value) {
+    public NEXT gt(SqlExpression<U> value) {
         return next(Operator.GT, value);
     }
 
-    public NEXT le(Expression<U> value) {
+    public NEXT le(SqlExpression<U> value) {
         return next(Operator.LE, value);
     }
 
-    public NEXT between(Expression<U> a, Expression<U> b) {
+    public NEXT between(SqlExpression<U> a, SqlExpression<U> b) {
         return next(Operator.BETWEEN, a, b);
     }
 
-    public NEXT lt(Expression<U> value) {
+    public NEXT lt(SqlExpression<U> value) {
         return next(Operator.LT, value);
     }
 
@@ -89,12 +89,12 @@ public class AbstractExpressionBuilder<T, U, NEXT> extends SubExpression<U> {
     }
 
     public PredicateTester<T, U, NEXT> nullIf(U value) {
-        Expression<U> expression = this.expression.then(Operator.NULLIF, new ConstantExpression<>(value));
+        SqlExpression<U> expression = this.expression.then(Operator.NULLIF, new ConstantExpression<>(value));
         return new PredicateTesterImpl<>(expression, combined, negate, mapper);
     }
 
     public PredicateTester<T, U, NEXT> ifNull(U value) {
-        Expression<U> expression = this.expression.then(Operator.IF_NULL, new ConstantExpression<>(value));
+        SqlExpression<U> expression = this.expression.then(Operator.IF_NULL, new ConstantExpression<>(value));
         return new PredicateTesterImpl<>(expression, combined, negate, mapper);
     }
 

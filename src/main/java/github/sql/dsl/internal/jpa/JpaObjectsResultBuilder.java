@@ -1,14 +1,14 @@
 package github.sql.dsl.internal.jpa;
 
 import github.sql.dsl.criteria.query.builder.ResultBuilder;
-import github.sql.dsl.criteria.query.support.CriteriaQuery;
+import github.sql.dsl.criteria.query.support.SqlCriteriaQuery;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 public class JpaObjectsResultBuilder<T> extends JpaResultQuery<T> implements ResultBuilder<Object[]> {
 
-    public JpaObjectsResultBuilder(EntityManager entityManager, Class<T> type, CriteriaQuery criteria) {
+    public JpaObjectsResultBuilder(EntityManager entityManager, Class<T> type, SqlCriteriaQuery criteria) {
         super(entityManager, type, criteria);
     }
 

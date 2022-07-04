@@ -1,6 +1,6 @@
 package github.sql.dsl.criteria.query.expression;
 
-public interface OperatorExpression<T> extends Expression<T> {
+public interface OperatorExpression<T> extends SqlExpression<T> {
 
     default PathExpression<T> asPathExpression() {
         throw new UnsupportedOperationException();

@@ -1,19 +1,19 @@
 package github.sql.dsl.criteria.query.support;
 
-import github.sql.dsl.criteria.query.expression.Expression;
+import github.sql.dsl.criteria.query.expression.SqlExpression;
 import github.sql.dsl.criteria.query.expression.PathExpression;
 import github.sql.dsl.criteria.query.support.builder.component.Order;
 import github.sql.dsl.util.Array;
 
-public interface CriteriaQuery {
+public interface SqlCriteriaQuery {
 
-    Expression<Boolean> getRestriction();
+    SqlExpression<Boolean> getRestriction();
 
     Array<Order> getOrderList();
 
-    Array<Expression<?>> getGroupList();
+    Array<SqlExpression<?>> getGroupList();
 
-    Array<Expression<?>> getSelectionList();
+    Array<SqlExpression<?>> getSelectionList();
 
     Array<PathExpression<?>> getFetchList();
 
